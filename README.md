@@ -63,11 +63,11 @@ This file contains all the filters mentioned above. You can try out the installa
 
      ```{.tcl}
      set x 1
-    x
-    ```
+     set x
+     ```
 ```
 
-Save this file as test.md and try to convert the file using the command line.
+Save this code in a file `test.md` removing the leading whitespaces and try to convert the file using the command line:
 
 ```
 pantcl.tapp test.md test.html -s
