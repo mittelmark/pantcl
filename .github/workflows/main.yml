@@ -1,0 +1,28 @@
+name: Makefile CI
+
+on:
+  workflow_dispatch:
+    branches: [ master ]
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    
+     
+    #- name: Install dependencies
+    #  run: make
+      
+    - name: Make pantcl.tapp
+      run: |
+        mkdir pantcl-tapp
+        make Makefile pantcl-app
+        mkdir build
+        cp pantcl-tapp/pantcl.tapp build
+    - name: Step 3 - Use the Upload Artifact GitHub Action
+      uses: actions/upload-artifact@v2
+      with: 
+        name: pantcl.tapp
+        path: build/pantcl.tapp
