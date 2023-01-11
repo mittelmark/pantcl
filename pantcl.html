@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="author" content="Detlef Groth, Schwielowsee, Germany" />
+  <meta name="dcterms.date" content="2023-01-10" />
+  <title>pantcl filter documentation - 0.9.0</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <link rel="stylesheet" href="mini.css" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">pantcl filter documentation - 0.9.0</h1>
+<p class="author">Detlef Groth, Schwielowsee, Germany</p>
+<p class="date">2023-01-10</p>
+</header>
+<hr />
+<p></p>
+<center>
+<p>Filters: <a href="filter/filter-abc.html">filter-abc</a> - <a href="filter/filter-cmd.html">filter-cmd</a> - <a href="filter/filter-dot.html">filter-dot</a> - <a href="filter/filter-eqn.html">filter-eqn</a> - <a href="filter/filter-mmd.html">filter-mmd</a> - <a href="filter/filter-mtex.html">filter-mtex</a> - <a href="filter/filter-pic.html">filter-pic</a> - <a href="filter/filter-pik.html">filter-pik</a> - <a href="filter/filter-pipe.html">filter-pipe</a> - <a href="filter/filter-puml.html">filter-puml</a> - <a href="filter/filter-rplot.html">filter-rplot</a> - <a href="filter/filter-sqlite.html">filter-sqlite</a> - <a href="filter/filter-tcrd.html">filter-tcrd</a> - <a href="filter/filter-tcl.html">filter-tcl</a> - <a href="filter/filter-tdot.html">filter-tdot</a> - <a href="filter/filter-tsvg.html">filter-tsvg</a> <br /></p>
+<p>More examples: <a href="examples/example-dot.html">dot</a> - <a href="examples/example-mtex.html">mtex</a> - <a href="examples/example-pic.html">pic</a> - <a href="examples/example-pik.html">pikchr</a> - <a href="examples/example-rplot.html">rplot</a> - <a href="examples/example-tcl.html">tcl</a> - <a href="examples/example-tsvg.html">tsvg</a></p>
+Documentation: <a href="pandoc-tcl-filter.html">pandoc-tcl-filter</a> - <a href="Readme.html">this Readme</a> - <a href="filter-view.html">GUI filter-view.html</a>
+</center>
+<hr />
+<h2 id="name">NAME</h2>
+<p><em>pantcl.tcl</em> - filter application for the pandoc command line application to convert Markdown files into other formats. The filter allows you to embed Tcl code into your Markdown documentation and offers a plugin architecture to add other command line filters easily using Tcl and the <code>exec</code> command. As examples are given in the filter folder of the project:</p>
+<ul>
+<li>Tcl filter {.tcl}: <code>filter-tcl.tcl</code> <a href="filter/filter-tcl.html">filter/filter-tcl.html</a></li>
+<li>ABC music filter {.abc}: <code>filter-abc.tcl</code> <a href="filter/filter-abc.html">filter/filter-abc.html</a></li>
+<li>command line application filter {.cmd}: <code>filter-cmd.tcl</code> <a href="filter/filter-cmd.html">filter/filter-abc.html</a></li>
+<li>Graphviz dot filter {.dot}: <code>filter-dot.tcl</code> <a href="filter/filter-dot.html">filter/filter-dot.html</a></li>
+<li>EQN filter plugin for equations written in the EQN language {.eqn}: <code>filter-eqn</code> <a href="filter/filter-eqn.html">filter/filter-eqn.html</a></li>
+<li>Math TeX filter for single line equations {.mtex}: <code>filter-mtex.tcl</code> <a href="filter/filter-mtex.html">filter/filter-mtex.html</a></li>
+<li>Mermaid filter for diagrams {.mmd}: <code>filter-mmd.tcl</code> <a href="filter/filter-mmd.html">filter/filter-mmd.html</a></li>
+<li>Pikchr filter plugin for diagram creation {.pikchr}: <code>filter-pik.tcl</code> <a href="filter/filter-pik.html">filter/filter-pik.html</a></li>
+<li>PIC filter plugin for diagram creation (older version) {.pic}: <code>filter-pic.tcl</code> <a href="filter/filter-pic.html">filter/filter-pic.html</a></li>
+<li>pipe filter for R, Python and Octave {.pipe}: <code>filter-pipe.tcl</code> <a href="filter/filter-pipe.html">filter/filter-pipe.html</a></li>
+<li>PlantUMLfilter plugin for diagram creation {.puml}: <code>filter-puml.tcl</code> <a href="filter/filter-puml.html">filter/filter-puml.html</a></li>
+<li>R plot filter plugin for displaying plots in the R statistical language {.rplot}: <code>filter-rplot.tcl</code> <a href="filter/filter-rplot.html">filter/filter-rplot.html</a></li>
+<li>sqlite3 filter plugin to evaluate SQL code {.sqlite}: <code>filter-sqlite.tcl</code> <a href="filter/filter-sqlite.html">filter/filter-sqlite.html</a></li>
+<li>tcrd filter for music songs with chords {.tcrd}: <code>filter-tcrd.tcl</code> <a href="filter/filter-tcrd.html">filter/filter-tcrd.html</a></li>
+<li>tdot package filter {.tsvg}: <code>filter-tdot.tcl</code> <a href="filter/filter-tdot.html">filter/filter-tdot.html</a></li>
+<li>tsvg package filter {.tsvg}: <code>filter-tsvg.tcl</code> <a href="filter/filter-tsvg.html">filter/filter-tsvg.html</a></li>
+</ul>
+<h2 id="synopsis">SYNOPSIS</h2>
+<pre><code># standalone application
+pantcl.tapp infile outfile ?options?
+# as filter
+pandoc infile --filter pantcl.tapp ?options?
+# as graphics user interface
+pantcl.tapp --gui</code></pre>
+<p>Where options for the filter and the standalone mode are the usual pandoc options. For HTML conversion you should use for instance:</p>
+<pre><code>pantcl.tapp infile.md outfile.html --css style.css -s --toc</code></pre>
+<p>Please note, that you can rename as well the file <code>pantcl.tapp</code> into just <code>pantcl</code> to use it like a normal standalone application without file extension.</p>
+<h2 id="code-embedding">Code embedding</h2>
+<p>Embed code either inline or in form of code chunks like here (triple ticks):</p>
+<pre><code>    ```{.tcl}
+    set x 4
+    incr x
+    set x
+    ```
+  
+    Hello this is Tcl `tcl package provide Tcl`!</code></pre>
+<h2 id="filter-overview">Filter Overview</h2>
+<p>The markers for the other filters are:</p>
+<p><code class="sourceCode dot"><span class="ot">{</span><span class="co">.</span><span class="va">abc</span><span class="ot">}</span>,</code><code class="eqn">,</code><code class="sourceCode markdown">,</code><code class="mtex">,</code><code class="pic">,</code><code class="pikchr">,</code>, <code>{.puml}</code>, <code>{.rplot}</code>,<code>{.sqlite}</code> and <code>{.tsvg}</code>.</p>
+<p>For details on how to use them have a look at the manual page links on top.</p>
+<p>You can combine all filters in one document just by using the appropiate markers.</p>
+<p>Here an overview about the required tools to use a filter:</p>
+<center>
+<table>
+<thead>
+<tr class="header">
+<th>filter</th>
+<th>tool</th>
+<th>svg</th>
+<th>png</th>
+<th>pdf</th>
+<th>comment</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>.tcl</td>
+<td>tclsh</td>
+<td>tsvg</td>
+<td>cairosvg</td>
+<td>cairosvg</td>
+<td>programming</td>
+</tr>
+<tr class="even">
+<td>.abc</td>
+<td>abcm2ps</td>
+<td>abcm2ps</td>
+<td>cairosvg</td>
+<td>cairosvg</td>
+<td>music</td>
+</tr>
+<tr class="odd">
+<td>.dot</td>
+<td>dot</td>
+<td>native</td>
+<td>native</td>
+<td>native</td>
+<td>diagrams</td>
+</tr>
+<tr class="even">
+<td>.eqn</td>
+<td>eqn2graph</td>
+<td>no</td>
+<td>convert</td>
+<td>no</td>
+<td>math</td>
+</tr>
+<tr class="odd">
+<td>.mmd</td>
+<td>mermaid-cli (mmdc)</td>
+<td>native</td>
+<td>native</td>
+<td>native</td>
+<td>diagrams</td>
+</tr>
+<tr class="even">
+<td>.mtex</td>
+<td>latex</td>
+<td>dvisgm</td>
+<td>dvipng</td>
+<td>dvipdfm</td>
+<td>math, diagrams, games</td>
+</tr>
+<tr class="odd">
+<td>.pic</td>
+<td>pic2graph</td>
+<td>no</td>
+<td>convert</td>
+<td>no</td>
+<td>diagrams</td>
+</tr>
+<tr class="even">
+<td>.pik</td>
+<td>fossil</td>
+<td>native</td>
+<td>cairosvg</td>
+<td>cairosvg</td>
+<td>diagrams</td>
+</tr>
+<tr class="odd">
+<td>.pipe</td>
+<td>R / python / octave</td>
+<td>native</td>
+<td>native</td>
+<td>native</td>
+<td>Statistics, Programming</td>
+</tr>
+<tr class="even">
+<td>.puml</td>
+<td>plantuml</td>
+<td>native</td>
+<td>native</td>
+<td>native</td>
+<td>diagrams</td>
+</tr>
+<tr class="odd">
+<td>.rplot</td>
+<td>R</td>
+<td>native</td>
+<td>native</td>
+<td>native</td>
+<td>statistics, graphics</td>
+</tr>
+<tr class="even">
+<td>.tcrd</td>
+<td>tclsh</td>
+<td>no</td>
+<td>no</td>
+<td>no</td>
+<td>music, songs with chords</td>
+</tr>
+<tr class="odd">
+<td>.tdot</td>
+<td>tclsh/dot</td>
+<td>native</td>
+<td>native</td>
+<td>native</td>
+<td>diagrams</td>
+</tr>
+<tr class="even">
+<td>.tsvg</td>
+<td>tclsh</td>
+<td>native</td>
+<td>cairosvg</td>
+<td>cairosvg</td>
+<td>graphics</td>
+</tr>
+</tbody>
+</table>
+</center>
+<p>The Markdown document within this file could be extracted and converted as follows:</p>
+<pre><code> pantcl pantcl.tcl pantcl.html \
+   --css mini.css -s</code></pre>
+<h2 id="example-tcl-filter">Example Tcl Filter</h2>
+<h4 id="tcl-filter">Tcl-filter</h4>
+<pre><code>    ```{.tcl}
+    set x 1
+    puts $x
+    ```</code></pre>
+<p>And here the output:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode tcl"><code class="sourceCode tcl"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">set</span> <span class="ot">x</span> <span class="dv">1</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="kw">puts</span> <span class="dt">$x</span></span></code></pre></div>
+<pre class="tclout"><code>1
+</code></pre>
+<p>Does indented code blocks works as well?</p>
+<blockquote>
+<div class="sourceCode" id="cb8"><pre class="sourceCode tcl"><code class="sourceCode tcl"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="kw">set</span> <span class="ot">x</span> <span class="dv">2</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="kw">puts</span> <span class="dt">$x</span></span></code></pre></div>
+</blockquote>
+<blockquote>
+<pre class="tclout"><code>2
+</code></pre>
+</blockquote>
+<blockquote>
+<p>Yes, since version 0.7.0!!</p>
+</blockquote>
+<p>There is as well the possibility to inline Tcl code like here:</p>
+<pre><code>This document was processed using Tcl `tcl set tcl_patchLevel`!</code></pre>
+<p>will produce:</p>
+<p>This document was processed using Tcl 8.6.12!</p>
+<p>This works as well in nested structures like lists or quotes.</p>
+<blockquote>
+<p>This document was processed using Tcl 8.6.12!</p>
+</blockquote>
+<blockquote>
+<ul>
+<li>This document was processed using Tcl 8.6.12!</li>
+</ul>
+</blockquote>
+<h2 id="filter---plugins">Filter - Plugins</h2>
+<p>The pantcl.tcl application allows to create custom filters for other command line application quite easily. The Tcl files has to be named <code>filter-NAME.tcl</code> where NAME hast to match the code chunk marker. Below an example:</p>
+<pre><code>   ` ``{.dot label=dotgraph}
+   digraph G {
+     main -&gt; parse -&gt; execute;
+     main -&gt; init;
+     main -&gt; cleanup;
+     execute -&gt; make_string;
+     execute -&gt; printf
+     init -&gt; make_string;
+     main -&gt; printf;
+     execute -&gt; compare;
+   }
+
+   ![](dotgraph.svg)
+   ` ``</code></pre>
+<p>The main script <code>pantcl.tcl</code> evaluates if in the same folder as the script is, if there any other files named <code>filter/filter-NAME.tcl</code> and sources them. In case of the dot filter the file is named <code>filter-dot.tcl</code> and its filter function <code>filter-dot</code> is executed. Below is the simplified code: of this file <code>filter-dot.tcl</code>:</p>
+<div class="sourceCode" id="cb12" data-eval="false" data-results="hide"><pre class="sourceCode tcl"><code class="sourceCode tcl"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># a simple pandoc filter using Tcl</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="co"># the script pantcl.tcl </span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="co"># must be in the same filter directoy of the pantcl.tcl file</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="kw">proc</span> filter-dot <span class="kw">{</span>cont <span class="kw">dict}</span> <span class="kw">{</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">global</span> n</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">incr</span> n</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>    <span class="kw">set</span> def <span class="kw">[dict</span> <span class="ot">create</span> app dot results <span class="ot">show</span> <span class="kw">eval</span> true fig true </span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>             <span class="kw">label</span> null ext svg <span class="ot">width</span> <span class="dv">400</span> <span class="ot">height</span> <span class="dv">400</span> \</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>             include true imagepath images<span class="kw">]</span></span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>    <span class="co"># fuse code chunk options with defaults</span></span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>    <span class="kw">set</span> <span class="kw">dict</span> <span class="kw">[dict</span> merge <span class="dt">$def</span> <span class="dt">$dict</span><span class="kw">]</span></span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>    <span class="kw">set</span> ret <span class="st">&quot;&quot;</span></span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>    <span class="kw">if</span> <span class="kw">{[dict</span> <span class="ot">get</span> <span class="dt">$dict</span> <span class="kw">label]</span> eq <span class="st">&quot;null&quot;</span><span class="kw">}</span> <span class="kw">{</span></span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>        <span class="kw">set</span> fname dot-<span class="dt">$n</span></span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>    <span class="kw">}</span> <span class="kw">else</span> <span class="kw">{</span></span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>        <span class="kw">set</span> fname <span class="kw">[dict</span> <span class="ot">get</span> <span class="dt">$dict</span> <span class="kw">label]</span></span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a>    <span class="kw">}</span></span>
+<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a>    <span class="co"># save dot file</span></span>
+<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a>    <span class="kw">set</span> out <span class="kw">[open</span> <span class="dt">$fname</span>.dot w <span class="dv">0600</span><span class="kw">]</span></span>
+<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a>    <span class="kw">puts</span> <span class="dt">$out</span> <span class="dt">$cont</span></span>
+<span id="cb12-21"><a href="#cb12-21" aria-hidden="true" tabindex="-1"></a>    <span class="kw">close</span> <span class="dt">$out</span></span>
+<span id="cb12-22"><a href="#cb12-22" aria-hidden="true" tabindex="-1"></a>    <span class="co"># </span><span class="al">TODO</span><span class="co">: error catching</span></span>
+<span id="cb12-23"><a href="#cb12-23" aria-hidden="true" tabindex="-1"></a>    <span class="kw">set</span> res <span class="kw">[exec</span> <span class="kw">[dict</span> <span class="ot">get</span> <span class="dt">$dict</span> app<span class="kw">]</span><span class="ot"> -Tsvg</span> <span class="dt">$fname</span>.dot<span class="ot"> -o</span> <span class="dt">$fname</span>.svg<span class="kw">]</span></span>
+<span id="cb12-24"><a href="#cb12-24" aria-hidden="true" tabindex="-1"></a>    <span class="kw">if</span> <span class="kw">{[dict</span> <span class="ot">get</span> <span class="dt">$dict</span> results<span class="kw">]</span> eq <span class="st">&quot;show&quot;</span><span class="kw">}</span> <span class="kw">{</span></span>
+<span id="cb12-25"><a href="#cb12-25" aria-hidden="true" tabindex="-1"></a>        <span class="co"># should be usually empty</span></span>
+<span id="cb12-26"><a href="#cb12-26" aria-hidden="true" tabindex="-1"></a>        <span class="kw">set</span> res <span class="dt">$res</span></span>
+<span id="cb12-27"><a href="#cb12-27" aria-hidden="true" tabindex="-1"></a>    <span class="kw">}</span> <span class="kw">else</span> <span class="kw">{</span></span>
+<span id="cb12-28"><a href="#cb12-28" aria-hidden="true" tabindex="-1"></a>        <span class="kw">set</span> res <span class="st">&quot;&quot;</span></span>
+<span id="cb12-29"><a href="#cb12-29" aria-hidden="true" tabindex="-1"></a>    <span class="kw">}</span></span>
+<span id="cb12-30"><a href="#cb12-30" aria-hidden="true" tabindex="-1"></a>    <span class="kw">set</span> img <span class="st">&quot;&quot;</span></span>
+<span id="cb12-31"><a href="#cb12-31" aria-hidden="true" tabindex="-1"></a>    <span class="kw">if</span> <span class="kw">{[dict</span> <span class="ot">get</span> <span class="dt">$dict</span> fig<span class="kw">]}</span> <span class="kw">{</span></span>
+<span id="cb12-32"><a href="#cb12-32" aria-hidden="true" tabindex="-1"></a>        <span class="kw">if</span> <span class="kw">{[dict</span> <span class="ot">get</span> <span class="dt">$dict</span> include<span class="kw">]}</span> <span class="kw">{</span></span>
+<span id="cb12-33"><a href="#cb12-33" aria-hidden="true" tabindex="-1"></a>            <span class="kw">set</span> img <span class="dt">$fname</span>.svg</span>
+<span id="cb12-34"><a href="#cb12-34" aria-hidden="true" tabindex="-1"></a>        <span class="kw">}</span></span>
+<span id="cb12-35"><a href="#cb12-35" aria-hidden="true" tabindex="-1"></a>    <span class="kw">}</span></span>
+<span id="cb12-36"><a href="#cb12-36" aria-hidden="true" tabindex="-1"></a>    <span class="kw">return</span> <span class="kw">[list</span> <span class="dt">$res</span> <span class="dt">$img</span><span class="kw">]</span></span>
+<span id="cb12-37"><a href="#cb12-37" aria-hidden="true" tabindex="-1"></a><span class="kw">}</span></span></code></pre></div>
+<p>Using the label and the option <code>include=false</code> we could create an image link manually using Markdown syntax. The The image filename should be then images/label.svg for instance.</p>
+<h2 id="dot-example">Dot Example</h2>
+<p>Here a longer dot-example where the code is include in</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode dot"><code class="sourceCode dot"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="kw">digraph</span> <span class="va">G</span> <span class="ot">{</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="co">  </span><span class="at">margin</span><span class="ot">=</span><span class="dv">0.1</span><span class="ot">;</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="co">  </span><span class="kw">node</span><span class="ot">[</span><span class="at">fontname</span><span class="ot">=</span><span class="st">&quot;Linux Libertine&quot;</span><span class="ot">;</span><span class="at">fontsize</span><span class="ot">=</span><span class="dv">18</span><span class="ot">];</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="co">  </span><span class="kw">node</span><span class="ot">[</span><span class="at">shape</span><span class="ot">=</span><span class="va">box</span><span class="co">,</span><span class="at">style</span><span class="ot">=</span><span class="va">filled</span><span class="ot">;</span><span class="at">fillcolor</span><span class="ot">=</span><span class="va">skyblue</span><span class="co">,</span><span class="at">width</span><span class="ot">=</span><span class="dv">1.2</span><span class="co">,</span><span class="at">height</span><span class="ot">=</span><span class="dv">0.9</span><span class="ot">];</span><span class="co">    </span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a><span class="co">  </span><span class="ot">{</span><span class="co"> </span><span class="at">rank</span><span class="ot">=</span><span class="va">same</span><span class="ot">;</span><span class="co"> </span><span class="va">Rst</span><span class="ot">[</span><span class="va">group</span><span class="ot">=</span><span class="va">g0</span><span class="co">,</span><span class="at">fillcolor</span><span class="ot">=</span><span class="va">salmon</span><span class="ot">]</span><span class="co"> </span><span class="ot">;</span><span class="co"> </span></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a><span class="co">    </span><span class="va">Docx</span><span class="co"> </span><span class="ot">[</span><span class="va">group</span><span class="ot">=</span><span class="va">g1</span><span class="co">,</span><span class="at">fillcolor</span><span class="ot">=</span><span class="va">salmon</span><span class="ot">]</span></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a><span class="co">  </span><span class="ot">}</span></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a><span class="co">  </span><span class="ot">{</span><span class="co"> </span><span class="at">rank</span><span class="ot">=</span><span class="va">same</span><span class="ot">;</span><span class="co"> </span><span class="va">Md</span><span class="ot">[</span><span class="va">group</span><span class="ot">=</span><span class="va">g0</span><span class="co">,</span><span class="at">fillcolor</span><span class="ot">=</span><span class="va">salmon</span><span class="ot">]</span><span class="co">  </span><span class="ot">;</span><span class="co"> </span></span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a><span class="co">    </span><span class="va">pandoc</span><span class="co"> </span><span class="ot">;</span><span class="co"> </span><span class="va">AST1</span><span class="co"> </span><span class="ot">;</span><span class="co"> </span><span class="va">filter</span><span class="ot">[</span><span class="at">fillcolor</span><span class="ot">=</span><span class="va">cornsilk</span><span class="ot">]</span><span class="co"> </span><span class="ot">;</span><span class="co"> </span><span class="va">AST2</span><span class="co"> </span><span class="ot">;</span><span class="co"> </span><span class="va">pandoc2</span><span class="ot">;</span><span class="co">  </span></span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a><span class="co">    </span><span class="va">Html</span><span class="ot">[</span><span class="va">group</span><span class="ot">=</span><span class="va">g1</span><span class="co">,</span><span class="at">fillcolor</span><span class="ot">=</span><span class="va">salmon</span><span class="ot">]</span><span class="co"> </span></span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a><span class="co">  </span><span class="ot">}</span></span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a><span class="co">  </span><span class="ot">{</span><span class="co"> </span><span class="at">rank</span><span class="ot">=</span><span class="va">same</span><span class="ot">;</span><span class="co"> </span><span class="va">Tex</span><span class="ot">[</span><span class="va">group</span><span class="ot">=</span><span class="va">g0</span><span class="co">,</span><span class="at">fillcolor</span><span class="ot">=</span><span class="va">salmon</span><span class="ot">]</span><span class="co"> </span><span class="ot">;</span><span class="co"> </span></span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a><span class="co">    </span><span class="va">Pdf</span><span class="ot">[</span><span class="va">group</span><span class="ot">=</span><span class="va">g1</span><span class="co">,</span><span class="at">fillcolor</span><span class="ot">=</span><span class="va">salmon</span><span class="ot">];</span><span class="co"> </span><span class="va">filters</span><span class="ot">[</span><span class="at">fillcolor</span><span class="ot">=</span><span class="va">cornsilk</span><span class="ot">];</span><span class="co"> </span></span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a><span class="co">  </span><span class="ot">}</span></span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a><span class="co">  </span><span class="kw">node</span><span class="ot">[</span><span class="at">fillcolor</span><span class="ot">=</span><span class="va">cornsilk</span><span class="ot">];</span><span class="co"> </span></span>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a><span class="co">  </span><span class="ot">{</span><span class="co"> </span><span class="at">rank</span><span class="ot">=</span><span class="va">same</span><span class="ot">;</span><span class="co"> </span><span class="va">dot</span><span class="co"> </span><span class="ot">;</span><span class="co"> </span><span class="va">eqn</span><span class="ot">;</span><span class="co"> </span><span class="va">mtex</span><span class="ot">;</span><span class="co"> </span><span class="va">pic</span><span class="ot">;</span><span class="co"> </span><span class="va">pik</span><span class="ot">;</span><span class="co"> </span><span class="va">rplot</span><span class="ot">;</span><span class="co"> </span><span class="va">tsvg</span><span class="ot">;}</span></span>
+<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a><span class="co">  </span><span class="va">Rst</span><span class="co"> </span><span class="ot">-&gt;</span><span class="co"> </span><span class="va">pandoc</span><span class="co"> </span><span class="ot">-&gt;</span><span class="co"> </span><span class="va">AST1</span><span class="co"> </span><span class="ot">-&gt;</span><span class="co"> </span><span class="va">filter</span><span class="co"> </span><span class="ot">-&gt;</span><span class="co"> </span><span class="va">AST2</span><span class="co"> </span><span class="ot">-&gt;</span><span class="co"> </span><span class="va">pandoc2</span><span class="co"> </span><span class="ot">-&gt;</span><span class="co"> </span><span class="va">Html</span><span class="co"> </span><span class="ot">;</span></span>
+<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a><span class="co">  </span><span class="va">Md</span><span class="co"> </span><span class="ot">-&gt;</span><span class="co"> </span><span class="va">pandoc</span><span class="ot">;</span></span>
+<span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a><span class="co">  </span><span class="va">Tex</span><span class="co"> </span><span class="ot">-&gt;</span><span class="co"> </span><span class="va">pandoc</span><span class="ot">;</span></span>
+<span id="cb13-20"><a href="#cb13-20" aria-hidden="true" tabindex="-1"></a><span class="co">  </span><span class="va">Rst</span><span class="co"> </span><span class="ot">-&gt;</span><span class="co"> </span><span class="va">Md</span><span class="co"> </span><span class="ot">-&gt;</span><span class="co"> </span><span class="va">Tex</span><span class="co"> </span><span class="ot">-&gt;</span><span class="co"> </span><span class="va">dot</span><span class="ot">[</span><span class="at">style</span><span class="ot">=</span><span class="va">invis</span><span class="ot">]</span><span class="co"> </span><span class="ot">;</span></span>
+<span id="cb13-21"><a href="#cb13-21" aria-hidden="true" tabindex="-1"></a><span class="co">  </span><span class="va">pandoc2</span><span class="co"> </span><span class="ot">-&gt;</span><span class="co"> </span><span class="va">Docx</span><span class="ot">;</span></span>
+<span id="cb13-22"><a href="#cb13-22" aria-hidden="true" tabindex="-1"></a><span class="co">  </span><span class="va">pandoc2</span><span class="co"> </span><span class="ot">-&gt;</span><span class="co"> </span><span class="va">Pdf</span><span class="co"> </span><span class="ot">;</span></span>
+<span id="cb13-23"><a href="#cb13-23" aria-hidden="true" tabindex="-1"></a><span class="co">  </span><span class="va">Docx</span><span class="co"> </span><span class="ot">-&gt;</span><span class="co"> </span><span class="va">Html</span><span class="co"> </span><span class="ot">-&gt;</span><span class="co"> </span><span class="va">Pdf</span><span class="co"> </span><span class="ot">-&gt;</span><span class="co"> </span><span class="va">tsvg</span><span class="ot">[</span><span class="at">style</span><span class="ot">=</span><span class="va">invis</span><span class="ot">];</span></span>
+<span id="cb13-24"><a href="#cb13-24" aria-hidden="true" tabindex="-1"></a><span class="co">  </span><span class="va">pandoc2</span><span class="ot">[</span><span class="at">label</span><span class="ot">=</span><span class="va">pandoc</span><span class="ot">];</span></span>
+<span id="cb13-25"><a href="#cb13-25" aria-hidden="true" tabindex="-1"></a><span class="co">  </span><span class="va">filter</span><span class="ot">[</span><span class="at">label</span><span class="ot">=</span><span class="st">&quot;pandoc-\ntcl-\nfilter&quot;</span><span class="ot">];</span></span>
+<span id="cb13-26"><a href="#cb13-26" aria-hidden="true" tabindex="-1"></a><span class="co">  </span><span class="va">filter</span><span class="ot">-&gt;</span><span class="va">filters</span><span class="ot">;</span></span>
+<span id="cb13-27"><a href="#cb13-27" aria-hidden="true" tabindex="-1"></a><span class="co">  </span><span class="va">filters</span><span class="co"> </span><span class="ot">-&gt;</span><span class="co"> </span><span class="va">dot</span><span class="co"> </span><span class="ot">;</span></span>
+<span id="cb13-28"><a href="#cb13-28" aria-hidden="true" tabindex="-1"></a><span class="co">  </span><span class="va">filters</span><span class="co"> </span><span class="ot">-&gt;</span><span class="co"> </span><span class="va">eqn</span><span class="co"> </span><span class="ot">;</span></span>
+<span id="cb13-29"><a href="#cb13-29" aria-hidden="true" tabindex="-1"></a><span class="co">  </span><span class="va">filters</span><span class="co"> </span><span class="ot">-&gt;</span><span class="co"> </span><span class="va">mtex</span><span class="ot">;</span></span>
+<span id="cb13-30"><a href="#cb13-30" aria-hidden="true" tabindex="-1"></a><span class="co">  </span><span class="va">filters</span><span class="co"> </span><span class="ot">-&gt;</span><span class="co"> </span><span class="va">pic</span><span class="co"> </span><span class="ot">;</span></span>
+<span id="cb13-31"><a href="#cb13-31" aria-hidden="true" tabindex="-1"></a><span class="co">  </span><span class="va">filters</span><span class="co"> </span><span class="ot">-&gt;</span><span class="co"> </span><span class="va">pik</span><span class="co"> </span><span class="ot">;</span><span class="co"> </span></span>
+<span id="cb13-32"><a href="#cb13-32" aria-hidden="true" tabindex="-1"></a><span class="co">  </span><span class="va">filters</span><span class="co"> </span><span class="ot">-&gt;</span><span class="co"> </span><span class="va">rplot</span><span class="ot">;</span></span>
+<span id="cb13-33"><a href="#cb13-33" aria-hidden="true" tabindex="-1"></a><span class="co">  </span><span class="va">filters</span><span class="co"> </span><span class="ot">-&gt;</span><span class="co"> </span><span class="va">tsvg</span><span class="ot">;</span><span class="co"> </span></span>
+<span id="cb13-34"><a href="#cb13-34" aria-hidden="true" tabindex="-1"></a><span class="ot">}</span></span></code></pre></div>
+<p><img src="/home/groth/workspace/pantcl/images/dot-1.svg" /></p>
+<h2 id="creating-markdown-code">Creating Markdown Code</h2>
+<p>Since version 0.5.0 it is as well possible to create Markup code within code blocks and to return it. To achieve this you to set use code chunk option results like this: <code>results="asis"</code> - which should be usually used together with <code>echo=false</code>. Here an example:</p>
+<pre><code>     ```{.tcl echo=false results=&quot;asis&quot;}
+     return &quot;**this is bold** and _this is italic_ text!&quot;
+     ```    </code></pre>
+<p>which gives this output:</p>
+<p></p>
+<p><strong>this is bold</strong> and <em>this is italic</em> text!</p>
+<p>This can be as well used to include other Markup files. Here an example:</p>
+<pre><code>    ```{.tcl results=&quot;asis&quot;}
+    include tests/inc.md
+    ```</code></pre>
+<p>And here is the result:</p>
+<div class="sourceCode" id="cb16" data-results="asis"><pre class="sourceCode tcl"><code class="sourceCode tcl"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>include tests/inc.md</span></code></pre></div>
+<p>Cannot open tests/inc.md</p>
+<p>Please note, that currently no filters are applied on the included files. You should process them before using the pandoc filters and choose output format Markdown to include them later in your master document.</p>
+<p>To just show some file content as it is, remove the results=“asis”, this can be as well useful to display some source code, let’s here simply show here the content of <em>tests/inc.md</em> without interpreting it as Markdown in a source code block:</p>
+<pre><code>    ```{.tcl results=&quot;show&quot;}
+    include tests/inc.md
+    ```</code></pre>
+<p>And here is the result:</p>
+<div class="sourceCode" id="cb18" data-results="show"><pre class="sourceCode tcl"><code class="sourceCode tcl"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>include tests/inc.md</span></code></pre></div>
+<pre class="tclout" data-results="show"><code>Cannot open tests/inc.md</code></pre>
+<h2 id="documentation">Documentation</h2>
+<p>To use this pipeline and to create pantcl.html out of the code documentation in pantcl.tapp your command in the terminal is still just:</p>
+<pre><code>pantcl.tapp pantcl.tcl pantcl.html -s --css mini.css</code></pre>
+<p>The result should be the file which you are looking currently.</p>
+<h2 id="changelog">ChangeLog</h2>
+<ul>
+<li>2021-08-22 Version 0.1</li>
+<li>2021-08-28 Version 0.2
+<ul>
+<li>adding custom filters structure (dot, tsvg examples)</li>
+<li>adding attributes label, width, height, results</li>
+</ul></li>
+<li>2021-08-31 Version 0.3
+<ul>
+<li>moved filters into filter folder</li>
+<li>plugin example mtex</li>
+<li>default image path <em>images</em></li>
+</ul></li>
+<li>2021-11-03 Version 0.3.1
+<ul>
+<li>fix for parray and “puts stdout”</li>
+</ul></li>
+<li>2021-11-15 Version 0.3.2
+<ul>
+<li>–help argument support</li>
+<li>–version argument support</li>
+<li>filters for Pikchr, PIC and EQN</li>
+</ul></li>
+<li>2021-11-30 Version 0.3.3
+<ul>
+<li>filter for R plots: <code>.rplot</code></li>
+</ul></li>
+<li>2021-12-04 Version 0.4.0
+<ul>
+<li>pandoc-tcl-filter can be as well directly used for conversion being then a frontend which calls pandoc internally with itself as a filter …</li>
+</ul></li>
+<li>2021-12-12 Version 0.5.0
+<ul>
+<li>support for Markdown code creation in the Tcl filter with results=“asis”</li>
+<li>adding list2mdtab proc to the Tcl filter</li>
+<li>adding include proc to the Tcl filter with results=‘asis’ other Markdown files can be included.</li>
+<li>support for <code>pandoc-tcl-filter.tcl infile --tangle .tcl</code> to extract code chunks to the terminal</li>
+<li>support for Mermaid diagrams</li>
+<li>support for PlantUML diagrams</li>
+<li>support for ABC music notation</li>
+<li>bug fix for Tcl filters for <code>eval=false</code></li>
+<li>documentation improvements for the filters and for the pandoc-tcl-filter</li>
+</ul></li>
+<li>2022-01-09 - version 0.6.0
+<ul>
+<li>adding filter-cmd.tcl for shell scripts for all type of programming languages and tools</li>
+<li>filter-mtex.tcl with more examples for different LaTeX packages like tikz, pgfplot, skak, sudoku, etc.</li>
+<li>adding filter-tdot.tcl for tdot Tcl package</li>
+<li>adding filter-tcrd.tcl for writing music chords above song lyrics</li>
+</ul></li>
+<li>2022-02-05 - version 0.7.0
+<ul>
+<li>graphical user interface to the graphical filters (abc, dot, eqn, mmd, mtex, pic, pikchr, puml, rplot, tdot, tsvg) using the command line option <em>–gui</em></li>
+<li>can now as well work without pandoc standalone for conversion of Markdown with code chunks into Markdown with evaluated code chunks and HTML code using the Markdown library of tcllib</li>
+<li>that way it deprecates the use of tmdoc::tmdoc and mkdoc::mkdoc as it contains now the same functionality</li>
+<li>support for inline code evaluations for Tcl, Python (pipe filter) and R (pipe filter) statements as well in nested paragraphs, lists and headers</li>
+<li>support for indented code blocks with evaluation</li>
+<li>new - filter-pipe:
+<ul>
+<li>initial support for R code block features and inline evaluation and error catching</li>
+<li>initial support for Python with code block features and inline evaluation and error catching</li>
+<li>initial support for Octave with code block features and error checking</li>
+</ul></li>
+<li>more examples filter-mtex, filter-puml, filter-pikchr</li>
+<li>fix for filter-tcl making variables chunk and res namespace variables, avoiding variable collisions</li>
+</ul></li>
+<li>2023-01-10 - version 0.9.0
+<ul>
+<li>renamed to pantcl.tcl and creating it’s own repository</li>
+</ul></li>
+</ul>
+<h2 id="see-also">SEE ALSO</h2>
+<ul>
+<li><a href="Readme.html">Readme.html</a> - more information and small tutorial</li>
+<li><a href="examples/example-eqn.html">Examples</a> - more examples for the filters</li>
+<li><a href="https://wiki.tcl-lang.org/page/pandoc%2Dtcl%2Dfilter">Tclers Wiki page</a> - place for discussion</li>
+<li><a href="https://pandoc.org/filters.html">Pandoc filter documentation</a> - more background and information on how to implement filters in Haskell and Markdown</li>
+<li><a href="https://github.com/pandoc/lua-filters">Lua filters on GitHub</a></li>
+<li><a href="https://github.com/LaurentRDC/pandoc-plot">Plotting filters on Github</a></li>
+<li><a href="https://github.com/topics/pandoc-filter">Github Pandoc filter list</a></li>
+</ul>
+<h2 id="author">AUTHOR</h2>
+<p>Dr. Detlef Groth, Caputh-Schwielowsee, Germany, detlef(<em>at</em>)dgroth(<em>dot</em>).de</p>
+<h2 id="license">LICENSE</h2>
+<p><em>MIT License</em></p>
+<p>Copyright (c) 2021-2022 Dr. Detlef Groth, Caputh-Schwielowsee, Germany</p>
+<p>Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the “Software”), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:</p>
+<p>The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.</p>
+<p>THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.</p>
+</body>
+</html>
