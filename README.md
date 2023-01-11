@@ -21,25 +21,25 @@ So in summary pantcl allows you:
 
 Here are links to the documentation:
 
-* [pantcl.html](pantcl.html) - main documentation
+* [pantcl.html](https://htmlpreview.github.io/?https://raw.githubusercontent.com/mittelmark/pantcl/master/pantcl.html) - main documentation
 
 Filter documentation:
 
-- [filter-abc](lib/tclfilters/filter-abc.html)
-- [filter-cmd](lib/tclfilters/filter-cmd.html)
-- [filter-dot](lib/tclfilters/filter-dot.html)
-- [filter-eqn](lib/tclfilters/filter-eqn.html)
-- [filter-kroki](lib/tclfilters/filter-kroki.html)
-- [filter-mmd](lib/tclfilters/filter-mmd.html)
-- [filter-mtex](lib/tclfilters/filter-mtex.html)
-- [filter-pic](lib/tclfilters/filter-pic.html)
-- [filter-pik](lib/tclfilters/filter-pik.html)
-- [filter-pipe](lib/tclfilters/filter-pipe.html)
-- [filter-puml](lib/tclfilters/filter-puml.html)
-- [filter-rplot](lib/tclfilters/filter-rplot.html)
-- [filter-sqlite](lib/tclfilters/filter-sqlite.html)
-- [filter-tcl](lib/tclfilters/filter-tcl.html)
-- [filter-tcrd](lib/tclfilters/filter-tcrd.html)
-- [filter-tdot](lib/tclfilters/filter-tdot.html)
-- [filter-tsvg](lib/tclfilters/filter-tsvg.html)
+- [filter-abc](https://htmlpreview.github.io/?https://raw.githubusercontent.com/mittelmark/pantcl/master/lib/tclfilters/lib/tclfilters/filter-abc.html)
+- [filter-cmd](https://htmlpreview.github.io/?https://raw.githubusercontent.com/mittelmark/pantcl/master/lib/tclfilters/lib/tclfilters/filter-cmd.html)
+- [filter-dot](https://htmlpreview.github.io/?https://raw.githubusercontent.com/mittelmark/pantcl/master/lib/tclfilters/lib/tclfilters/filter-dot.html)
+- [filter-eqn](https://htmlpreview.github.io/?https://raw.githubusercontent.com/mittelmark/pantcl/master/lib/tclfilters/lib/tclfilters/filter-eqn.html)
+- [filter-kroki](https://htmlpreview.github.io/?https://raw.githubusercontent.com/mittelmark/pantcl/master/lib/tclfilters/lib/tclfilters/filter-kroki.html)
+- [filter-mmd](https://htmlpreview.github.io/?https://raw.githubusercontent.com/mittelmark/pantcl/master/lib/tclfilters/lib/tclfilters/filter-mmd.html)
+- [filter-mtex](https://htmlpreview.github.io/?https://raw.githubusercontent.com/mittelmark/pantcl/master/lib/tclfilters/lib/tclfilters/filter-mtex.html)
+- [filter-pic](https://htmlpreview.github.io/?https://raw.githubusercontent.com/mittelmark/pantcl/master/lib/tclfilters/lib/tclfilters/filter-pic.html)
+- [filter-pik](https://htmlpreview.github.io/?https://raw.githubusercontent.com/mittelmark/pantcl/master/lib/tclfilters/lib/tclfilters/filter-pik.html)
+- [filter-pipe](https://htmlpreview.github.io/?https://raw.githubusercontent.com/mittelmark/pantcl/master/lib/tclfilters/lib/tclfilters/filter-pipe.html)
+- [filter-puml](https://htmlpreview.github.io/?https://raw.githubusercontent.com/mittelmark/pantcl/master/lib/tclfilters/lib/tclfilters/filter-puml.html)
+- [filter-rplot](https://htmlpreview.github.io/?https://raw.githubusercontent.com/mittelmark/pantcl/master/lib/tclfilters/lib/tclfilters/filter-rplot.html)
+- [filter-sqlite](https://htmlpreview.github.io/?https://raw.githubusercontent.com/mittelmark/pantcl/master/lib/tclfilters/lib/tclfilters/filter-sqlite.html)
+- [filter-tcl](https://htmlpreview.github.io/?https://raw.githubusercontent.com/mittelmark/pantcl/master/lib/tclfilters/lib/tclfilters/filter-tcl.html)
+- [filter-tcrd](https://htmlpreview.github.io/?https://raw.githubusercontent.com/mittelmark/pantcl/master/lib/tclfilters/lib/tclfilters/filter-tcrd.html)
+- [filter-tdot](https://htmlpreview.github.io/?https://raw.githubusercontent.com/mittelmark/pantcl/master/lib/tclfilters/lib/tclfilters/filter-tdot.html)
+- [filter-tsvg](https://htmlpreview.github.io/?https://raw.githubusercontent.com/mittelmark/pantcl/master/lib/tclfilters/lib/tclfilters/filter-tsvg.html)
 
