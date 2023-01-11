@@ -320,7 +320,7 @@
 #' #!/usr/bin/env bash
 #' # file lilyscript.sh
 #' if [ -z $2 ]; then
-#'     out=out
+#'     out=out-file.svg
 #'     ext=svg
 #' else
 #'     out=$2
@@ -341,7 +341,7 @@
 #'   evenFooterMarkup = \"\"
 #' }
 #' " >> temp.ly
-#' lilypond -dbackend=eps -dresolution=300 --output=$out --$ext temp.ly
+#' lilypond -dbackend=$ext --output=$out --$ext temp.ly
 #' if [ -e "$out-systems.texi" ]; then
 #'      rm $out-* 
 #' fi     
