@@ -7,7 +7,7 @@
 package provide pantcl 0.9.0
 
 if {[llength $argv] > 0 && ([lsearch -exact $argv -v] >= 0 || [lsearch -exact $argv --version] >= 0)} {
-    puts "[package present pandoc]"
+    puts "[package present pantcl]"
     exit 0
 }   
 if {[llength $argv] > 0 && [lsearch -regex $argv -h] >= 0} {
@@ -716,7 +716,7 @@ package require rl_json
 #'   pandoc2 -> Pdf ;
 #'   Docx -> Html -> Pdf -> tsvg[style=invis];
 #'   pandoc2[label=pandoc];
-#'   filter[label="pandoc-\ntcl-\nfilter"];
+#'   filter[label="pantcl\nfilter"];
 #'   filter->filters;
 #'   filters -> dot ;
 #'   filters -> eqn ;
