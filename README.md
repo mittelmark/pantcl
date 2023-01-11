@@ -42,3 +42,36 @@ Filter documentation:
 - [filter-tcrd](https://htmlpreview.github.io/?https://raw.githubusercontent.com/mittelmark/pantcl/master/lib/tclfilters/filter-tcrd.html)
 - [filter-tdot](https://htmlpreview.github.io/?https://raw.githubusercontent.com/mittelmark/pantcl/master/lib/tclfilters/filter-tdot.html)
 - [filter-tsvg](https://htmlpreview.github.io/?https://raw.githubusercontent.com/mittelmark/pantcl/master/lib/tclfilters/filter-tsvg.html)
+
+# Installation
+
+Download the latest build from the Github page here: [https://github.com/mittelmark/pantcl/suites/10308182396/artifacts/506908587](https://github.com/mittelmark/pantcl/suites/10308182396/artifacts/506908587)
+
+Unpack the Zip-Archive and make the file pantcl.tapp executable you can rename
+it for instance as well to something like `pantcl.bin` or just `pantcl`. Then move it to a folder within belonging to your `PATH` variable.
+
+This file contains all the filters mentioned above. You can try out the installation by creating a simple Markdown file with some embedded Tcl code like this:
+
+```
+     ---
+     title: Test Markdown
+     author: Detlef Groth
+     date: 2023-01-10
+     ---
+
+     This is some text.
+
+     ```{.tcl}
+     set x 1
+    x
+    ```
+```
+
+Save this file as test.md and try to convert the file using the command line.
+
+```
+pantcl.tapp test.md test.html -s
+```
+
+
+
