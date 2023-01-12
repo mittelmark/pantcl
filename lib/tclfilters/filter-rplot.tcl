@@ -20,17 +20,17 @@
 #' 
 #' _filter-rplot.tcl_ - Filter which can be used to display R plots
 #'  within a Pandoc processed document using the Tcl filter driver 
-#' `pandoc-tcl-filter.tcl`. 
+#' `pantcl.bin`. 
 #' 
 #' ## Usage
 #' 
 #' The conversion of the Markdown documents via Pandoc should be done as follows:
 #' 
 #' ```
-#' pandoc input.md --filter pandoc-tcl-filter.tcl -s -o output.html
+#' pandoc input.md --filter pantcl.bin -s -o output.html
 #' ```
 #' 
-#' The file `filter-rplot.tcl` is not used directly but sourced automatically by the `pandoc-tcl-filter.tcl` file.
+#' The file `filter-rplot.tcl` is not used directly but sourced automatically by the `pantcl.bin` file.
 #' If code blocks with the `.rplot` marker are found, the contents in the code block is 
 #' processed via the Rscript interpreter which must be executable directly. If the interpreter is not in the PATH 
 #' you might add the application path in your yaml header as shown below.
@@ -91,7 +91,8 @@
 #' 
 #' ## See also:
 #' 
-#' * [pandoc-tcl-filter Readme](../Readme.html)
+#' * [pantcl Readme](../../README.html)
+#' * [Pipe filter for R, Python, Octave](filter-pipe.html)
 #' 
 
 
