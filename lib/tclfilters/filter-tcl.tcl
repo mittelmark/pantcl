@@ -16,7 +16,7 @@
 #' 
 #' _filter-tcl.tcl_ - filter to embed Tcl code in documentation.
 #' 
-#' The code for the Tcl filter is in pandoc-tcl-filter. It is to deeply involved into the main filter engine which drives the other Tcl and all other filters.
+#' The code for the Tcl filter is in `pantcl.tcl` or in the standalone application `pantcl.bin`. It is to deeply involved into the main filter engine which drives the other Tcl and all other filters.
 #'
 #' ## CODE BLOCKS
 #' 
@@ -149,7 +149,7 @@
 #' ### Graphics
 #' 
 #' R has no default graphics engine for plotting etc. There is however the *tsvg* package which allows us to create SVG graphics. 
-#' As this package is included in the pandoc-tcl-filter application we can use it here and later include the generated graphis using the Markdown image markup:
+#' As this package is included in the pantcl filter application we can use it here and later include the generated graphis using the Markdown image markup:
 #' 
 #' ```{.tcl}
 #' package require tsvg
@@ -190,7 +190,7 @@
 #' PDF and PNG output might be prefered if your final document is a PDF document created via LaTeX.
 #' 
 #' For more information about the tsvg package you might consult the 
-#' [tsvg package documentation](http://htmlpreview.github.io/?https://github.com/mittelmark/DGTcl/blob/master/pandoc-tcl-filter/lib/tsvg/tsvg.html).
+#' [tsvg package documentation](http://htmlpreview.github.io/?https://github.com/mittelmark/pantcl/blob/master/lib/tsvg/tsvg.html).
 #' 
 #' ## INCLUDE FILES
 #' 
@@ -238,8 +238,8 @@
 #' 
 #' ## SEE ALSO
 #' 
-#' * [Readme](../Readme.html) - more background
-#' * [pandoc-tcl-filter](../pandoc-tcl-filter.html) - the main filter engine
+#' * [Pantcl Readme](../../README.html) - more background
+#' * [Pantcl documentation](../../pantcl.html) - the main filter engine
 #' * [filter-pipe](filter-pipe.html) - Embedding Python, R and Octave code in a similar way like Tcl in the Tcl filter
 #' 
 #' ## AUTHOR
@@ -275,7 +275,7 @@ mdi eval {
         set chunk 0
     }
     rename puts puts.orig
-    package provide pandoc 0.7.0
+    package provide pantcl 0.9.0
     proc puts {args} {
         if {[lindex $args 0] eq "stdout"} {
             set args [lrange $args 1 end]
