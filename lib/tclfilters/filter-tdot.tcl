@@ -20,17 +20,17 @@
 #' 
 #' _filter-tdot.tcl_ - Filter which can be used to display dot/neato diagrams
 #'  within a Pandoc processed document using the Tcl library [tdot](https://github.com/mittelmark/DGTcl).
-#' together with the pandoc-tcl-filter application.
+#' together with the pantcl filter application.
 #' 
 #' ## Usage
 #' 
 #' The conversion of the Markdown documents via Pandoc should be done as follows:
 #' 
 #' ```
-#' pandoc input.md --filter pandoc-tcl-filter.tcl -s -o output.html
+#' pandoc input.md --filter pantcl.bin -s -o output.html
 #' ```
 #' 
-#' The file `filter-tdot.tcl` is not used directly but sourced automatically by the `pandoc-tcl-filter.tcl` file.
+#' The file `filter-tdot.tcl` is not used directly but sourced automatically by the `pantcl.bin` file.
 #' If code blocks with the `.tdot` marker are found, the contents in the code block is 
 #' processed via the Tcl interpreter using the embedded tdot library. 
 #' The filter requires the installation of the GraphViz command line tools dot and neato. See here: 
@@ -124,10 +124,10 @@
 #' 
 #' ## See also:
 #' 
-#' * [dot filter](filter-dot.html)
-#' * [pandoc-tcl-filter Readme](../Readme.html)
-#' * [pandoc-tcl-filter docu](../pandoc-tcl-filter.html)
-#' * [filter-view docu](../filter-view.html)
+#' * [Pantcl Readme](../../README.html)
+#' * [Pantcl docu](../../pantcl.html)
+#' * [Graphviz dot filter](filter-dot.html)
+#' * [filter-view docu](../fview/filter-view.html)
 #' 
 
 package require tdot
