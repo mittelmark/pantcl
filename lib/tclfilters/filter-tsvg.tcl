@@ -100,6 +100,7 @@
 #' 
 #' * [Pantcl Readme](../../README.html)
 #' * [Pantcl Tutorial](../../pantcl-tutorial.html) - which shows how the tsvg package was developed.
+#' * [tsvg package documentation](../tsvg/tsvg.html)
 #' 
 
 package require tsvg
