@@ -13,7 +13,7 @@ pantcl-docu:
 		--lua-filter=lib/tclfilters/smallcaps.lua
 	htmlark pantcl-tutorial.html -o pantcl-out.html
 	mv pantcl-out.html pantcl-tutorial.html
-	pandoc README.md -o README.html --css mini.css -s -B header.html
+	pandoc README.md -o README.html --css mini.css -s --metadata title="Pantcl README" --metadata author="Detlef Groth" --metadata date="`date +%Y-%m-%d`"
 	htmlark README.html -o temp.html && mv temp.html README.html
 	
 		

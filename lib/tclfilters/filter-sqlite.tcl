@@ -7,7 +7,7 @@
 #'     mode: markdown
 #' ---
 #' 
-# a simple pandoc filter using Tcl the script pandoc-tcl-filter.tcl 
+# a simple pandoc filter using Tcl the script pantcl.tcl 
 # must be in the in the parent directory of the filter directory
 #' 
 #' ------
@@ -21,17 +21,17 @@
 #' ## Name
 #' 
 #' _filter-sqlite.tcl_ - Filter which can be used to execute SQLite3 statements within a Pandoc processed
-#' document using the Tcl filter driver `pandoc-tcl-filter.tcl` and showing the output. 
+#' document using the Tcl filter driver `pantcl.bin` and showing the output. 
 #' 
 #' ## Usage
 #' 
 #' The conversion of the Markdown documents via Pandoc should be done as follows:
 #' 
 #' ```
-#' pandoc input.md --filter pandoc-tcl-filter.tcl -s -o output.html
+#' pandoc input.md --filter pantcl.bin -s -o output.html
 #' ```
 #' 
-#' The file `filter-sqlite.tcl` is not used directly but sourced automatically by the `pandoc-tcl-filter.tcl` file.
+#' The file `filter-sqlite.tcl` is not used directly but sourced automatically by the `pantcl.bin` file.
 #' If code blocks with the `.sqlite` marker are found, the contents in the code block is processed via the sqlite3
 #' command line application which must be in the path.
 #' 
@@ -88,7 +88,8 @@
  
 #' ## See also:
 #' 
-#' * [pandoc-tcl-filter Readme](../Readme.html)
+#' * [Pantcl Readme](../../README.html)
+#' * [Shell script filter](filter-cmd.html)
 #' * [Pikchr filter](filter-pik.html)
 #' * [PlantUML filter](filter-puml.html)
 #' 

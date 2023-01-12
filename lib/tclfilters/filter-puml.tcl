@@ -8,7 +8,7 @@
 #'     ext: png
 #' ---
 #
-# a simple pandoc filter using Tcl the script pandoc-tcl-filter.tcl 
+# a simple pandoc filter using Tcl the script pantcl.tcl 
 # must be in the in the parent directory of the filter directory
 #' 
 #' ------
@@ -22,17 +22,17 @@
 #' ## Name
 #' 
 #' _filter-puml.tcl_ - Filter which can be used to display [PlantUML](https://plantuml.com/) 
-#' diagram files within a Pandoc processed document using the Tcl filter driver `pandoc-tcl-filter.tcl`. 
+#' diagram files within a Pandoc processed document using the Tcl filter driver `pantcl.bin`. 
 #' 
 #' ## Usage
 #' 
 #' The conversion of the Markdown documents via Pandoc should be done as follows:
 #' 
 #' ```
-#' pandoc input.md --filter pandoc-tcl-filter.tcl -s -o output.html
+#' pandoc input.md --filter pantcl.bin -s -o output.html
 #' ```
 #' 
-#' The file `filter-puml.tcl` is not used directly but sourced automatically by the `pandoc-tcl-filter.tcl` file.
+#' The file `filter-puml.tcl` is not used directly but sourced automatically by the `pantcl.bin` file.
 #' If code blocks with the `.puml` marker are found, the contents in the code block is processed via the PlantUML
 #' command line tool. To install this command line tool you have to download the Java jar file from [https://plantuml.com/download](https://plantuml.com/download)
 #' an create a shell script which runs the jar file using the Java runtime. Here an example of such a shell script:
@@ -332,10 +332,11 @@
 
 #' ## See also:
 #' 
-#' * [pandoc-tcl-filter Readme](../Readme.html)
+#' * [Pantcl Readme](../../README.html)
 #' * [filter-dot GraphViz Filter](filter-dot.html)
 #' * [filter-pik Pikchr Filter](filter-pik.html)
 #' * [filter-mmd Mermaid Filter](filter-mmd.html)
+#' 
 
 
 proc filter-puml {cont dict} {
