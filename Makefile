@@ -6,8 +6,13 @@ default:
 	
 pantcl-docu:
 	tclsh pantcl.tcl pantcl.tcl pantcl.html --css mini.css -s
+	htmlark pantcl.html -o pantcl-out.html
+	mv pantcl-out.html pantcl.html
 	tclsh pantcl.tcl pantcl-tutorial.md pantcl-tutorial.html --css mini.css -s  --toc \
 		--lua-filter=lib/tclfilters/smallcaps.lua
+	htmlark pantcl-tutorial.html -o pantcl-out.html
+	mv pantcl-out.html pantcl-tutorial.html
+		
 pantcl-app:
 	if [ ! -d pantcl-tapp ] ;  then mkdir pantcl-tapp ; fi
 	cp pantcl.tcl pantcl-tapp/
