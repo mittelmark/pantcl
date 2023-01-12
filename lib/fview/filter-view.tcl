@@ -23,13 +23,13 @@
 #' ## SYNOPSIS
 #' 
 #' ```
-#' pandoc-tcl-filter.tapp --gui ?FILENAME?
+#' pantcl.bin --gui ?FILENAME?
 #' ```
 #' 
 ##############################################################################
 #  Created By    : Detlef Groth
 #  Created       : Fri Feb 4 05:49:13 2022
-#  Last Modified : <220222.1550>
+#  Last Modified : <230112.0717>
 #
 #  Description	 : Graphical user interface to display
 #                 results from graphical tools created based with simple text.
@@ -308,7 +308,7 @@ if {[info exists argv0] && $argv0 eq [info script]} {
 
 #' ## DESCRIPTION
 #' 
-#' *filter-view* is a graphical user interface to the filters embedded in the *pandoc-tcl-filter* application.
+#' *filter-view* is a graphical user interface to the filters embedded in the *pantcl* application.
 #' The *filter-view* application can be used independent of pandoc by providing the command line option `--gui` 
 #' and an optional filename to be loaded directly. The type of filter to be used is recognized by the file name extension. 
 #' So if the file extension is *.abc* the the ABC filter is used, if the file extension is *.tsvg* 
@@ -343,12 +343,12 @@ if {[info exists argv0] && $argv0 eq [info script]} {
 #' 8.6.10
 #' ```
 #' 
-#' Ok, if tclsh is installed properly, download the standalone file `pandoc-tcl-filter.tapp` from here [https://github.com/mittelmark/DGTcl/releases/download/latest/pandoc-tcl-filter.tapp](https://github.com/mittelmark/DGTcl/releases/download/latest/pandoc-tcl-filter.tapp).
-#' Make the file exexutable and copy this file to a folder belonging to your PATH like `~/bin`. Check if the file is executable directly:
+#' Ok, if tclsh is installed properly, download the standalone file `pantcl.tapp` from here [https://github.com/mittelmark/DGTcl/releases/download/latest/pandoc-tcl-filter.tapp](https://github.com/mittelmark/pantcl).
+#' Rename the file to pantcl.bin, make the file exexutable and copy this file to a folder belonging to your PATH like `~/bin`. Check if the file is executable directly:
 #' 
 #' ```
-#' $ pandoc-tcl-filter.tapp --version
-#' 0.7.0
+#' $ pantcl.bin --version
+#' 0.9.0
 #' ```
 #' 
 #' You should then install *cairosvg* for instance using your package manager. 
@@ -416,7 +416,7 @@ if {[info exists argv0] && $argv0 eq [info script]} {
 #' Ok, we are ready to go, start the user interface:
 #' 
 #' ```
-#' $ pandoc-tcl-filter.tapp --gui &
+#' $ pantcl.bin --gui &
 #' ```
 #' 
 #' If you have installed *cairosvg* a sample tsvg script is shown and visualized.
@@ -435,11 +435,11 @@ if {[info exists argv0] && $argv0 eq [info script]} {
 #' Add the line: `C -> D;` below the ABC line and use `Ctrl-s` to save the file.
 #' You should see immediately the changes in the image. See below for the output:
 #' 
-#' ![](filter-view/demo-dot.png)
+#' ![](demo-dot.png)
 #' 
 #' If you prefere having the image on the left and the editor on the right you can switch the layout using the Ctrl-Shift-h shortcut, to go back use the Ctrl-Shift-v shortcut.
 #' 
-#' ![](filter-view/demo-dot2.png)
+#' ![](demo-dot2.png)
 #'
 #' You can continue to change the graph, every time you save the file, the image will be updated.
 #' The image you see will be stored in a folder images in parallel to your current working directory. In a future version explicit saving as PNG, SVG or PDF might be supported.
@@ -480,7 +480,7 @@ if {[info exists argv0] && $argv0 eq [info script]} {
 #' 
 #' If we save this file as *test2.pik* we should see the following output:
 #' 
-#' ![](filter-view/demo-pik.png)
+#' ![](demo-pik.png)
 #' 
 #' In case you made an error, the text widget will be shortly marked as salmon and a
 #' more ore less useful error message will be displayed in the
@@ -524,9 +524,9 @@ if {[info exists argv0] && $argv0 eq [info script]} {
 #' against LaTeX interpretation. After saving the file for instance as
 #' *sudoku.mtex* you should see the following output:
 #' 
-#' ![](filter-view/demo-mtex.png)
+#' ![](demo-mtex.png)
 #' 
-#' More examples can be found in the filter-mtex manual [filter/filter-mtex.html]([filter/filter-mtex.html])
+#' More examples can be found in the filter-mtex manual [../tclfilters/filter-mtex.html]([../tclfilters/filter-mtex.html])
 #' 
 #' ## Other examples
 #' 
