@@ -8,7 +8,7 @@
 #'     ext: png
 #' ---
 #' 
-# a simple pandoc filter using Tcl the script pandoc-tcl-filter.tcl 
+# a simple pandoc filter using Tcl the script pantcl.tcl or the standalone application `pantcl.bin` 
 # must be in the in the parent directory of the filter directory
 #' 
 #' ------
@@ -22,17 +22,17 @@
 #' ## Name
 #' 
 #' _filter-dot.tcl_ - Filter which can be used to display GraphViz dot files within a Pandoc processed
-#' document using the Tcl filter driver `pandoc-tcl-filter.tcl`. 
+#' document using the Tcl filter driver `pantcl.bin`. 
 #' 
 #' ## Usage
 #' 
 #' The conversion of the Markdown documents via Pandoc should be done as follows:
 #' 
 #' ```
-#' pandoc input.md --filter pandoc-tcl-filter.tapp -s -o output.html
+#' pandoc input.md --filter pantcl.bin -s -o output.html
 #' ```
 #' 
-#' The file `filter-dot.tcl` is not used directly but sourced automatically by the `pandoc-tcl-filter.tcl` file.
+#' The file `filter-dot.tcl` is not used directly but sourced automatically by the `pantcl.bin` file.
 #' If code blocks with the `.dot` marker are found, the contents in the code block is processed via one of the Graphviz tools.
 #' 
 #' The following options can be given via code chunks or in the YAML header.
@@ -134,24 +134,24 @@
 #' 
 #' ## Document creation
 
-#' Assuming that the file pandoc-tcl-filter.tapp is in your PATH, 
+#' Assuming that the file pantcl.bin is in your PATH, 
 #' this document, a Tcl file with embedded Markdown and dot code
 #' can be converted into a HTML file for instance using the command line:
 #' 
 #' ```
-#' pandoc-tcl-filter.tapp filter-dot.tcl filter-dot.html -s --css mini.css
+#' pantcl.bin filter-dot.tcl filter-dot.html -s --css mini.css
 #' ```
 #' 
 #' Standard Markdown files with embedded dot code can be converted with the same command line:
 #' 
 #' ```
-#' pandoc-tcl-filter.tapp sample.md sample.html -s 
+#' pantcl.bin sample.md sample.html -s 
 #' ```
 #' 
 #' ## See also:
 #' 
-#' * [pandoc-tcl-filter Readme](../Readme.html)
-#' * [pandoc-tcl-filter documentation](../pandoc-tcl-filter.html)
+#' * [Pantcl Readme](../../README.html)
+#' * [Pantcl docu](../../pantcl.html)
 #' * [Mermaid filter](filter-mmd.html)
 #' * [Pikchr filter](filter-pik.html)
 #' * [PlantUML filter](filter-puml.html)

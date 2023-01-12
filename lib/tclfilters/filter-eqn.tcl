@@ -8,7 +8,7 @@
 #'     ext: png
 #' ---
 # a simple pandoc filter using Tcl
-# the script pandoc-tcl-filter.tcl 
+# the script pantcl.tcl 
 # must be in the in the parent directory of the filter directory
 #' 
 #' ------
@@ -22,17 +22,17 @@
 #' ## Name
 #' 
 #' _filter-eqn.tcl_ - Filter which can be used to render eqn data within a Pandoc processed
-#' document using the Tcl filter driver `pandoc-tcl-filter.tcl`. 
+#' document using the Tcl filter driver `pantcl.bin`. 
 #' 
 #' ## Usage
 #' 
 #' The conversion of the Markdown documents via Pandoc should be done as follows:
 #' 
 #' ```
-#' pandoc input.md --filter pandoc-tcl-filter.tcl -s -o output.html
+#' pandoc input.md --filter pantcl.bin -s -o output.html
 #' ```
 #' 
-#' The file `filter-eqn.tcl` is not used directly but sourced automatically by the `pandoc-tcl-filter.tcl` file.
+#' The file `filter-eqn.tcl` is not used directly but sourced automatically by the `pantcl.bin` file.
 #' If code blocks with the `.eqn` marker are found, the contents in the code block is processed 
 #' via the *eqn2graph* equation tool [https://man7.org/linux/man-pages/man1/eqn2graph.1.html](https://man7.org/linux/man-pages/man1/eqn2graph.1.html) which converts
 #' convert an eqn equation into a cropped PGN image, see [https://en.wikipedia.org/wiki/Eqn_(software)](https://en.wikipedia.org/wiki/Eqn_(software)) into some graphics format like png or other file formats which can be converted by the the ImageMagick tool *convert*.
@@ -114,8 +114,8 @@
 #' 
 #' ## See also:
 #' 
-#' * [pandoc-tcl-filter Readme](../Readme.html)
-#' * [pandoc-tcl-filter documentation](../pandoc-tcl-filter.html)
+#' * [Pantcl Readme](../../README.html)
+#' * [Pandoc documentation](../../pantcl.html)
 #' * [Unix Text Processing - EQN chapter](https://www.oreilly.com/library/view/unix-text-processing/9780810462915/Chapter09.html#ch9)
 #' * [PIC filter](filter-pic.html)
 #' * [LaTeX Math filter](filter-mtex.html)

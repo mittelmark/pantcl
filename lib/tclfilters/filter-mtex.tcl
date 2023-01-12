@@ -6,7 +6,7 @@
 #'     imagepath: images
 #'     ext: png
 #' ---
-# a simple pandoc filter using Tcl the script pandoc-tcl-filter.tcl 
+# a simple pandoc filter using Tcl the script pantcl.tcl 
 # must be in the in the parent directory of the filter directory
 #' 
 #' ------
@@ -20,33 +20,33 @@
 #' ## Name
 #' 
 #' _filter-mtex.tcl_ - Filter which can be used to display LaTeX equations and LaTeX generated figures
-#' within a Pandoc processed document using the Tcl filter driver `pandoc-tcl-filter.tcl`. 
+#' within a Pandoc processed document using the Tcl filter driver `pantcl.bin`. 
 #' 
 #' ## Usage
 #' 
 #' The conversion of the Markdown documents via Pandoc should be done as follows:
 #' 
 #' ```
-#' pandoc input.md --filter pandoc-tcl-filter.tapp -s -o output.html
+#' pandoc input.md --filter pantcl.bin -s -o output.html
 #' ```
 #' 
 #' Alternatively since version 0.4.0 the filter comes as well as a stand alone 
 #' application and can be used like this:
 #' 
 #' ```
-#' pandoc-tcl-filter.tapp input.md output.html -s --css mini.css
+#' pantcl.bin input.md output.html -s --css mini.css
 #' ```
 #' 
 #' This can be used as well do extract Markdown code behind `#'' comments like in the source of this
 #' file - filter-mtex.tcl itself. The document can be processed like this:
 #' 
 #' ```
-#' pandoc-tcl-filter.tapp filter-mtex.tcl filter-mtex.html -s --css mini.css
+#' pantcl.bin filter-mtex.tcl filter-mtex.html -s --css mini.css
 #' ```
 #'
 #' All arguments that pandoc accepts can be added after the output file.
 #' 
-#' The file `filter-mtex.tcl` is not used directly but sourced automatically by the `pandoc-tcl-filter.tcl` file.
+#' The file `filter-mtex.tcl` is not used directly but sourced automatically by the `pantcl.bin` file.
 #' If code blocks with the `{.mtex}` marker are found, the contents 
 #' in the code block is processed via latex or if other latex engines are given, for instance xelatex using this
 #' latex engine. For pstricks related packages the option
@@ -390,7 +390,7 @@
 #' 
 #' ## See also:
 #' 
-#' * [pandoc-tcl-filter Readme](../Readme.html)
+#' * [Pantcl Readme](../../README.html)
 #' * [EQN filter](filter-eqn.html)
 #' 
 #' ## LaTeX links

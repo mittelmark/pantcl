@@ -17,17 +17,17 @@
 #' ## Name
 #' 
 #' _filter-cmd.tcl_ - Filter which can be used to execute terminal
-#' applications using the Tcl filter driver `pandoc-tcl-filter.tcl` and showing or hiding the output. 
+#' applications using the Tcl filter driver `pantcl.bin` and showing or hiding the output. 
 #' 
 #' ## Usage
 #' 
 #' The conversion of the Markdown documents via Pandoc should be done as follows:
 #' 
 #' ```
-#' pandoc input.md --filter pandoc-tcl-filter.tcl -s -o output.html
+#' pandoc input.md --filter pantcl.bin -s -o output.html
 #' ```
 #' 
-#' The file `filter-cmd.tcl` is not used directly but sourced automatically by the `pandoc-tcl-filter.tcl` file.
+#' The file `filter-cmd.tcl` is not used directly but sourced automatically by the `pantcl.bin` file.
 #' If code blocks with the `.cmd` marker are found, the contents in the code block is processed via standard
 #' shell as command line application.
 #' 
@@ -485,11 +485,12 @@
 #' 
 #' ## See also:
 #' 
-#' * [pandoc-tcl-filter Readme](../Readme.html)
-#' * [Tcl filter](../pandoc-tcl-filter.html)
-#' * [dot filter](filter-dot.html)
-#' * [Rplot filter](filter-rplot.html)
+#' * [Pantcl Readme](../../README.html)
+#' * [Pantcl docu](../../pantcl.html)
+#' * [Pantcl tutorial](../../pantcl-tutorial.html)
 #' * [Abc filter](filter-abc.html)
+#' * [GraphViz dot filter](filter-dot.html)
+#' * [Rplot filter](filter-rplot.html)
 #' 
 
 

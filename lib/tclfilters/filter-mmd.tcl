@@ -8,7 +8,7 @@
 #'     ext: png
 #' ---
 # a simple pandoc filter using Tcl
-# the script pandoc-tcl-filter.tcl 
+# the script pantcl.tcl 
 # must be in the in the parent directory of the filter directory
 #' 
 #' ------
@@ -22,17 +22,17 @@
 #' ## Name
 #' 
 #' _filter-mmd.tcl_ - Filter which can be used to display [Mermaid](https://mermaid-js.github.io) 
-#' diagram files within a Pandoc processed document using the Tcl filter driver `pandoc-tcl-filter.tcl`. 
+#' diagram files within a Pandoc processed document using the Tcl filter driver `pantcl.bin`. 
 #' 
 #' ## Usage
 #' 
 #' The conversion of the Markdown documents via Pandoc should be done as follows:
 #' 
 #' ```
-#' pandoc input.md --filter pandoc-tcl-filter.tcl -s -o output.html
+#' pandoc input.md --filter pantcl.bin -s -o output.html
 #' ```
 #' 
-#' The file `filter-mmd.tcl` is not used directly but sourced automatically by the `pandoc-tcl-filter.tcl` file.
+#' The file `filter-mmd.tcl` is not used directly but sourced automatically by the `pantcl.bin` file.
 #' If code blocks with the `.mmd` marker are found, the contents in the code block is processed via one of the Mermaid command line tool. To install this command line tool have 
 #' a look at: [https://github.com/mermaid-js/mermaid-cli](https://github.com/mermaid-js/mermaid-cli)
 #' 
@@ -100,7 +100,7 @@
 #' 
 #' ## See also:
 #' 
-#' * [pandoc-tcl-filter Readme](../Readme.html)
+#' * [Pantcl Readme](../../README.html)
 #' * [GraphViz Filter](filter-dot.html)
 #' * [Pikchr Filter](filter-pik.html)
 #' * [PlantUML filter](filter-puml.html)

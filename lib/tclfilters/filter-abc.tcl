@@ -10,7 +10,7 @@
 #' 
 # A simple pandoc filter using the script _pantcl.tcl_ which
 # must be in the in the parent directory of the filter directory. Alternatively the
-#'the standalone executable _pantcl.bin_ can be used.
+# the standalone executable _pantcl.bin_ can be used.
 #' 
 #' ------
 #' 
