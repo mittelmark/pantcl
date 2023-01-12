@@ -20,17 +20,17 @@
 #' 
 #' _filter-tsvg.tcl_ - Filter which can be used to display SVG graphics
 #'  within a Pandoc processed document using the Tcl library [tsvg](https://github.com/mittelmark/DGTcl).
-#' together with the pandoc-tcl-filter application.
+#' together with the `pantcl.bin` application.
 #' 
 #' ## Usage
 #' 
 #' The conversion of the Markdown documents via Pandoc should be done as follows:
 #' 
 #' ```
-#' pandoc input.md --filter pandoc-tcl-filter.tcl -s -o output.html
+#' pandoc input.md --filter pantcl.bin -s -o output.html
 #' ```
 #' 
-#' The file `filter-tsvg.tcl` is not used directly but sourced automatically by the `pandoc-tcl-filter.tcl` file.
+#' The file `filter-tsvg.tcl` is not used directly but sourced automatically by the `pantcl.bin` file.
 #' If code blocks with the `.tsvg` marker are found, the contents in the code block is 
 #' processed via the Tcl interpreter using the embedded tsvg library. 
 #' 
@@ -98,7 +98,8 @@
 #' 
 #' ## See also:
 #' 
-#' * [pandoc-tcl-filter Readme](../Readme.html)
+#' * [Pantcl Readme](../../README.html)
+#' * [Pantcl Tutorial](../../pantcl-tutorial.html) - which shows how the tsvg package was developed.
 #' 
 
 package require tsvg
