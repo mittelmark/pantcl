@@ -1,26 +1,27 @@
 <center>
-[filter-abc](filter-abc.html) -
-[filter-cmd](filter-cmd.html) -
-[filter-dot](filter-dot.html) -
-[filter-eqn](filter-eqn.html) -
-[filter-kroki](filter-kroki.html) -
-[filter-mmd](filter-mmd.html) -
-[filter-mtex](filter-mtex.html) -
-[filter-pic/dpic](filter-pic.html) -
-[filter-pik](filter-pik.html) <br/>
-[filter-pipe](filter-pipe.html) -
-[filter-puml](filter-puml.html) -
-[filter-rplot](filter-rplot.html) - 
-[filter-sqlite](filter-sqlite.html) -
-[filter-tcrd](filter-tcrd.html) -
-[filter-tcl](filter-tcl.html) -
-[filter-tdot](filter-tdot.html) -
-[filter-tsvg](filter-tsvg.html) 
+[filter-abc](../tclfilters/filter-abc.html) -
+[filter-cmd](../tclfilters/filter-cmd.html) -
+[filter-dot](../tclfilters/filter-dot.html) -
+[filter-eqn](../tclfilters/filter-eqn.html) -
+[filter-kroki](../tclfilters/filter-kroki.html) -
+[filter-mmd](../tclfilters/filter-mmd.html) -
+[filter-mtex](../tclfilters/filter-mtex.html) -
+[filter-pic/dpic](../tclfilters/filter-pic.html) -
+[filter-pik](../tclfilters/filter-pik.html) <br/>
+[filter-pipe](../tclfilters/filter-pipe.html) -
+[filter-puml](../tclfilters/filter-puml.html) -
+[filter-rplot](../tclfilters/filter-rplot.html) - 
+[filter-sqlite](../tclfilters/filter-sqlite.html) -
+[filter-tcrd](../tclfilters/filter-tcrd.html) -
+[filter-tcl](../tclfilters/filter-tcl.html) -
+[filter-tdot](../tclfilters/filter-tdot.html) -
+[filter-tsvg](../tclfilters/filter-tsvg.html) 
 
 Documentation: 
-[pantcl filter](../pantcl.html) - 
-[Readme](../README.html) -
-[pantcl Gui](filter-view.html)  
+[Pantcl filter documentation](../../pantcl.html) - 
+[Pantcl tutorial](../../pantcl-tutorial.html) - 
+[Pantcl Readme](../../README.html) -
+[Pantcl Gui](../fview/filter-view.html)  
 </center>
 
 

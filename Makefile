@@ -5,6 +5,7 @@ default:
 	echo "       make install"  
 	
 pantcl-docu:
+	pandoc header.md -o header.html
 	tclsh pantcl.tcl pantcl.tcl pantcl.html --css mini.css -s
 	htmlark pantcl.html -o pantcl-out.html
 	mv pantcl-out.html pantcl.html
@@ -12,6 +13,9 @@ pantcl-docu:
 		--lua-filter=lib/tclfilters/smallcaps.lua
 	htmlark pantcl-tutorial.html -o pantcl-out.html
 	mv pantcl-out.html pantcl-tutorial.html
+	pandoc README.md -o README.html --css mini.css -s -B header.html
+	htmlark README.html -o temp.html && mv temp.html README.html
+	
 		
 pantcl-app:
 	if [ ! -d pantcl-tapp ] ;  then mkdir pantcl-tapp ; fi
@@ -36,6 +40,7 @@ pantcl-app:
 	rm -rf pantcl-tapp/pantcl.vfs/lib/tclfilters/out	
 	cd pantcl-tapp && tclsh ../bin/tpack.tcl wrap pantcl.tapp
 	ls -lh pantcl-tapp/pantcl.tapp
+	cp pantcl-tapp/pantcl.tapp pantcl-tapp/pantcl.bin
 install: pantcl-app
 	cp pantcl-tapp/pantcl.tapp ~/.local/bin/pantcl
 	chmod 755 ~/.local/bin/pantcl

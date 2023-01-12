@@ -8,7 +8,7 @@
 #' ------
 #' 
 #' ```{.tcl results="asis" echo=false}
-#' include header.md
+#' include ../tclfilters/header.md
 #' ```
 #' 
 #' ------
@@ -29,7 +29,7 @@
 ##############################################################################
 #  Created By    : Detlef Groth
 #  Created       : Fri Feb 4 05:49:13 2022
-#  Last Modified : <230112.0717>
+#  Last Modified : <230112.0725>
 #
 #  Description	 : Graphical user interface to display
 #                 results from graphical tools created based with simple text.
@@ -526,7 +526,7 @@ if {[info exists argv0] && $argv0 eq [info script]} {
 #' 
 #' ![](demo-mtex.png)
 #' 
-#' More examples can be found in the filter-mtex manual [../tclfilters/filter-mtex.html]([../tclfilters/filter-mtex.html])
+#' More LaTeX examples can be found in the [filter-mtex manual](../tclfilters/filter-mtex.html).
 #' 
 #' ## Other examples
 #' 
