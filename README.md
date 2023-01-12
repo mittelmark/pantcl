@@ -58,18 +58,24 @@ it for instance as well to something like `pantcl.bin` or just `pantcl`. Then mo
 This file, "pantcl.bin",   contains all the filters mentioned above. You can try out the installation by creating a simple Markdown file with some embedded Tcl code like this:
 
 ```
-     ---
-     title: Test Markdown
-     author: Detlef Groth
-     date: 2023-01-10
-     ---
+    ---
+    title: Test Markdown witch embedded Tcl code.
+    author: Detlef Groth
+    date: 2023-01-11
+    ---
 
-     This is some text.
+    ## Header
 
-     ```{.tcl}
-     set x 1
-     set x
-     ```
+    This is some text.
+
+    ```{.tcl}
+    set x 1
+    set x
+    ```
+
+    Here some inline Tcl expression x is now `tcl set x`. 
+
+    This document was compiled at `tcl clock format [clock seconds] -format "%Y-%m-%d %H:%M:%S"` CET.
 ```
 
 Save this code in a file `test.md` removing the leading whitespaces and try to convert the file using the command line:
@@ -78,5 +84,8 @@ Save this code in a file `test.md` removing the leading whitespaces and try to c
 pantcl.bin test.md test.html -s
 ```
 
+The output `test.html` should then look like this:
+
+![](examples/test1.png)
 
 
