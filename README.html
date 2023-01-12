@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="author" content="Detlef Groth, Schwielowsee" />
+  <meta name="dcterms.date" content="2023-01-12" />
+  <title>Pantcl Readme</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <link rel="stylesheet" href="mini.css" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">Pantcl Readme</h1>
+<p class="author">Detlef Groth, Schwielowsee</p>
+<p class="date">2023-01-12</p>
+</header>
+<h1 id="pantcl">pantcl</h1>
+<p>Providing document conversion with Tcl based filters using pandoc or Tcl only.</p>
+<p>The application <code>pantcl</code> is a command line tool whioch can be used as a standalone tool for document conversion for instance from Markdown to HTML. It can be used as well as a filter for the pandoc document processor to embed and execute Tcl code in documents like Markdown or LaTeX and to write addtional filters using the Tcl progtamming language to embed code for other command line tools for instance GraphViz, ABC music, the Python or R programming language. It as well contains an option to execute code chunks within a graphical user interface</p>
+<p>So in summary pantcl allows you:</p>
+<ul>
+<li>document conversion from Markdown to HTML</li>
+<li>extraction of Markdown embedded documentation in Programming code like Tcl, Python or C++.</li>
+<li>embed and execute Tcl code in Markdown documents</li>
+<li>write filters for other tools using the Tcl prgramming language /many sample filters already included)</li>
+<li>graphical interface to edit Markdown files with embedded code chunks</li>
+</ul>
+<h1 id="documentation">Documentation</h1>
+<p>Here are links to the documentation:</p>
+<ul>
+<li><a href="https://htmlpreview.github.io/?https://raw.githubusercontent.com/mittelmark/pantcl/master/pantcl.html">pantcl.html</a> - main documentation</li>
+</ul>
+<p><a name="filterlist" /> Filter documentation:</p>
+<ul>
+<li><a href="https://htmlpreview.github.io/?https://raw.githubusercontent.com/mittelmark/pantcl/master/lib/tclfilters/filter-abc.html">filter-abc</a> - visualize <a href="https://abcnotation.com/">ABC music notation</a></li>
+<li><a href="https://htmlpreview.github.io/?https://raw.githubusercontent.com/mittelmark/pantcl/master/lib/tclfilters/filter-cmd.html">filter-cmd</a> - execute shell scripts for instance <a href="http://lilypond.org/">Lilypond music scripts</a>, <a href="https://www.graphviz.org">GraphViz</a> scripts, <a href="https://www.sqlite.org">sqlite3</a> scripts etc.</li>
+<li><a href="https://htmlpreview.github.io/?https://raw.githubusercontent.com/mittelmark/pantcl/master/lib/tclfilters/filter-dot.html">filter-dot</a> - <a href="https://www.graphviz.org">GraphViz dot</a> filter</li>
+<li><a href="https://htmlpreview.github.io/?https://raw.githubusercontent.com/mittelmark/pantcl/master/lib/tclfilters/filter-eqn.html">filter-eqn</a> - visualize mathematical equations using eqn2graph, see here <a href="https://lists.gnu.org/archive/html/groff/2013-10/pdfTyBN2VWR1c.pdf">Guide for typesetting using eqn</a></li>
+<li><a href="https://htmlpreview.github.io/?https://raw.githubusercontent.com/mittelmark/pantcl/master/lib/tclfilters/filter-kroki.html">filter-kroki</a> - visualize diagram code using the <a href="https://kroki.io">kroki webservice</a></li>
+<li><a href="https://htmlpreview.github.io/?https://raw.githubusercontent.com/mittelmark/pantcl/master/lib/tclfilters/filter-mmd.html">filter-mmd</a> - visualize diagram code using the <a href="https://github.com/mermaidjs/mermaid.cli">mermaid command line tool</a></li>
+<li><a href="https://htmlpreview.github.io/?https://raw.githubusercontent.com/mittelmark/pantcl/master/lib/tclfilters/filter-mtex.html">filter-mtex</a> - visualize mathematical equations using LaTeX</li>
+<li><a href="https://htmlpreview.github.io/?https://raw.githubusercontent.com/mittelmark/pantcl/master/lib/tclfilters/filter-pic.html">filter-pic</a> - visualize diagram and flowcharts using the <a href="https://en.wikipedia.org/wiki/PIC_(markup_language)">PIC language</a></li>
+<li><a href="https://htmlpreview.github.io/?https://raw.githubusercontent.com/mittelmark/pantcl/master/lib/tclfilters/filter-pik.html">filter-pik</a> - visualize diagram code or flowcharts uing <a href="https://fossil-scm.org/home/doc/trunk/www/pikchr.md">pikchr</a> or <a href="https://fossil-scm.org/home/doc/trunk/www/index.wiki">fossil</a></li>
+<li><a href="https://htmlpreview.github.io/?https://raw.githubusercontent.com/mittelmark/pantcl/master/lib/tclfilters/filter-pipe.html">filter-pipe</a> - embed R, Python or Octave code or plots into Markdown</li>
+<li><a href="https://htmlpreview.github.io/?https://raw.githubusercontent.com/mittelmark/pantcl/master/lib/tclfilters/filter-puml.html">filter-puml</a> - embed <a href="http://www.plantuml.com">PlantUML</a> code</li>
+<li><a href="https://htmlpreview.github.io/?https://raw.githubusercontent.com/mittelmark/pantcl/master/lib/tclfilters/filter-rplot.html">filter-rplot</a> - embed R plots</li>
+<li><a href="https://htmlpreview.github.io/?https://raw.githubusercontent.com/mittelmark/pantcl/master/lib/tclfilters/filter-sqlite.html">filter-sqlite</a> - embed <a href="https://www.sqlite.org">Sqlite3 SQL database</a> statements</li>
+<li><a href="https://htmlpreview.github.io/?https://raw.githubusercontent.com/mittelmark/pantcl/master/lib/tclfilters/filter-tcl.html">filter-tcl</a> - embed Tcl statements</li>
+<li><a href="https://htmlpreview.github.io/?https://raw.githubusercontent.com/mittelmark/pantcl/master/lib/tclfilters/filter-tcrd.html">filter-tcrd</a> - embed Tcl music chords.</li>
+<li><a href="https://htmlpreview.github.io/?https://raw.githubusercontent.com/mittelmark/pantcl/master/lib/tclfilters/filter-tdot.html">filter-tdot</a> - embed Tcl GraphViz diaragrams</li>
+<li><a href="https://htmlpreview.github.io/?https://raw.githubusercontent.com/mittelmark/pantcl/master/lib/tclfilters/filter-tsvg.html">filter-tsvg</a> - embed Tcl created SVG code</li>
+</ul>
+<h1 id="installation">Installation</h1>
+<p>Please note, that you must have a tclsh executable in your PATH to use this tool. On Ubuntu systems you can install Tcl using your package managers like this: <code>sudo apt install Tcl</code>. If you have a <code>tclsh</code> executable in your <code>PATH</code> you then download the latest build from the Github page here:</p>
+<p><a href="https://github.com/mittelmark/pantcl/suites/10308343684/artifacts/506919635">https://github.com/mittelmark/pantcl/suites/10308343684/artifacts/506919635</a></p>
+<p>Unpack the Zip-Archive and make the file pantcl.tapp executable you can rename it for instance as well to something like <code>pantcl.bin</code> or just <code>pantcl</code>. Then move it to a folder within belonging to your <code>PATH</code> variable. For instance “~./bin” or “~/.local/bin”.</p>
+<p>This file, “pantcl.bin”, contains all the filters mentioned above. You can try out the installation by creating a simple Markdown file with some embedded Tcl code like this:</p>
+<pre><code>    ---
+    title: Test Markdown witch embedded Tcl code.
+    author: Detlef Groth
+    date: 2023-01-11
+    ---
+
+    ## Header
+
+    This is some text.
+
+    ```{.tcl}
+    set x 1
+    set x
+    ```
+
+    Here some inline Tcl expression x is now `tcl set x`. 
+
+    This document was compiled at 
+    `tcl clock format [clock seconds] -format &quot;%Y-%m-%d %H:%M:%S&quot;` CET.</code></pre>
+<p>Save this code in a file <code>test.md</code> removing the leading whitespaces and try to convert the file using the command line:</p>
+<pre><code>pantcl.bin test.md test.html -s</code></pre>
+<p>The output <code>test.html</code> should then look like this:</p>
+<p><img src="examples/test1.png" /></p>
+<p>If this works you can continue and try to use other code filters from the list shown <a href="#filterlist">above</a>.</p>
+</body>
+</html>
