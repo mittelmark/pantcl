@@ -23,6 +23,7 @@ Here are links to the documentation:
 
 * [pantcl.html](https://htmlpreview.github.io/?https://raw.githubusercontent.com/mittelmark/pantcl/master/pantcl.html) - main documentation
 
+<a name="filterlist" />
 Filter documentation:
 
 - [filter-abc](https://htmlpreview.github.io/?https://raw.githubusercontent.com/mittelmark/pantcl/master/lib/tclfilters/filter-abc.html) - visualize [ABC music notation](https://abcnotation.com/)
@@ -90,3 +91,4 @@ The output `test.html` should then look like this:
 ![](examples/test1.png)
 
 
+If this works you can continue and try to use other code filters from the list shown [above](#filterlist).
