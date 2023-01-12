@@ -51,12 +51,12 @@ tool. On Ubuntu systems you can install Tcl using your package managers like
 this: `sudo apt install Tcl`. If you have a `tclsh` executable in your `PATH`
 you then download the latest build from the Github page here: 
 
-[https://github.com/mittelmark/pantcl/suites/10308343684/artifacts/506919635](https://github.com/mittelmark/pantcl/suites/10308343684/artifacts/506919635)
+[https://github.com/mittelmark/pantcl/suites/10325546892/artifacts/508197131](https://github.com/mittelmark/pantcl/suites/10325546892/artifacts/508197131)
 
-Unpack the Zip-Archive and make the file pantcl.tapp executable you can rename
-it for instance as well to something like `pantcl.bin` or just `pantcl`. Then move it to a folder within belonging to your `PATH` variable. For instance "~./bin" or "~/.local/bin".
+Unpack the Zip-Archive and make the file pantcl.bin executable using chmod. You can as rename
+it for instance to just `pantcl`. Then move it to a folder within belonging to your `PATH` variable. For instance "~./bin" or "~/.local/bin".
 
-This file, "pantcl.bin",   contains all the filters mentioned above. You can try out the installation by creating a simple Markdown file with some embedded Tcl code like this:
+The file `pantcl.bin` contains embedded all the filters mentioned above. You can try out the installation by creating a simple Markdown file with some embedded Tcl code like this:
 
 ```
     ---
