@@ -24,10 +24,10 @@
 #' The conversion of the Markdown documents via Pandoc should be done as follows:
 #' 
 #' ```
-#' pandoc input.md --filter pandoc-tcl-filter.tcl -s -o output.html
+#' pandoc input.md --filter pantcl.bin -s -o output.html
 #' ```
 #' 
-#' The file `filter-tcrd.tcl` is not used directly but sourced automatically by the `pandoc-tcl-filter.tcl` file.
+#' The file `filter-tcrd.tcl` is not used directly but sourced automatically by the `pantcl.bin` file.
 #' If code blocks with the `.tcrd` marker are found, the contents in the code block is 
 #' processed via the Tcl interpreter using the embedded Tcl code.
 #' 
@@ -132,11 +132,11 @@
 #' 
 #' ## See also:
 #' 
+#' * [Pantcl Readme](../../README.html)
 #' * [https://chordseasy.com](https://chordseasy.com) (just use copy and paste of the chord song texts here)
 #' * [https://ozbcoz.com/Songs/index.php](https://ozbcoz.com/Songs/index.php) again just copy and paste
 #' * [https://www.mauimadison.com/songs.html](https://www.mauimadison.com/songs.html)
 #' * [ABC music notation filter](filter-abc.html)
-#' * [pandoc-tcl-filter Readme](../Readme.html)
 #' 
 #' ## TODO:
 #' 
