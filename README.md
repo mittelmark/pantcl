@@ -45,14 +45,17 @@ Filter documentation:
 
 # Installation
 
-Download the latest build from the Github page here: 
+Please note, that you must have a tclsh executable in your PATH to use this
+tool. On Ubuntu systems you can install Tcl using your package managers like
+this: `sudo apt install Tcl`. If you have a `tclsh` executable in your `PATH`
+you then download the latest build from the Github page here: 
 
 [https://github.com/mittelmark/pantcl/suites/10308343684/artifacts/506919635](https://github.com/mittelmark/pantcl/suites/10308343684/artifacts/506919635)
 
 Unpack the Zip-Archive and make the file pantcl.tapp executable you can rename
 it for instance as well to something like `pantcl.bin` or just `pantcl`. Then move it to a folder within belonging to your `PATH` variable. For instance "~./bin" or "~/.local/bin".
 
-This file, "pantcl.bin"  contains all the filters mentioned above. You can try out the installation by creating a simple Markdown file with some embedded Tcl code like this:
+This file, "pantcl.bin",   contains all the filters mentioned above. You can try out the installation by creating a simple Markdown file with some embedded Tcl code like this:
 
 ```
      ---
@@ -72,7 +75,7 @@ This file, "pantcl.bin"  contains all the filters mentioned above. You can try o
 Save this code in a file `test.md` removing the leading whitespaces and try to convert the file using the command line:
 
 ```
-pantcl.tapp test.md test.html -s
+pantcl.bin test.md test.html -s
 ```
 
 
