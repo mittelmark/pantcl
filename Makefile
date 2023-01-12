@@ -1,9 +1,13 @@
 
 default:
 	echo "Usage: make pantcl-docu"
+	echo "       make pantcl-app"
+	echo "       make install"  
 	
 pantcl-docu:
 	tclsh pantcl.tcl pantcl.tcl pantcl.html --css mini.css -s
+	tclsh pantcl.tcl pantcl-tutorial.md pantcl-tutorial.html --css mini.css -s  --toc \
+		--lua-filter=lib/tclfilter/smallcaps.lua.
 pantcl-app:
 	if [ ! -d pantcl-tapp ] ;  then mkdir pantcl-tapp ; fi
 	cp pantcl.tcl pantcl-tapp/
@@ -27,3 +31,7 @@ pantcl-app:
 	rm -rf pantcl-tapp/pantcl.vfs/lib/tclfilters/out	
 	cd pantcl-tapp && tclsh ../bin/tpack.tcl wrap pantcl.tapp
 	ls -lh pantcl-tapp/pantcl.tapp
+install: pantcl-app
+	cp pantcl-tapp/pantcl.tapp ~/.local/bin/pantcl
+	chmod 755 ~/.local/bin/pantcl
+	

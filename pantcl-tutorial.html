@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="author" content="Detlef Groth" />
+  <meta name="dcterms.date" content="2023-01-12" />
+  <title>Tutorial for the Pandoc Tcl filter</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <link rel="stylesheet" href="mini.css" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">Tutorial for the Pandoc Tcl filter</h1>
+<p class="author">Detlef Groth</p>
+<p class="date">2023-01-12</p>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#name">Name</a></li>
+<li><a href="#usage">Usage</a></li>
+<li><a href="#installation">Installation</a></li>
+<li><a href="#tcl-filter">Tcl filter</a>
+<ul>
+<li><a href="#code-chunk-attributes">Code chunk attributes</a></li>
+<li><a href="#images">Images</a></li>
+</ul></li>
+<li><a href="#other-filters">Other filters</a></li>
+<li><a href="#tsvg-plugin">tsvg plugin</a></li>
+<li><a href="#filter-for-math-tex">Filter for Math-Tex</a></li>
+<li><a href="#pic-and-eqn-filters">PIC and EQN filters</a></li>
+<li><a href="#pikchr-filter">Pikchr filter</a></li>
+<li><a href="#rplot-filter">Rplot filter</a></li>
+<li><a href="#lua-filters">Lua filters</a></li>
+<li><a href="#summary">Summary</a></li>
+<li><a href="#documentation">Documentation</a></li>
+<li><a href="#links">Links</a></li>
+<li><a href="#todo">Todo</a></li>
+<li><a href="#history">History</a></li>
+<li><a href="#author">Author</a></li>
+<li><a href="#license">License</a></li>
+</ul>
+</nav>
+<hr />
+<p></p>
+<center>
+<p>Filters: <a href="lib/tclfilters/filter-abc.html">filter-abc</a> - <a href="lib/tclfilters/filter-cmd.html">filter-cmd</a> - <a href="lib/tclfilters/filter-dot.html">filter-dot</a> - <a href="lib/tclfilters/filter-eqn.html">filter-eqn</a> - <a href="lib/tclfilters/filter-mmd.html">filter-mmd</a> - <a href="lib/tclfilters/filter-mtex.html">filter-mtex</a> - <a href="lib/tclfilters/filter-pic.html">filter-pic</a> - <a href="lib/tclfilters/filter-pik.html">filter-pik</a> - <a href="lib/tclfilters/filter-pipe.html">filter-pipe</a> - <a href="lib/tclfilters/filter-puml.html">filter-puml</a> - <a href="lib/tclfilters/filter-rplot.html">filter-rplot</a> - <a href="lib/tclfilters/filter-sqlite.html">filter-sqlite</a> - <a href="lib/tclfilters/filter-tcrd.html">filter-tcrd</a> - <a href="lib/tclfilters/filter-tcl.html">filter-tcl</a> - <a href="lib/tclfilters/filter-tdot.html">filter-tdot</a> - <a href="lib/tclfilters/filter-tsvg.html">filter-tsvg</a> <br /></p>
+Documentation: <a href="pantcl.html">Pantcl documentation</a> - <a href="pantcl-tutorial.html">Pantcl Tutorial</a> - <a href="README.html">Pantcl Readme</a> - <a href="lib/fview/filter-view.html">Pantcl GUI filter viewer</a>
+</center>
+<hr />
+<h2 id="name">Name</h2>
+<p><em>Tutorial Pantcl Tcl filter for Pandoc</em> - Tcl based pandoc filter to execute programming and other Markup code within Markdown documents and use code results for documentation.</p>
+<h2 id="usage">Usage</h2>
+<ul>
+<li>works as filter for pandoc or just standalone (then only conversion to HTML or Markdown is possible)</li>
+<li>embedded graphical user interface, see <a href="filter-view.html">filter-view.html</a></li>
+<li>evaluation of Tcl and other programming language code with textual Markup files like Markdown or Asciidoc and adding the results, figures, tables etc from the code evaluation to a resulting document like HTML, PDF, DOCX, Markdown etc</li>
+<li>easy to extend, many filters for other programming languages like (Python, Octave, R) are already embedded</li>
+<li>filters for many graphical tools such as GraphViz, Pikchr, PlantUML, mermaid, LaTeX like</li>
+<li>generic filter for all type of terminal applications such as LilyPond, C/C++ compilers etc. where examples are given</li>
+<li>all tools and filters can be applied within a single document</li>
+<li>can be used to extract and process embedded Markdown documentation in source code of different programming languages, such as C/C++, Tcl, Python, etc.</li>
+<li>the packed Tcl script with these features has a size of just around 1Mb</li>
+</ul>
+<p>Here some call syntax examples:</p>
+<pre><code> pandoc input.md -s --filter pantcl.bin -o output.html
+
+ # or using the Tcl script from the unpacked application (not recommended)
+ pandoc input.md -s  --filter pantcl.tcl -o output.html
+
+ # code documentation tool for extracting Markdown based documentation
+ # and evaluating code within code chunks as in standard Markdown documents
+ pantcl.bin sourcefile.tcl sourcfile.html --css file.css -s
+
+ #  the same but not using pandoc but the internal Markdown library
+ # only conversion to HTML is possible
+ pantcl.bin sourcefile.tcl sourcfile.html --css file.css --no-pandoc
+
+ # graphical user interface 
+ # files must have filter name extensions like 
+ # .abc, .dot, .eqn, .mmd, .pic, .pik etc
+ pantcl.bin --gui somefile   </code></pre>
+<h2 id="installation">Installation</h2>
+<p>The easiest way to install the pantcl Tcl filter application is by using the standalone executable from the Github repository <a href="https://github.com/mittelmark/pantcl/">https://github.com/mittelmark/pantcl</a> Download this file, rename the binary to <code>pantcl.bin</code> or just <code>pantcl</code> and make it executable and place it a directory belonging to your PATH variable. Windows user should use a Bash like environment like the Git-Bash to make files executable. The only prerequisite the application has is a working Tcl installation. The required Tcl libraries are all wrapped into the standalone exectuable.</p>
+<p>Alternatively the application can be installed by specifying the correct path to the Tcl script in your pandoc command line call. Programmers which like to add their own filters can as well download and modify the filters or add new filters in the filter directory. The direct link to the github repository folder is: <a href="https://downgit.github.io/#/home?url=https://github.com/mittelmark/pantcl/tree/master/">https://downgit.github.io/#/home?url=https://github.com/mittelmark/pantcl/tree/master/</a> Just unpack the folder and make the Tcl script <code>pantcl.tcl</code> executable. Your pandoc call should then point to this directory.</p>
+<p>The filter requires the Tcl package <em>rl_json</em> which is available from Github: <a href="https://github.com/RubyLane/rl_json">https://github.com/RubyLane/rl_json</a>. The standalone application already contains precompiled binaries for 64bit Linu, Windows and Mac-OSX. Unix users should be able to install the <em>rl_json</em> package via the standard configure/make pipeline. A Linux binary, complied on a recent Fedora system is included in the download link at the GitHub page as well to simplify the use of the Pandoc filter. Windows users should install the <em>rl_json</em> package via the Magicplats Tcl-Installer: <a href="https://www.magicsplat.com/tcl-installer/index.html">https://www.magicsplat.com/tcl-installer</a></p>
+<h2 id="tcl-filter">Tcl filter</h2>
+<p>Below some basic information about the Tcl filter, more examples are given in the pantcl filter documentation file here: <a href="pantcl.html">pantcl.html</a>.</p>
+<p>Tcl code can be embedded either within single backtick marks where the first backtick is immediately followed by the string tcl and the the tcl code such as in the following example:</p>
+<pre><code>The variable is now `tcl set x 5` or five times three is `tcl expr {3*5}`.
+
+This document was processed using Tcl `tcl package provide Tcl`.</code></pre>
+<p>Here the output:</p>
+<p>The variable is now 5 or five times three is 15.</p>
+<p>This document was processed using Tcl 8.6.12.</p>
+<p>The results from the code execution will be directly embedded in the text and will replace the Tcl code. Such inline statements should be short and concise and should not break over several lines. Currently single backtick statements must be within non-list environments only.</p>
+<p>Larger chunks of code can be placed within triple backticks such as in the example below.</p>
+<pre><code>     ```{.tcl}
+     # please remove the spaces before these lines 
+     #  they are used to guard against code evaluation
+     set x 3
+     proc add {x y} {
+         return [expr {$x+$y}]
+     }
+     add $x 7
+     ```</code></pre>
+<p>In the code above a space was added to avoid confusing the pandoc interpreter by nested triple tickmarks, remove those spaces in your code.</p>
+<p>And here the output:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode tcl"><code class="sourceCode tcl"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">set</span> <span class="ot">x</span> <span class="dv">3</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="kw">proc</span> <span class="ot">add</span> <span class="kw">{</span><span class="ot">x</span> <span class="ot">y</span><span class="kw">}</span> <span class="kw">{</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">return</span> <span class="kw">[expr</span> <span class="kw">{</span><span class="dt">$x</span>+<span class="dt">$y</span><span class="kw">}]</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="kw">}</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="ot">add</span> <span class="dt">$x</span> <span class="dv">7</span></span></code></pre></div>
+<pre class="tclout"><code>10</code></pre>
+<p>Please note, that only the last statement is shown in code block after the Tcl code. To show more output you can use the <code>puts</code> command.</p>
+<h3 id="code-chunk-attributes">Code chunk attributes</h3>
+<p>Within the curly braces the following attributes are currently supported:</p>
+<ul>
+<li><em>eval=false|true</em> - evaluate the Tcl code</li>
+<li><em>results=show|hide</em> - show the output of the Tcl code execution</li>
+<li><em>echo=true|false</em> - show the Tcl code</li>
+</ul>
+<p>Errors in the tcl code will be usually trapped and the error info is shown instead of the regular output.</p>
+<h3 id="images">Images</h3>
+<p>As Tcl has no standard library in the core to create graphics without the Tk toolkit we will create a small object using a minimal object oriented system which can be used to create svg files easily.</p>
+<h4 id="thingy-svg-example">Thingy svg example</h4>
+<div class="sourceCode" id="cb6"><pre class="sourceCode tcl"><code class="sourceCode tcl"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>;<span class="co"># the onliner OO system thingy see here</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>;<span class="co"># https://wiki.tcl-lang.org/page/Thingy%3A+a+one%2Dliner+OO+system</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="kw">proc</span> thingy <span class="ot">name</span> <span class="kw">{</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">proc</span> <span class="dt">$name</span> <span class="ot">args</span> <span class="st">&quot;namespace eval </span><span class="dt">$</span><span class="st">name </span><span class="ch">\$</span><span class="st">args&quot;</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="kw">}</span> </span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>;<span class="co"># our object</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>thingy svg</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>;<span class="co"># some variables</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>svg <span class="kw">set</span> code <span class="st">&quot;&quot;</span> ;<span class="co"># the svg code</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>svg <span class="kw">set</span> header <span class="kw">{</span>&lt;?xml version=<span class="st">&quot;1.0&quot;</span> <span class="kw">encoding</span>=<span class="st">&quot;utf-8&quot;</span> standalone=<span class="st">&quot;yes&quot;</span>?&gt;</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>    &lt;svg version=<span class="st">&quot;1.1&quot;</span> xmlns=<span class="st">&quot;http://www.w3.org/2000/svg&quot;</span> <span class="ot">height</span>=<span class="st">&quot;__HEIGHT__&quot;</span> <span class="ot">width</span>=<span class="st">&quot;__WIDTH__&quot;</span>&gt;<span class="kw">}</span>    </span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>svg <span class="kw">set</span> footer <span class="kw">{</span>&lt;/svg&gt;<span class="kw">}</span></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>svg <span class="kw">set</span> <span class="ot">width</span> <span class="dv">100</span></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>svg <span class="kw">set</span> <span class="ot">height</span> <span class="dv">100</span></span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>;<span class="co"># lets look what variables are there</span></span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a><span class="kw">info</span> <span class="ot">vars</span> svg::* </span></code></pre></div>
+<pre class="tclout"><code>::svg::width ::svg::height ::svg::header ::svg::footer ::svg::code</code></pre>
+<p>We now need a method <em>unknown</em> which catches all command on the object and forward this to the tag creation method.</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode tcl"><code class="sourceCode tcl"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>;<span class="co"># the actual tag svg creation method</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>svg <span class="kw">proc</span> <span class="ot">tag</span> <span class="kw">{</span><span class="ot">args</span><span class="kw">}</span> <span class="kw">{</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">variable</span> code</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">set</span> <span class="ot">tag</span> <span class="kw">[lindex</span> <span class="dt">$args</span> <span class="dv">0</span><span class="kw">]</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">set</span> <span class="ot">args</span> <span class="kw">[lrange</span> <span class="dt">$args</span> <span class="dv">1</span> end<span class="kw">]</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">set</span> ret <span class="st">&quot;</span><span class="ch">\n</span><span class="st">&lt;</span><span class="dt">$</span><span class="st">tag&quot;</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>    <span class="kw">foreach</span> <span class="kw">{</span>key val<span class="kw">}</span> <span class="dt">$args</span> <span class="kw">{</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>        <span class="kw">if</span> <span class="kw">{</span><span class="dt">$val</span> eq <span class="st">&quot;&quot;</span><span class="kw">}</span> <span class="kw">{</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>            <span class="kw">append</span> ret <span class="st">&quot;&gt;</span><span class="ch">\n</span><span class="dt">$</span><span class="st">key</span><span class="ch">\n</span><span class="st">&lt;/</span><span class="dt">$</span><span class="st">tag&gt;</span><span class="ch">\n</span><span class="st">&quot;</span></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>            <span class="kw">break</span></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>        <span class="kw">}</span> <span class="kw">else</span> <span class="kw">{</span></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>            <span class="kw">append</span> ret <span class="st">&quot; </span><span class="dt">$</span><span class="st">key=</span><span class="ch">\&quot;</span><span class="dt">$</span><span class="st">val</span><span class="ch">\&quot;</span><span class="st">&quot;</span></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>        <span class="kw">}</span></span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>    <span class="kw">}</span></span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>    <span class="kw">if</span> <span class="kw">{</span><span class="dt">$val</span> ne <span class="st">&quot;&quot;</span><span class="kw">}</span> <span class="kw">{</span></span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>        <span class="kw">append</span> ret <span class="st">&quot; /&gt;</span><span class="ch">\n</span><span class="st">&quot;</span></span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>    <span class="kw">}</span></span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a>    <span class="kw">append</span> code <span class="dt">$ret</span></span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a><span class="kw">}</span></span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a>;<span class="co"># any unknown should forward to the tag method</span></span>
+<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a><span class="kw">namespace</span> <span class="kw">eval</span> svg <span class="kw">{</span></span>
+<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a>    <span class="kw">namespace</span> <span class="kw">unknown</span> svg::<span class="ot">tag</span></span>
+<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a><span class="kw">}</span></span>
+<span id="cb8-25"><a href="#cb8-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-26"><a href="#cb8-26" aria-hidden="true" tabindex="-1"></a>; <span class="co"># write out the current svg code </span></span>
+<span id="cb8-27"><a href="#cb8-27" aria-hidden="true" tabindex="-1"></a>svg <span class="kw">proc</span> write <span class="kw">{</span>filename<span class="kw">}</span> <span class="kw">{</span></span>
+<span id="cb8-28"><a href="#cb8-28" aria-hidden="true" tabindex="-1"></a>    <span class="kw">variable</span> <span class="ot">width</span></span>
+<span id="cb8-29"><a href="#cb8-29" aria-hidden="true" tabindex="-1"></a>    <span class="kw">variable</span> <span class="ot">height</span></span>
+<span id="cb8-30"><a href="#cb8-30" aria-hidden="true" tabindex="-1"></a>    <span class="kw">variable</span> header</span>
+<span id="cb8-31"><a href="#cb8-31" aria-hidden="true" tabindex="-1"></a>    <span class="kw">variable</span> footer</span>
+<span id="cb8-32"><a href="#cb8-32" aria-hidden="true" tabindex="-1"></a>    <span class="kw">variable</span> code</span>
+<span id="cb8-33"><a href="#cb8-33" aria-hidden="true" tabindex="-1"></a>    <span class="kw">set</span> out <span class="kw">[open</span> <span class="dt">$filename</span> w <span class="dv">0600</span><span class="kw">]</span></span>
+<span id="cb8-34"><a href="#cb8-34" aria-hidden="true" tabindex="-1"></a>    <span class="kw">set</span> head <span class="kw">[regsub</span> <span class="kw">{</span>__HEIGHT__<span class="kw">}</span> <span class="dt">$header</span> <span class="dt">$height</span><span class="kw">]</span></span>
+<span id="cb8-35"><a href="#cb8-35" aria-hidden="true" tabindex="-1"></a>    <span class="kw">set</span> head <span class="kw">[regsub</span> <span class="kw">{</span>__WIDTH__<span class="kw">}</span> <span class="dt">$head</span> <span class="dt">$width</span><span class="kw">]</span></span>
+<span id="cb8-36"><a href="#cb8-36" aria-hidden="true" tabindex="-1"></a>    <span class="kw">puts</span> <span class="dt">$out</span> <span class="dt">$head</span></span>
+<span id="cb8-37"><a href="#cb8-37" aria-hidden="true" tabindex="-1"></a>    <span class="kw">puts</span> <span class="dt">$out</span> <span class="dt">$code</span></span>
+<span id="cb8-38"><a href="#cb8-38" aria-hidden="true" tabindex="-1"></a>    <span class="kw">puts</span> <span class="dt">$out</span> <span class="dt">$footer</span></span>
+<span id="cb8-39"><a href="#cb8-39" aria-hidden="true" tabindex="-1"></a>    <span class="kw">close</span> <span class="dt">$out</span></span>
+<span id="cb8-40"><a href="#cb8-40" aria-hidden="true" tabindex="-1"></a><span class="kw">}</span></span>
+<span id="cb8-41"><a href="#cb8-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-42"><a href="#cb8-42" aria-hidden="true" tabindex="-1"></a>;<span class="co"># what methods we have</span></span>
+<span id="cb8-43"><a href="#cb8-43" aria-hidden="true" tabindex="-1"></a><span class="kw">info</span> <span class="ot">commands</span> svg::*</span></code></pre></div>
+<pre class="tclout"><code>::svg::tag ::svg::write</code></pre>
+<p>Ok we are now ready to go: Let’s create the typical “Hello World!” example, the first argument will be the tag every remaining pairs will be the attribute and the value, remaining single arguments will be placed within the tag as content:</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode tcl"><code class="sourceCode tcl"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>svg circle cx <span class="dv">50</span> cy <span class="dv">50</span> r <span class="dv">45</span> stroke black stroke-<span class="ot">width</span> <span class="dv">2</span> fill salmon</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>svg <span class="kw">text</span> <span class="ot">x</span> <span class="dv">29</span> <span class="ot">y</span> <span class="dv">45</span> Hello</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>svg <span class="kw">text</span> <span class="ot">x</span> <span class="dv">27</span> <span class="ot">y</span> <span class="dv">65</span> World!</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>svg write images/hello-world.svg</span></code></pre></div>
+<p>Let’s now display the image:</p>
+<pre><code> ![](images/hello-world.svg)</code></pre>
+<p>Here the image displayed:</p>
+<p><img src="images/hello-world.svg" /></p>
+<p>Let’s now clean up the svg code:</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode tcl"><code class="sourceCode tcl"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>svg <span class="kw">set</span> code <span class="st">&quot;&quot;</span></span></code></pre></div>
+<p>We can now create an other image, let’s create a chessboard:</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode tcl"><code class="sourceCode tcl"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>svg <span class="kw">set</span> <span class="ot">width</span> <span class="dv">420</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>svg <span class="kw">set</span> <span class="ot">height</span> <span class="dv">420</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="kw">for</span> <span class="kw">{set</span> i <span class="dv">0</span><span class="kw">}</span> <span class="kw">{</span><span class="dt">$i</span> &lt; <span class="dv">8</span><span class="kw">}</span> <span class="kw">{incr</span> i<span class="kw">}</span> <span class="kw">{</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">if</span> <span class="kw">{[expr</span> <span class="kw">{</span><span class="dt">$i</span> % <span class="dv">2</span><span class="kw">}]</span> == <span class="dv">0</span><span class="kw">}</span> <span class="kw">{</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>        <span class="kw">set</span> cols <span class="kw">[join</span> <span class="kw">[lrepeat</span> <span class="dv">4</span> <span class="kw">[list</span> cornsilk burlywood<span class="kw">]]]</span></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">}</span> <span class="kw">else</span> <span class="kw">{</span></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>        <span class="kw">set</span> cols <span class="kw">[join</span> <span class="kw">[lrepeat</span> <span class="dv">4</span> <span class="kw">[list</span> burlywood cornsilk <span class="kw">]]]</span></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>    <span class="kw">}</span>   </span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>    <span class="kw">for</span> <span class="kw">{set</span> j <span class="dv">0</span><span class="kw">}</span> <span class="kw">{</span><span class="dt">$j</span> &lt; <span class="dv">8</span><span class="kw">}</span> <span class="kw">{incr</span> j<span class="kw">}</span> <span class="kw">{</span></span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>        <span class="kw">set</span> <span class="ot">x</span> <span class="kw">[expr</span> <span class="kw">{</span><span class="dv">10</span>+<span class="dt">$i</span>*<span class="dv">50</span><span class="kw">}]</span></span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>        <span class="kw">set</span> <span class="ot">y</span> <span class="kw">[expr</span> <span class="kw">{</span><span class="dv">10</span>+<span class="dt">$j</span>*<span class="dv">50</span><span class="kw">}]</span></span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>        svg rect <span class="ot">x</span> <span class="dt">$x</span> <span class="ot">y</span> <span class="dt">$y</span> <span class="ot">width</span> <span class="dv">50</span> <span class="ot">height</span> <span class="dv">50</span> fill <span class="kw">[lindex</span> <span class="dt">$cols</span> <span class="dt">$j</span><span class="kw">]</span> stroke-<span class="ot">width</span> <span class="dv">3</span></span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a>    <span class="kw">}</span></span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a>    svg rect <span class="ot">x</span> <span class="dv">6</span> <span class="ot">y</span> <span class="dv">6</span> <span class="ot">width</span> <span class="dv">408</span> <span class="ot">height</span> <span class="dv">408</span> stroke sienna stroke-<span class="ot">width</span> <span class="dv">7</span> fill transparent</span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a><span class="kw">}</span>   </span>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a>svg write images/chessboard.svg</span></code></pre></div>
+<p><img src="images/chessboard.svg" /></p>
+<p>Great! Let’s now illustrate a few more basic shapes. We will follow the examples at <a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Tutorial/Basic_Shapes">https://developer.mozilla.org/en-US/docs/Web/SVG/Tutorial/Basic_Shapes</a></p>
+<p>But first let’s rewrite the <code>svg tag</code> function so that we can as well take a list of attributes.</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode tcl"><code class="sourceCode tcl"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>svg <span class="kw">proc</span> <span class="ot">tag</span> <span class="kw">{</span><span class="ot">args</span><span class="kw">}</span> <span class="kw">{</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">variable</span> code</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">set</span> <span class="ot">tag</span> <span class="kw">[lindex</span> <span class="dt">$args</span> <span class="dv">0</span><span class="kw">]</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">set</span> <span class="ot">args</span> <span class="kw">[lrange</span> <span class="dt">$args</span> <span class="dv">1</span> end<span class="kw">]</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">set</span> ret <span class="st">&quot;</span><span class="ch">\n</span><span class="st">&lt;</span><span class="dt">$</span><span class="st">tag&quot;</span></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>    <span class="co"># new check if attr=&quot;val&quot; syntax  </span></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>    <span class="kw">if</span> <span class="kw">{[regexp</span> <span class="kw">{</span>=<span class="kw">}</span> <span class="kw">[lindex</span> <span class="dt">$args</span> <span class="dv">0</span><span class="kw">]]}</span> <span class="kw">{</span></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>        <span class="kw">set</span> nargs <span class="kw">[list]</span></span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>        <span class="kw">foreach</span> kval <span class="dt">$args</span> <span class="kw">{</span></span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>            <span class="kw">set</span> idx <span class="kw">[string</span> <span class="ot">first</span> = <span class="dt">$kval</span><span class="kw">]</span></span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>            <span class="kw">set</span> key <span class="kw">[string</span> <span class="ot">range</span> <span class="dt">$kval</span> <span class="dv">0</span> <span class="dt">$idx</span><span class="dv">-1</span><span class="kw">]</span></span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>            <span class="kw">set</span> val <span class="kw">[string</span> <span class="ot">range</span> <span class="dt">$kval</span> <span class="dt">$idx</span>+<span class="dv">2</span> end<span class="dv">-1</span><span class="kw">]</span></span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>            <span class="kw">lappend</span> nargs <span class="dt">$key</span></span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>            <span class="kw">lappend</span> nargs <span class="dt">$val</span></span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a>        <span class="kw">}</span></span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a>        <span class="kw">set</span> <span class="ot">args</span> <span class="dt">$nargs</span></span>
+<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a>    <span class="kw">}</span> </span>
+<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a>    <span class="co"># end of new check</span></span>
+<span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a>    <span class="kw">foreach</span> <span class="kw">{</span>key val<span class="kw">}</span> <span class="dt">$args</span> <span class="kw">{</span></span>
+<span id="cb14-20"><a href="#cb14-20" aria-hidden="true" tabindex="-1"></a>       <span class="kw">if</span> <span class="kw">{</span><span class="dt">$val</span> eq <span class="st">&quot;&quot;</span><span class="kw">}</span> <span class="kw">{</span></span>
+<span id="cb14-21"><a href="#cb14-21" aria-hidden="true" tabindex="-1"></a>           <span class="kw">append</span> ret <span class="st">&quot;&gt;</span><span class="ch">\n</span><span class="dt">$</span><span class="st">key</span><span class="ch">\n</span><span class="st">&lt;/</span><span class="dt">$</span><span class="st">tag&gt;</span><span class="ch">\n</span><span class="st">&quot;</span></span>
+<span id="cb14-22"><a href="#cb14-22" aria-hidden="true" tabindex="-1"></a>           <span class="kw">break</span></span>
+<span id="cb14-23"><a href="#cb14-23" aria-hidden="true" tabindex="-1"></a>       <span class="kw">}</span> <span class="kw">else</span> <span class="kw">{</span></span>
+<span id="cb14-24"><a href="#cb14-24" aria-hidden="true" tabindex="-1"></a>           <span class="kw">append</span> ret <span class="st">&quot; </span><span class="dt">$</span><span class="st">key=</span><span class="ch">\&quot;</span><span class="dt">$</span><span class="st">val</span><span class="ch">\&quot;</span><span class="st">&quot;</span></span>
+<span id="cb14-25"><a href="#cb14-25" aria-hidden="true" tabindex="-1"></a>       <span class="kw">}</span></span>
+<span id="cb14-26"><a href="#cb14-26" aria-hidden="true" tabindex="-1"></a>    <span class="kw">}</span></span>
+<span id="cb14-27"><a href="#cb14-27" aria-hidden="true" tabindex="-1"></a>    <span class="kw">if</span> <span class="kw">{</span><span class="dt">$val</span> ne <span class="st">&quot;&quot;</span><span class="kw">}</span> <span class="kw">{</span></span>
+<span id="cb14-28"><a href="#cb14-28" aria-hidden="true" tabindex="-1"></a>        <span class="kw">append</span> ret <span class="st">&quot; /&gt;</span><span class="ch">\n</span><span class="st">&quot;</span></span>
+<span id="cb14-29"><a href="#cb14-29" aria-hidden="true" tabindex="-1"></a>    <span class="kw">}</span></span>
+<span id="cb14-30"><a href="#cb14-30" aria-hidden="true" tabindex="-1"></a>    <span class="kw">append</span> code <span class="dt">$ret</span></span>
+<span id="cb14-31"><a href="#cb14-31" aria-hidden="true" tabindex="-1"></a><span class="kw">}</span></span></code></pre></div>
+<p>With this redefinition of the tag method we can now very easily copy the svg code from the website. We just have to remove the greater, smaller and slash tag signs from the svg code. As arguments to functions in Tcl are separated by spaces we have to protect attributes containing spaces with curly braces for the last three shapes, the polyline, the polygon and the path.</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode tcl"><code class="sourceCode tcl"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>svg <span class="kw">set</span> code <span class="st">&quot;&quot;</span> ;<span class="co"># cleanup chessboard</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>svg <span class="kw">set</span> <span class="ot">width</span> <span class="dv">200</span> ;<span class="co"># new size as on the webpage</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>svg <span class="kw">set</span> <span class="ot">height</span> <span class="dv">250</span> </span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>svg rect <span class="ot">x</span>=<span class="st">&quot;10&quot;</span> <span class="ot">y</span>=<span class="st">&quot;10&quot;</span> <span class="ot">width</span>=<span class="st">&quot;30&quot;</span> <span class="ot">height</span>=<span class="st">&quot;30&quot;</span> stroke=<span class="st">&quot;black&quot;</span> fill=<span class="st">&quot;transparent&quot;</span> stroke-<span class="ot">width</span>=<span class="st">&quot;5&quot;</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>svg rect <span class="ot">x</span>=<span class="st">&quot;60&quot;</span> <span class="ot">y</span>=<span class="st">&quot;10&quot;</span> rx=<span class="st">&quot;10&quot;</span> ry=<span class="st">&quot;10&quot;</span> <span class="ot">width</span>=<span class="st">&quot;30&quot;</span> <span class="ot">height</span>=<span class="st">&quot;30&quot;</span> \</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>    stroke=<span class="st">&quot;black&quot;</span> fill=<span class="st">&quot;transparent&quot;</span> stroke-<span class="ot">width</span>=<span class="st">&quot;5&quot;</span></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>svg circle cx=<span class="st">&quot;25&quot;</span> cy=<span class="st">&quot;75&quot;</span> r=<span class="st">&quot;20&quot;</span> stroke=<span class="st">&quot;red&quot;</span> fill=<span class="st">&quot;transparent&quot;</span> stroke-<span class="ot">width</span>=<span class="st">&quot;5&quot;</span></span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>svg ellipse cx=<span class="st">&quot;75&quot;</span> cy=<span class="st">&quot;75&quot;</span> rx=<span class="st">&quot;20&quot;</span> ry=<span class="st">&quot;5&quot;</span> stroke=<span class="st">&quot;red&quot;</span> fill=<span class="st">&quot;transparent&quot;</span> stroke-<span class="ot">width</span>=<span class="st">&quot;5&quot;</span></span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>svg line x1=<span class="st">&quot;10&quot;</span> x2=<span class="st">&quot;50&quot;</span> y1=<span class="st">&quot;110&quot;</span> y2=<span class="st">&quot;150&quot;</span> stroke=<span class="st">&quot;orange&quot;</span> stroke-<span class="ot">width</span>=<span class="st">&quot;5&quot;</span></span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>svg polyline <span class="kw">{</span>points=<span class="st">&quot;60 110 65 120 70 115 75 130 80 125 85 140 90 135 95 150 100 145&quot;</span><span class="kw">}</span> \</span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>     stroke=<span class="st">&quot;orange&quot;</span> fill=<span class="st">&quot;transparent&quot;</span> stroke-<span class="ot">width</span>=<span class="st">&quot;5&quot;</span></span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>svg polygon <span class="kw">{</span>points=<span class="st">&quot;50 160 55 180 70 180 60 190 65 205 50 195 35 205 40 190 30 180 45 180&quot;</span><span class="kw">}</span> \</span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>     stroke=<span class="st">&quot;green&quot;</span> fill=<span class="st">&quot;transparent&quot;</span> stroke-<span class="ot">width</span>=<span class="st">&quot;5&quot;</span></span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a>svg path <span class="kw">{</span>d=<span class="st">&quot;M20,230 Q40,205 50,230 T90,230&quot;</span><span class="kw">}</span> fill=<span class="st">&quot;none&quot;</span> stroke=<span class="st">&quot;blue&quot;</span> stroke-<span class="ot">width</span>=<span class="st">&quot;5&quot;</span></span>
+<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a>svg write images/basic-shapes.svg</span></code></pre></div>
+<p><img src="images/basic-shapes.svg" /></p>
+<p>Ok, great basic shapes can be directly copied from svg code and with a few modifications we can create valid Tcl code out of the svg code. Please note, that from the code shown in this Readme the package <em>tsvg</em> was derived which does not need this protecting of the spaces within the attributes. See below the section about the <em>tsvg</em> plugin for more details.</p>
+<h4 id="code-chunk-attributes-for-svg-figures">Code chunk attributes for svg figures</h4>
+<p>Let’s introduce now a few code chunk attributes for figures as they are known for instance in R.</p>
+<p>Below an example:</p>
+<pre><code>    ```{.tcl fig=true fig.width=400 fig.height=400}
+    # some figure code
+    ```</code></pre>
+<p>This code should call some procedure figure with the arguments of a basic filename, <em>fig.width</em>, <em>fig.height</em> and it should return a filename with an extension like <code>.svg</code></p>
+<p>Here an outline of such a function:</p>
+<pre><code>proc figure {filename width height args} {
+    # parse args, get width, get height
+    # write file
+    # return filename with extension
+}</code></pre>
+<p>Ok, lets now implement our figure procedure for our svg:</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode tcl"><code class="sourceCode tcl"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="kw">proc</span> figure <span class="kw">{</span>filename <span class="ot">width</span> <span class="ot">height</span> <span class="ot">args</span><span class="kw">}</span> <span class="kw">{</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>    svg <span class="kw">set</span> <span class="ot">width</span> <span class="dt">$width</span></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>    svg <span class="kw">set</span> <span class="ot">height</span> <span class="dt">$height</span></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>    svg write images/<span class="dt">$filename</span>.svg</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">return</span> <span class="dt">$filename</span>.svg</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a><span class="kw">}</span></span></code></pre></div>
+<p>Now in the next code chunk we create a new figure:</p>
+<pre><code> ` ``{.tcl label=figsample fig=true width=80 height=80}
+ svg set code &quot;&quot;
+ svg rect x 0 y 0 width 80 height 80 fill cornsilk
+ svg rect x 10 y 10 width 60 height 60 fill salmon
+ ` ``
+   
+ ![](images/figsample.svg)</code></pre>
+<p>Here the actual code (the space between the backticks was added to avoid interpretation problems by pandoc):</p>
+<div class="sourceCode" id="cb20" label="figsample" data-fig="true" width="80" height="80"><pre class="sourceCode tcl"><code class="sourceCode tcl"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>svg <span class="kw">set</span> code <span class="st">&quot;&quot;</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>svg rect <span class="ot">x</span> <span class="dv">0</span> <span class="ot">y</span> <span class="dv">0</span> <span class="ot">width</span> <span class="dv">80</span> <span class="ot">height</span> <span class="dv">80</span> fill cornsilk</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>svg rect <span class="ot">x</span> <span class="dv">10</span> <span class="ot">y</span> <span class="dv">10</span> <span class="ot">width</span> <span class="dv">60</span> <span class="ot">height</span> <span class="dv">60</span> fill salmon</span></code></pre></div>
+<p><img src="images/figsample.svg" /></p>
+<ul>
+<li>TODO: autoembedding of figures by chunk number</li>
+</ul>
+<h2 id="other-filters">Other filters</h2>
+<p>The <em>pantcl filter</em> supports as well generation of filters for other tools and programming languages using the Tcl programming language. The standalone application <em>pantcl.bin</em> comes with the following filters:</p>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>filter</th>
+<th>Tool</th>
+<th>URL</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>.abc</td>
+<td>ABC music</td>
+<td><a href="http://moinejf.free.fr/">http://moinejf.free.fr/</a></td>
+</tr>
+<tr class="even">
+<td>.cmd</td>
+<td>Bash scripts</td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>.dot</td>
+<td>dot/neato (GraphViz)</td>
+<td><a href="https://graphviz.org/">https://graphviz.org/</a></td>
+</tr>
+<tr class="even">
+<td>.eqn</td>
+<td>eqn2graph (groff)</td>
+<td><a href="https://www.gnu.org/software/groff/">https://www.gnu.org/software/groff/</a></td>
+</tr>
+<tr class="odd">
+<td>.mmd</td>
+<td>mmdc (Mermaid-cli)</td>
+<td><a href="https://www.npmjs.com/package/mermaid.cli">https://www.npmjs.com/package/mermaid.cli</a></td>
+</tr>
+<tr class="even">
+<td>.mtex</td>
+<td>LaTex</td>
+<td><a href="https://www.latex-project.org/">https://www.latex-project.org/</a></td>
+</tr>
+<tr class="odd">
+<td>.pic</td>
+<td>pic2graph (groff)</td>
+<td><a href="https://www.gnu.org/software/groff/">https://www.gnu.org/software/groff/</a></td>
+</tr>
+<tr class="even">
+<td>.pik</td>
+<td>pikchr/fossil pikchr</td>
+<td><a href="https://www.fossil-scm.org/home/doc/trunk/www/pikchr.md">https://www.fossil-scm.org/home/doc/trunk/www/pikchr.md</a></td>
+</tr>
+<tr class="odd">
+<td>.pipe</td>
+<td>R, python, octave</td>
+<td></td>
+</tr>
+<tr class="even">
+<td>.puml</td>
+<td>plantuml</td>
+<td><a href="https://plantuml.com/">https://plantuml.com/</a></td>
+</tr>
+<tr class="odd">
+<td>.rplot</td>
+<td>Rscript</td>
+<td><a href="https://www.r-project.org">https://www.r-project.org</a></td>
+</tr>
+<tr class="even">
+<td>.sqlite</td>
+<td>sqlite3</td>
+<td><a href="https://www.sqlite.org/index.html">https://www.sqlite.org</a></td>
+</tr>
+<tr class="odd">
+<td>.tcl</td>
+<td>tclsh</td>
+<td><a href="https://www.tcl.tk">https://www.tcl.tk</a></td>
+</tr>
+<tr class="even">
+<td>.tcrd</td>
+<td>Tcl (chords for songs)</td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>.tdot</td>
+<td>Tcl tdot package</td>
+<td><a href="https://github.com/mittelmark/DGTcl">https://github.com/mittelmark/DGTcl</a></td>
+</tr>
+<tr class="even">
+<td>.tsvg</td>
+<td>Tcl tsvg package</td>
+<td><a href="https://github.com/mittelmark/DGTcl">https://github.com/mittelmark/DGTcl</a></td>
+</tr>
+</tbody>
+</table>
+<p>Let’s finish our small tutorial with the implementation of a filter for a command line application. Below you see the code for the GraphViz dot application.</p>
+<p>Here the code example (remove the space after the first backtick, space was added to avoid intpretation):</p>
+<pre><code>` ``{.dot label=digraph echo=true}
+digraph G {
+  main -&gt; parse -&gt; execute;
+  main -&gt; init [dir=none];
+  main -&gt; cleanup;
+  execute -&gt; make_string;
+  execute -&gt; printf
+  init -&gt; make_string;
+  main -&gt; printf;
+  execute -&gt; compare;
+}
+` ``</code></pre>
+<p>Which will produce the following output:</p>
+<div class="sourceCode" id="cb22" label="digraph" data-echo="true"><pre class="sourceCode dot"><code class="sourceCode dot"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="kw">digraph</span> <span class="va">G</span> <span class="ot">{</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="co">  </span><span class="va">main</span><span class="co"> </span><span class="ot">-&gt;</span><span class="co"> </span><span class="va">parse</span><span class="co"> </span><span class="ot">-&gt;</span><span class="co"> </span><span class="va">execute</span><span class="ot">;</span></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a><span class="co">  </span><span class="va">main</span><span class="co"> </span><span class="ot">-&gt;</span><span class="co"> </span><span class="va">init</span><span class="co"> </span><span class="ot">[</span><span class="at">dir</span><span class="ot">=</span><span class="va">none</span><span class="ot">];</span></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a><span class="co">  </span><span class="va">main</span><span class="co"> </span><span class="ot">-&gt;</span><span class="co"> </span><span class="va">cleanup</span><span class="ot">;</span></span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a><span class="co">  </span><span class="va">execute</span><span class="co"> </span><span class="ot">-&gt;</span><span class="co"> </span><span class="va">make_string</span><span class="ot">;</span></span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a><span class="co">  </span><span class="va">execute</span><span class="co"> </span><span class="ot">-&gt;</span><span class="co"> </span><span class="va">printf</span></span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a><span class="co">  </span><span class="va">init</span><span class="co"> </span><span class="ot">-&gt;</span><span class="co"> </span><span class="va">make_string</span><span class="ot">;</span></span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a><span class="co">  </span><span class="va">main</span><span class="co"> </span><span class="ot">-&gt;</span><span class="co"> </span><span class="va">printf</span><span class="ot">;</span></span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a><span class="co">  </span><span class="va">execute</span><span class="co"> </span><span class="ot">-&gt;</span><span class="co"> </span><span class="va">compare</span><span class="ot">;</span></span>
+<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a><span class="ot">}</span></span></code></pre></div>
+<p><img src="/home/groth/workspace/pantcl/images/digraph.svg" /></p>
+<p>Using the chunk option <em>echo=false</em>, we can as well hide the source code. If you would like to see the code you now have to consult the Markdown file.</p>
+<p></p>
+<p><img src="/home/groth/workspace/pantcl/images/digraph2.svg" /></p>
+<p>To avoid automatic placement of figures you can as well set the option include to false <em>include=false</em> and then create the usual Markdown code for the figure where the basename is defined by a <code>images</code> subfolder the chunk label.</p>
+<pre><code>` ``{.dot label=digraph3 echo=false include=false}
+digraph G {
+  main [shape=box,style=filled,fillcolor=&quot;.5 .8 1.0&quot;] ;
+  main -&gt; parse -&gt; execute;
+  main -&gt; init [style=dotted];
+  main -&gt; cleanup;
+  execute -&gt; make_string;
+  execute -&gt; printf
+  edge [color=&quot;red&quot;];
+  init -&gt; make_string;
+  edge [dir=&quot;none&quot;]; // no arrows
+  main -&gt; printf;
+  execute -&gt; compare;
+}
+` ``
+![](images/digraph3.svg)</code></pre>
+<p>This will produce the following:</p>
+<p></p>
+<p><img src="images/digraph3.svg" /></p>
+<p>Ok, now you know what was the code to create the graphic above.</p>
+<p>The dot filter supports as well the other command line applications from the GraphViz toolbox. To switch for instance from the <code>dot</code> command line application to the <code>neato</code> application give the chunk argument <code>app=neato</code> and you can enter neato code in your code chunk here an example:</p>
+<pre><code>` ``{.dot label=neato-sample app=neato}
+graph G {
+    node [shape=box,style=filled,fillcolor=skyblue,
+        color=black,width=0.4,height=0.4];
+    n0 -- n1 -- n2 -- n3 -- n0;
+}
+` ``</code></pre>
+<p>Which will produce this:</p>
+<div class="sourceCode" id="cb25" label="neato-sample" data-app="neato"><pre class="sourceCode dot"><code class="sourceCode dot"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="va">graph</span> <span class="va">G</span> <span class="ot">{</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="co">    </span><span class="kw">node</span><span class="co"> </span><span class="ot">[</span><span class="at">shape</span><span class="ot">=</span><span class="va">box</span><span class="co">,</span><span class="at">style</span><span class="ot">=</span><span class="va">filled</span><span class="co">,</span><span class="at">fillcolor</span><span class="ot">=</span><span class="va">skyblue</span><span class="co">,</span></span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a><span class="co">        </span><span class="at">color</span><span class="ot">=</span><span class="va">black</span><span class="co">,</span><span class="at">width</span><span class="ot">=</span><span class="dv">0.4</span><span class="co">,</span><span class="at">height</span><span class="ot">=</span><span class="dv">0.4</span><span class="ot">];</span></span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a><span class="co">    </span><span class="va">n0</span><span class="co"> -- </span><span class="va">n1</span><span class="co"> -- </span><span class="va">n2</span><span class="co"> -- </span><span class="va">n3</span><span class="co"> -- </span><span class="va">n0</span><span class="ot">;</span></span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a><span class="ot">}</span></span></code></pre></div>
+<p><img src="/home/groth/workspace/pantcl/images/neato-sample.svg" /></p>
+<p>You can try out as well the GraphViz layout engines yourself. Please have a look at the GraphViz homepage at <a href="https://www.graphviz.org/docs/layouts/">https://www.graphviz.org/docs/layouts/</a>.</p>
+<h2 id="tsvg-plugin">tsvg plugin</h2>
+<p>The code shown above creating svg files using the thingy object was as well saved as a plugin with some modifications and extensions. That way you can include code creating svg files using the described syntax above. Please not that the plugin object is named <code>tsvg</code>. Here an example.</p>
+<pre><code>` ``{.tsvg label=tsvg-hello-world results=hide echo=false}
+tsvg circle cx 50 cy 50 r 45 stroke black stroke-width 2 fill salmon
+tsvg text x 29 y 45 Hello
+tsvg text x 26 y 65 World!
+` ```</code></pre>
+<p>Which will produce this:</p>
+<pre class="tsvg" data-fig="true" label="tsvg-hello-world" data-results="hide" data-echo="true"><code>tsvg circle cx 50 cy 50 r 45 stroke black stroke-width 2 fill salmon
+tsvg text x 29 y 45 Hello
+tsvg text x 26 y 65 World!</code></pre>
+<p><img src="/home/groth/workspace/pantcl/images/tsvg-hello-world.svg" /></p>
+<p>In contrast to the svg code developed above the <em>tsvg</em> plugin allows you to send the attributes containing as well spaces as they are, the <em>tag</em> method will clean up the lists arguments by using the paired quotes. This greatly simplifies the copy and paste procedure for existing svg examples, you in many cases just have to remove the leading and trailing greater and lower signs. Here is an example using different syntax types:</p>
+<pre class="tsvg" label="tsvg-polyline" data-results="hide" data-echo="true"><code>tsvg set code &quot;&quot;
+tsvg set width 180
+tsvg set height 200
+tsvg rect x 10 y 10 width 160 height 180 style &quot;fill:#ddeeff;&quot;
+tsvg circle cx=&quot;130&quot; cy=&quot;120&quot; r=&quot;20&quot; stroke=&quot;red&quot; stroke-width=&quot;2&quot; fill=&quot;salmon&quot;
+tsvg polyline points=&quot;0,40 40,40 40,80 80,80 80,120 120,120 120,160&quot; \
+   style=&quot;fill:white;stroke:red;stroke-width:4&quot;</code></pre>
+<p><img src="/home/groth/workspace/pantcl/images/tsvg-polyline.svg" /></p>
+<p>For more information about the <em>tsvg</em> package visit the <a href="lib/tsvg/tsvg.html">tsvg manual page</a>.</p>
+<h2 id="filter-for-math-tex">Filter for Math-Tex</h2>
+<p>This filter requires a <em>LaTeX</em> installation and the texlive-standalone package. The plugin uses in the background conversion of a <em>LaTeX</em> formula using the <em>latex</em> command line application and thereafter a conversion to png using the <em>dvipgn</em> application which is part of the LaTeX installation. Please note that currently only single line equations are supported:</p>
+<p>Here two examples:</p>
+<pre class="mtex" data-fontsize="LARGE"><code>$ E = m \times c^2 $</code></pre>
+<p><img src="/home/groth/workspace/pantcl/images/mtex-7.png" /></p>
+<p>And here the second example:</p>
+<pre class="mtex" data-fontsize="LARGE"><code>$ F(x) = \int^a_b \frac{1}{3}x^3 $</code></pre>
+<p><img src="/home/groth/workspace/pantcl/images/mtex-8.png" /></p>
+<p>May be later version will support aligned sets of equations or matrices.</p>
+<h2 id="pic-and-eqn-filters">PIC and EQN filters</h2>
+<p>The <em>groff</em> typesetting systems comes with the tools <em>eqn2graph</em> which converts EQN equations into PNG graphics and and <em>pic2graph</em> which converts diagram code written in the PIC programming language into PNG graphics. Below are two examples, one for each tool:</p>
+<p>Here an example for the PIC language:</p>
+<pre><code>     ```{.pic ext=png}
+     circle &quot;circle&quot; rad 0.5 fill 0.3; arrow ;
+     ellipse &quot;ellipse&quot; wid 1.4 ht 1 fill 0.1 ; line;
+     box wid 1 ht 1 fill 0.05 &quot;A&quot;;
+     spline;
+     box wid 0.4 ht 0.4 fill 0.05 &quot;B&quot;;
+     arc;
+     box wid 0.2 ht 0.2 fill 0.05 &quot;C&quot;;
+     ```</code></pre>
+<p>And here the output:</p>
+<pre class="pic" data-ext="png"><code>circle &quot;circle&quot; rad 0.5 fill 0.3; arrow ;
+ellipse &quot;ellipse&quot; wid 1.4 ht 1 fill 0.1 ; line;
+box wid 1 ht 1 fill 0.05 &quot;A&quot;;
+spline;
+box wid 0.4 ht 0.4 fill 0.05 &quot;B&quot;;
+arc;
+box wid 0.2 ht 0.2 fill 0.05 &quot;C&quot;;</code></pre>
+<p><img src="/home/groth/workspace/pantcl/images/pic-9.png" /></p>
+<p>The complete code was:</p>
+<pre><code>     ```{.pic ext=png}
+     circle &quot;circle&quot; rad 0.5 fill 0.3; arrow ;
+     ellipse &quot;ellipse&quot; wid 1.4 ht 1 fill 0.1 ; line;
+     box wid 1 ht 1 fill 0.05 &quot;A&quot;;
+     spline;
+     box wid 0.4 ht 0.4 fill 0.05 &quot;B&quot;;
+     arc;
+     box wid 0.2 ht 0.2 fill 0.05 &quot;C&quot;;
+     ```</code></pre>
+<p>And here an example for the EQN language:</p>
+<p></p>
+<p><img src="/home/groth/workspace/pantcl/images/eqn-10.png" /></p>
+<p>The code here was (the indentation of five spaces is just to avoid interpretation):</p>
+<pre><code>     ```{.eqn echo=false}
+     x = {-b +- sqrt{b sup 2 - 4ac}} over 2a
+     ```</code></pre>
+<h2 id="pikchr-filter">Pikchr filter</h2>
+<p>The PIC diagram language has a modern successor, the Pikchr diagram language used on the Sqlite webpage to display syntax diagrams. The homepage of the pikchr tool is at: <a href="https://pikchr.org">https://pikchr.org/</a>. The tool can be compiled easily, but even easier you can as well download the <em>fossil</em> application which has a subcommand <em>pikchr</em> which allows you to create as well diagrams. The downloads of <em>fossil</em> for various platforms can be found here <a href="https://www.fossil-scm.org/home/uv/download.html">https://www.fossil-scm.org/home/uv/download.html</a>.</p>
+<p>If the <em>fossil</em> application is in your PATH ou can create easily as well <em>pikchr</em> diagrams. Here an example:</p>
+<pre class="pikchr" data-app="fossil-2.17" data-ext="svg"><code>box &quot;box&quot;
+circle &quot;circle&quot; fill cornsilk at 1 right of previous
+ellipse &quot;ellipse&quot; at 1 right of previous
+oval &quot;oval&quot; at .8 below first box
+cylinder &quot;cylinder&quot; at 1 right of previous
+file &quot;file&quot; at 1 right of previous</code></pre>
+<p><img src="/home/groth/workspace/pantcl/images/pik-11.svg" /></p>
+<p>The code for this diagram follows below:</p>
+<pre><code>` ``{.pikchr app=fossil-2.17 ext=pdf}
+box &quot;box&quot;
+circle &quot;circle&quot; fill cornsilk at 1 right of previous
+ellipse &quot;ellipse&quot; at 1 right of previous
+oval &quot;oval&quot; at .8 below first box
+cylinder &quot;cylinder&quot; at 1 right of previous
+file &quot;file&quot; at 1 right of previous
+` ``</code></pre>
+<p>The option <code>app=fossil-2.17</code> was used to use a newer version of the <em>fossil</em> application than the default one. Please note, that at least <em>fossil</em> in version 2.13 is required.</p>
+<p>We can as well resize the image. In this case we have to create a <em>png</em> extension. As conversion from svg to png is then required we need a tool called cairosvg which can be installed as a Python packagte using pip:</p>
+<pre><code>pip3 install cairosvg --user</code></pre>
+<p>should do this. The advantage if using this tool is, that we beside resizing we can as well create PDF’s for inclusion into LaTeX documents. Here an example for a PNG image.</p>
+<pre class="pikchr" label="fossil-sample" data-app="fossil-2.17" data-ext="png" width="500" height="300"><code>box &quot;box&quot;
+circle &quot;circle&quot; fill cornsilk at 1 right of previous
+ellipse &quot;ellipse&quot; at 1 right of previous
+oval &quot;oval&quot; at .8 below first box
+cylinder &quot;cylinder&quot; at 1 right of previous
+file &quot;file&quot; at 1 right of previous</code></pre>
+<p><img src="/home/groth/workspace/pantcl/images/fossil-sample.png" /></p>
+<p>Here is the code:</p>
+<pre><code>` ``{.pikchr app=fossil-2.17 ext=png  width=500 height=300}
+` ``</code></pre>
+<p>As you can see using the <code>ext=png</code> setting and the <code>width</code> and <code>height</code> options, we can resize the image.</p>
+<h2 id="rplot-filter">Rplot filter</h2>
+<p>The usual way to embed R code in Markdown is using the R-knitr library and then use R to execute the code embedded within the R-Markdown file. This type of execution is however not compatible with pandoc as knitr modifies the code chunks without R-code as well. So it is not easily possible to embed other filters in documents processed with R/knitr first. Although the R-knitr command is useful if the main focus is on R, it is however not favourable if you just would like to add a few plots or execute a few statements. For a few simple plots you can use the filter <code>.rplot</code> to embed them within your document. Here an example.</p>
+<pre class="rplot" label="iris" data-echo="true" data-results="hide" width="800" height="600"><code>data(iris)
+pairs(iris[,1:3],pch=19,col=as.numeric(iris$Species)+1)
+x=1</code></pre>
+<p><img src="/home/groth/workspace/pantcl/images/iris.png" /></p>
+<p>Here is the code:</p>
+<pre><code>` ``{.rplot label=iris echo=true results=&quot;hide&quot; width=800 height=600}
+data(iris)
+pairs(iris[,1:3],pch=19,col=as.numeric(iris$Species)+1)
+` ``</code></pre>
+<p>And here just some code without a figure.</p>
+<pre class="rplot" data-fig="false"><code>print(head(iris))</code></pre>
+<pre class="rplotout" data-fig="false"><code>  Sepal.Length Sepal.Width Petal.Length Petal.Width Species
+1          5.1         3.5          1.4         0.2  setosa
+2          4.9         3.0          1.4         0.2  setosa
+3          4.7         3.2          1.3         0.2  setosa
+4          4.6         3.1          1.5         0.2  setosa
+5          5.0         3.6          1.4         0.2  setosa
+6          5.4         3.9          1.7         0.4  setosa</code></pre>
+<p>That is the code:</p>
+<pre><code>` ``{.rplot fig=false} 
+print(head(iris))
+` ``</code></pre>
+<p>Session are as well retained, so you can use variables created in code chunks before.</p>
+<pre class="rplot" data-fig="false"><code>print(x)</code></pre>
+<pre class="rplotout" data-fig="false"><code>[1] 1</code></pre>
+<p>Here the code:</p>
+<pre><code>` ``{.rplot fig=false} 
+print(x)
+` ``</code></pre>
+<p>In contrast to the R-knitr tool this filter will start for each chunk a new process, so it is much slower then the R-knitr tool, so as I have written above, it should be used mostly for Markdown documents with just a few code chunks and with simple outputs. Thre is no support for sophisticated features like nice tables etc..</p>
+<h2 id="lua-filters">Lua filters</h2>
+<p>Pandoc since version 2.0 has embedded support for Lua filters. To no reinvent every filter again you should use Lua filters if they are available. Below an example for a Lua filter:</p>
+<pre><code> **strong** should be converted to smallcaps using the Lua filter _smallcaps.lua_!</code></pre>
+<p><strong>strong</strong> should be converted to smallcaps using the Lua filter <em>smallcaps.lua</em>! To apply Lua filters use the pandoc option <code>--lua-filter=filter/smallcaps.lua</code>.</p>
+<p>For more details see the Pandoc documentation at <a href="https://pandoc.org/lua-filters.html">https://pandoc.org/lua-filters.html</a> and for examples of Lua filter look at GitHub <a href="https://github.com/pandoc/lua-filters">https://github.com/pandoc/lua-filters</a>.</p>
+<h2 id="summary">Summary</h2>
+<p>In this Readme I explained on how to use the Tcl pandoc filter to embed and process Tcl code during the creation of HTML or PDF documents. The Tcl filter was generalized so that as well filters for other tools, especially command line application can be easily programmed using the Tcl programming language. Examples for a filter for the GraphViz tool dot to create flowcharts and graphs, a package to create SVG images using Tcl, the new <em>tsvg</em> package, a little renderer for single TeX equations, filters for the PIC and EQN langauges and as well for the Pikchr diagram tools are as well included in the pantcl.bin file. The provided infrastructure has the advantage that Tcl programmers can stay within their favourite programming language but still can use other nice tools easily for their documentation. In case of new may be complex things look for existing Lua filters. As Lua is embedded into Pandoc have a look for an existing Lua filter to not reinvent the (filter) wheel.</p>
+<h2 id="documentation">Documentation</h2>
+<p>The HTML version of this document was generated using the following commandline:</p>
+<pre><code>pantcl.bin pantcl-tutorial.md pantcl-tutorial.html --css mini.css -s
+     --toc --lua-filter=filter/smallcaps.lua
+</code></pre>
+<p>Please look at the source Markdown file to see which Markdown code was the input.</p>
+<h2 id="links">Links</h2>
+<ul>
+<li><a href="https://github.com/mittelmark/DGTcl">DGTcl homepage at GitHub</a></li>
+<li><a href="https://wiki.tcl-lang.org/page/pandoc%2Dtcl%2Dfilter">Discussion page for pandoc-tcl-filter.tcl on the Tclers Wiki</a></li>
+<li><a href="http://htmlpreview.github.io/?https://github.com/mittelmark/DGTcl/blob/master/pandoc-tcl-filter/lib/tsvg/tsvg.html">Documentation to the tsvg package</a></li>
+<li><a href="https://pandoc.org/filters.html">https://pandoc.org/filters.html</a> - background on pandoc filters</li>
+<li><a href="https://github.com/pandoc/lua-filters">pandoc lua filters</a></li>
+<li><a href="https://github.com/mvhenderson/pandoc-filter-node">https://github.com/mvhenderson/pandoc-filter-node</a> - pandoc filters using JavaScript and TypeScript</li>
+<li><a href="https://pypi.org/project/panflute/">https://pypi.org/project/panflute/</a> - pandoc filters in Python</li>
+<li></li>
+</ul>
+<h2 id="todo">Todo</h2>
+<ul>
+<li>code block labels (label=chunkname) - done</li>
+<li>code block figures (include=false fig=true) - done</li>
+<li>regular filter infrastructure for Tcl support for for instance other filters like .csv to include csv files .dot to include dot file graphics etc. - done (examples for dot code and tsvg plugin)</li>
+<li>Windows exe / starkit containing the rl_json library as well (adding linux library)</li>
+</ul>
+<h2 id="history">History</h2>
+<ul>
+<li>2021-08-22 - Release of Wiki cocde</li>
+<li>2021-08-25 - Release of github code</li>
+<li>2021-08-26 - Adding thingy svg creator, image file writing works</li>
+<li>2021-08-31 - adding mtex filter example, images now in images folder, Lua filter example</li>
+<li>2021-11-23 - adding pikchr, pik, eqn filters, extending documentation</li>
+<li>2021-11-30 - adding rplot filter for embedding R code</li>
+<li>2021-12-21 - results=“asis” for Markdown inclusion, filters for PlantUML and Mermaid diagrams, sqlite3, ABC music</li>
+<li>2022-01-09 - generic shell filter (filter-cmd), tdot filter for Tcl/dot<br />
+</li>
+<li>2022-02-07 - graphical user interface and pipe filter for embedding R, Python and Octave</li>
+</ul>
+<h2 id="author">Author</h2>
+<p>Detlef Groth, Caputh-Schwielowsee, Germany</p>
+<h2 id="license">License</h2>
+<p>MIT, see the file LICENSE in the release folder.</p>
+</body>
+</html>
