@@ -8,8 +8,9 @@
 #'     ext: svg
 #' ---
 #' 
-# a simple pandoc filter using the script pandoc-tcl-filter.tcl 
-# must be in the in the parent directory of the filter directory
+# A simple pandoc filter using the script _pantcl.tcl_ which
+# must be in the in the parent directory of the filter directory. Alternatively the
+#'the standalone executable _pantcl.bin_ can be used.
 #' 
 #' ------
 #' 
@@ -22,7 +23,7 @@
 #' ## Name
 #' 
 #' _filter-abc.tcl_ - Filter which can be used to display ABC music notatiion 
-#' within a Pandoc processed document using the Tcl filter driver `pandoc-tcl-filter.tcl`. 
+#' within a Pandoc processed document using the Tcl filter driver `pantcl.tcl`. 
 #' The command line application abcm2ps is required which can be ususally installed using your package manager.
 #' 
 #' ## Usage
@@ -46,21 +47,21 @@
 #' The conversion of the Markdown documents via Pandoc should be done as follows:
 #' 
 #' ```
-#' pandoc input.md --filter pandoc-tcl-filter.tapp -s -o output.html
+#' pandoc input.md --filter pantcl.bin -s -o output.html
 #' ```
 #' 
-#' The file *pandoc-tcl-filter.tapp* which contains the Tcl filter and all other filters has to be placed in the PATH and the 
+#' The file *pantcl.bin* which contains the Tcl filter and all other filters has to be placed in the PATH and the 
 #' system has to support the Shebang, on Unix this is standard on Windows you need to use tools like Cygwin, Git-Bash or Cygwin. 
 #' 
-#' You can as well use the file *pandoc-tcl-filter.tapp* directly as command line application like this:
+#' You can as well use the file *pantcl.tapp/pantcl.bin* directly as command line application like this:
 #' 
 #' ```
-#' pandoc-tcl-filter.tapp input.md output.html -s -o 
+#' pantcl.bin input.md output.html -s
 #' ```
 #' 
 #' The arguments after the output file are delegated to pandoc.
 #' 
-#' The internal file `filter-abc.tcl` is not used directly but sourced automatically by the `pandoc-tcl-filter.tcl` file.
+#' The internal file `filter-abc.tcl` is not used directly but sourced automatically by the `pantcl.tcl` file.
 #' If code blocks with the `.abc` marker are found, the contents in the code block is processed via the abcm2ps command line tool.
 #' Conversion to png or pdf requires teh Python command line application cairosvg which can be usually installed as well with your package manager or using the Python package manager like this:
 #' 
@@ -185,7 +186,8 @@
 #' 
 #' ## See also:
 #' 
-#' * [pandoc-tcl-filter Readme](../Readme.html)
+#' * [pantcl Readme](../README.html)
+#' * [filter-cmd](filter-cmd.html) with Lilypond music example.
 #' 
 
 

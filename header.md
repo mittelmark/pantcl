@@ -1,36 +1,28 @@
 <center>
 
 Filters: 
-[filter-abc](filter/filter-abc.html) -
-[filter-cmd](filter/filter-cmd.html) -
-[filter-dot](filter/filter-dot.html) -
-[filter-eqn](filter/filter-eqn.html) -
-[filter-mmd](filter/filter-mmd.html) -
-[filter-mtex](filter/filter-mtex.html) -
-[filter-pic](filter/filter-pic.html) -
-[filter-pik](filter/filter-pik.html) -
-[filter-pipe](filter/filter-pipe.html) -
-[filter-puml](filter/filter-puml.html) -
-[filter-rplot](filter/filter-rplot.html) - 
-[filter-sqlite](filter/filter-sqlite.html) -
-[filter-tcrd](filter/filter-tcrd.html) -
-[filter-tcl](filter/filter-tcl.html) -
-[filter-tdot](filter/filter-tdot.html) -
-[filter-tsvg](filter/filter-tsvg.html) <br />
-
-More examples:
-[dot](examples/example-dot.html) -
-[mtex](examples/example-mtex.html) -
-[pic](examples/example-pic.html) -
-[pikchr](examples/example-pik.html) -
-[rplot](examples/example-rplot.html) -
-[tcl](examples/example-tcl.html) -
-[tsvg](examples/example-tsvg.html) 
+[filter-abc](lib/tclfilters/filter-abc.html) -
+[filter-cmd](lib/tclfilters/filter-cmd.html) -
+[filter-dot](lib/tclfilters/filter-dot.html) -
+[filter-eqn](lib/tclfilters/filter-eqn.html) -
+[filter-mmd](lib/tclfilters/filter-mmd.html) -
+[filter-mtex](lib/tclfilters/filter-mtex.html) -
+[filter-pic](lib/tclfilters/filter-pic.html) -
+[filter-pik](lib/tclfilters/filter-pik.html) -
+[filter-pipe](lib/tclfilters/filter-pipe.html) -
+[filter-puml](lib/tclfilters/filter-puml.html) -
+[filter-rplot](lib/tclfilters/filter-rplot.html) - 
+[filter-sqlite](lib/tclfilters/filter-sqlite.html) -
+[filter-tcrd](lib/tclfilters/filter-tcrd.html) -
+[filter-tcl](lib/tclfilters/filter-tcl.html) -
+[filter-tdot](lib/tclfilters/filter-tdot.html) -
+[filter-tsvg](lib/tclfilters/filter-tsvg.html) <br />
 
 Documentation: 
-[pandoc-tcl-filter](pandoc-tcl-filter.html) - 
-[this Readme](Readme.html) -
-[GUI filter-view.html](filter-view.html)  
+[Pantcl documentation](pantcl.html) - 
+[Pantcl Tutorial](pantcl-tutorial.html) -
+[Pantcl Readme](README.html) -
+[Pantcl GUI filter viewer](lib/fview/filter-view.html) 
 </center>
 
 

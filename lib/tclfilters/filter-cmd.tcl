@@ -379,7 +379,7 @@
 #' Png and Pdf images are automatically cropped, so we do not need to set the paper size (`{.cmd file="mini2.ly" results="hide"}`).
 #' 
 #' ```{.cmd file="mini2.ly" results="hide"}
-#' #!/usr/bin/env -S lilyscript.sh mini2.ly mini.png
+#' #!/usr/bin/env -S lilyscript.sh mini2.ly mini.svg
 #' \version "2.14.1"
 #' {
 #'   % middle tie looks funny here:
@@ -390,7 +390,7 @@
 #' We can then include the created 
 #' image using standard Markdown syntax with setting as well a width to scale the image (`![](mini.png){#id width=140}`):
 #' 
-#' ![](mini.png){#id width=140}
+#' ![](mini.svg){#id width=140}
 #'
 #' Alternativly you can as well create a shell script without the need of a wrapper script like this (`{.cmd file="mini4.ly" results="hide"}`):
 #' 

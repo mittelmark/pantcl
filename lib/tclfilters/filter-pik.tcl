@@ -23,19 +23,25 @@
 #' ## Name
 #' 
 #' _filter-pik.tcl_ - Filter which can be used to display Pikchr files within a Pandoc processed
-#' document using the Tcl filter driver `pandoc-tcl-filter.tcl` or the wrapped stand alone application
-#' _pandoc-tcl-filter.tapp_. 
+#' document using the Tcl filter driver `pantcl.tcl` or the wrapped stand alone application
+#' _pantcl.tapp_ can be named as well _pantcl.bin_ or just _pantcl_. 
 #' 
 #' ## Usage
 #' 
-#' The conversion of the Markdown documents via Pandoc should be done as 
+#' The conversion of the Markdown documents via pantcl and pandoc should be done as 
 #' follows:
 #' 
 #' ```
-#' pandoc input.md --filter pandoc-tcl-filter.tapp -s -o output.html
+#' pantcl.bin input.md -s -o output.html
 #' ```
 #' 
-#' The file `filter-pik.tcl` is not used directly but sourced automatically by the `pandoc-tcl-filter.tcl` file.
+#' As well source code documentation using the [mkdoc](https://core.tcl-lang.org/tcllib/doc/trunk/embedded/md/tcllib/files/modules/mkdoc/mkdoc.md) format can be directly extracted and executed like for the filter-pik.tcl file itself. Here an example:
+#' 
+#' ```
+#' pantcl.bin filter-pik.tcl filter-pik.html --css mini.css -s
+#' ```
+#' 
+#' The file `filter-pik.tcl` is not used directly but sourced automatically by the `pantcl.tcl` file.
 #' If code blocks with the `.pik` or '.pikchr' marker are found, the contents in the code block is 
 #' processed via the fossil versioning system with support for Pikchr diagrams
 #' since version 2.13 [https://fossil-scm.org](https://fossil-scm.org) or via the Pikchr diagram tool [https://pikchr.org/home/doc/trunk/](https://pikchr.org/home/doc/trunk/).
@@ -131,11 +137,36 @@
 #'             fill 0xc6e2ff 
 #' ```
 #' 
-#' For more examples look here [example-pik.html](../examples/example-pik.html).
-#' 
+#' Here now on example where we use the fossil command line application:
+#' To use a new downloaded version of the fossil application like fossil-2.17 you could change the app option app=fossil-2.17 for instance. Alternatively you could as well add app=pikchr if you have commpiled the pikchr command line application yourself.
+#'
+#' Here the code for a sample diagram (leading 5 character whitespaces must be removed, the whitepace are just here to avoid interpretation):
+#'
+#' ```
+#'     ```{.pikchr app=fossil}
+#'     box "box"
+#'     circle "circle" fill cornsilk at 1 right of previous
+#'     ellipse "ellipse" at 1 right of previous
+#'     oval "oval" at .8 below first box
+#'     cylinder "cylinder" at 1 right of previous
+#'     file "file" at 1 right of previous
+#'     ```
+#' ```
+#'
+#' Here the output:
+#'
+#' ```{.pikchr app=fossil}
+#' box "box"
+#' circle "circle" fill cornsilk at 1 right of previous
+#' ellipse "ellipse" at 1 right of previous
+#' oval "oval" at .8 below first box
+#' cylinder "cylinder" at 1 right of previous
+#' file "file" at 1 right of previous
+#' ```
+#'
 #' ## See also:
 #' 
-#' * [pandoc-tcl-filter documentaion](../pandoc-tcl-filter.html)
+#' * [pantcl filter documentaion](../pantcl.html)
 #' * Fossil Homepage: [https://fossil-scm.org](https://fossil-scm.org)
 #' * Pikchr Homepage: [https://pikchr.org](https://pikchr.org)
 #' * Pikchr Manual: [https://pikchr.org/home/doc/trunk/doc/userman.md](https://pikchr.org/home/doc/trunk/doc/userman.md)

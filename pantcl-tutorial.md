@@ -832,7 +832,7 @@ every filter again you should use Lua filters if they are available. Below an ex
 ```
 
 **strong** should be converted to smallcaps using the Lua filter _smallcaps.lua_!
-To apply Lua filters use the pandoc option `--lua-filter=filter/smallcaps.lua`.
+To apply Lua filters use the pandoc option `--lua-filter=path/to/smallcaps.lua`.
 
 For more details see the Pandoc documentation at
 [https://pandoc.org/lua-filters.html](https://pandoc.org/lua-filters.html) and
@@ -863,7 +863,7 @@ The HTML version of this document was generated using the following commandline:
 
 ```
 pantcl.bin pantcl-tutorial.md pantcl-tutorial.html --css mini.css -s
-     --toc --lua-filter=filter/smallcaps.lua
+     --toc --lua-filter=lib/tclfilters/smallcaps.lua
 
 ```
 
@@ -871,14 +871,13 @@ Please look at the source Markdown file to see which Markdown code was the input
 
 ## Links
 
-* [DGTcl homepage at GitHub](https://github.com/mittelmark/DGTcl)
-* [Discussion page for pandoc-tcl-filter.tcl on the Tclers Wiki](https://wiki.tcl-lang.org/page/pandoc%2Dtcl%2Dfilter) 
+* [Pantcl homepage at GitHub](https://github.com/mittelmark/pantcl)
+* [Discussion page for pantcl on the Tclers Wiki](https://wiki.tcl-lang.org/page/pandoc%2Dtcl%2Dfilter) 
 * [Documentation to the tsvg package](http://htmlpreview.github.io/?https://github.com/mittelmark/DGTcl/blob/master/pandoc-tcl-filter/lib/tsvg/tsvg.html)
 * [https://pandoc.org/filters.html](https://pandoc.org/filters.html) - background on  pandoc filters
-* [pandoc lua filters](https://github.com/pandoc/lua-filters)
+* [Pandoc lua filters](https://github.com/pandoc/lua-filters)
 * [https://github.com/mvhenderson/pandoc-filter-node](https://github.com/mvhenderson/pandoc-filter-node) - pandoc filters using JavaScript and TypeScript
 * [https://pypi.org/project/panflute/](https://pypi.org/project/panflute/) - pandoc filters in Python
-* 
 
 ## Todo
 
@@ -899,6 +898,7 @@ Please look at the source Markdown file to see which Markdown code was the input
 * 2021-12-21 - results="asis" for Markdown inclusion, filters for PlantUML and Mermaid diagrams, sqlite3, ABC music
 * 2022-01-09 - generic shell filter (filter-cmd), tdot filter for Tcl/dot   
 * 2022-02-07 - graphical user interface and pipe filter for embedding R, Python and Octave
+* 2023-01-12 - version 0.9.0 released on own Github page as pantcl repository
 
 ## Author
 
@@ -906,6 +906,6 @@ Detlef Groth, Caputh-Schwielowsee, Germany
 
 ## License
 
-MIT, see the file LICENSE in the release folder.
+BSD license.
 
 

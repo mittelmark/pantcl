@@ -15,11 +15,11 @@ filter-docs: filter-abc.html \
 	 filter-tsvg.html \
 	 filter-rplot.html \
  	 filter-tcl.html
-	 -rm temp*
-	 -rm mini*ly mini.p* out.json mini.svg hello* hw* links.md photo*
-	 -rm barplot* calc* doplot.R digraph* dot.png eqn.png math.eqn mesh*png  file?
-	 -rm mini*png octave.png plot.R plotR.png pyhist.png sample* sin*
-	 -rm sqlite-?.sqlite test*
+	 -rm -f temp*
+	 -rm -f mini*ly mini.p* out.json mini.svg hello* hw* links.md photo*
+	 -rm -f barplot* calc* doplot.R digraph* dot.png eqn.png math.eqn mesh*png  file?
+	 -rm -f mini*png octave.png plot.R plotR.png pyhist.png sample* sin*
+	 -rm -f sqlite-?.sqlite test*
 %.html: %.tcl mini.css
 	pandoc header.md -o header.html
 	# -B header.html 

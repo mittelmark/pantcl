@@ -681,26 +681,25 @@ print(x)
 <h2 id="lua-filters">Lua filters</h2>
 <p>Pandoc since version 2.0 has embedded support for Lua filters. To no reinvent every filter again you should use Lua filters if they are available. Below an example for a Lua filter:</p>
 <pre><code> **strong** should be converted to smallcaps using the Lua filter _smallcaps.lua_!</code></pre>
-<p><strong>strong</strong> should be converted to smallcaps using the Lua filter <em>smallcaps.lua</em>! To apply Lua filters use the pandoc option <code>--lua-filter=filter/smallcaps.lua</code>.</p>
+<p><span class="smallcaps">strong</span> should be converted to smallcaps using the Lua filter <em>smallcaps.lua</em>! To apply Lua filters use the pandoc option <code>--lua-filter=path/to/smallcaps.lua</code>.</p>
 <p>For more details see the Pandoc documentation at <a href="https://pandoc.org/lua-filters.html">https://pandoc.org/lua-filters.html</a> and for examples of Lua filter look at GitHub <a href="https://github.com/pandoc/lua-filters">https://github.com/pandoc/lua-filters</a>.</p>
 <h2 id="summary">Summary</h2>
 <p>In this Readme I explained on how to use the Tcl pandoc filter to embed and process Tcl code during the creation of HTML or PDF documents. The Tcl filter was generalized so that as well filters for other tools, especially command line application can be easily programmed using the Tcl programming language. Examples for a filter for the GraphViz tool dot to create flowcharts and graphs, a package to create SVG images using Tcl, the new <em>tsvg</em> package, a little renderer for single TeX equations, filters for the PIC and EQN langauges and as well for the Pikchr diagram tools are as well included in the pantcl.bin file. The provided infrastructure has the advantage that Tcl programmers can stay within their favourite programming language but still can use other nice tools easily for their documentation. In case of new may be complex things look for existing Lua filters. As Lua is embedded into Pandoc have a look for an existing Lua filter to not reinvent the (filter) wheel.</p>
 <h2 id="documentation">Documentation</h2>
 <p>The HTML version of this document was generated using the following commandline:</p>
 <pre><code>pantcl.bin pantcl-tutorial.md pantcl-tutorial.html --css mini.css -s
-     --toc --lua-filter=filter/smallcaps.lua
+     --toc --lua-filter=lib/tclfilters/smallcaps.lua
 </code></pre>
 <p>Please look at the source Markdown file to see which Markdown code was the input.</p>
 <h2 id="links">Links</h2>
 <ul>
-<li><a href="https://github.com/mittelmark/DGTcl">DGTcl homepage at GitHub</a></li>
-<li><a href="https://wiki.tcl-lang.org/page/pandoc%2Dtcl%2Dfilter">Discussion page for pandoc-tcl-filter.tcl on the Tclers Wiki</a></li>
+<li><a href="https://github.com/mittelmark/pantcl">Pantcl homepage at GitHub</a></li>
+<li><a href="https://wiki.tcl-lang.org/page/pandoc%2Dtcl%2Dfilter">Discussion page for pantcl on the Tclers Wiki</a></li>
 <li><a href="http://htmlpreview.github.io/?https://github.com/mittelmark/DGTcl/blob/master/pandoc-tcl-filter/lib/tsvg/tsvg.html">Documentation to the tsvg package</a></li>
 <li><a href="https://pandoc.org/filters.html">https://pandoc.org/filters.html</a> - background on pandoc filters</li>
-<li><a href="https://github.com/pandoc/lua-filters">pandoc lua filters</a></li>
+<li><a href="https://github.com/pandoc/lua-filters">Pandoc lua filters</a></li>
 <li><a href="https://github.com/mvhenderson/pandoc-filter-node">https://github.com/mvhenderson/pandoc-filter-node</a> - pandoc filters using JavaScript and TypeScript</li>
 <li><a href="https://pypi.org/project/panflute/">https://pypi.org/project/panflute/</a> - pandoc filters in Python</li>
-<li></li>
 </ul>
 <h2 id="todo">Todo</h2>
 <ul>
@@ -721,10 +720,11 @@ print(x)
 <li>2022-01-09 - generic shell filter (filter-cmd), tdot filter for Tcl/dot<br />
 </li>
 <li>2022-02-07 - graphical user interface and pipe filter for embedding R, Python and Octave</li>
+<li>2023-01-12 - version 0.9.0 released on own Github page as pantcl repository</li>
 </ul>
 <h2 id="author">Author</h2>
 <p>Detlef Groth, Caputh-Schwielowsee, Germany</p>
 <h2 id="license">License</h2>
-<p>MIT, see the file LICENSE in the release folder.</p>
+<p>BSD license.</p>
 </body>
 </html>
