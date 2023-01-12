@@ -8,7 +8,7 @@
 #'     ext: pgn
 #' ---
 # a simple pandoc filter using Tcl
-# the script pandoc-tcl-filter.tcl 
+# the script pantcl.tcl 
 # must be in the in the parent directory of the filter directory
 #' 
 #' ------
@@ -22,17 +22,17 @@
 #' ## Name
 #' 
 #' _filter-pic.tcl_ - Filter which can be used to display pic files within a Pandoc processed
-#' document using the Tcl filter driver `pandoc-tcl-filter.tapp`. 
+#' document using the Tcl filter driver `pantcl.bin`. 
 #' 
 #' ## Usage
 #' 
 #' The conversion of the Markdown documents via Pandoc should be done as follows:
 #' 
 #' ```
-#' pandoc input.md --filter pandoc-tcl-filter.tapp -s -o output.html
+#' pandoc input.md --filter pantcl.bin -s -o output.html
 #' ```
 #' 
-#' The file `filter-pic.tcl` is not used directly but sourced automatically by the `pandoc-tcl-filter.tcl` file.
+#' The file `filter-pic.tcl` is not used directly but sourced automatically by the `pantcl.bin` file.
 #' If code blocks with the `.pic` marker are found, the contents in the code block is processed 
 #' via the *pic2graph* diagram tool [https://man7.org/linux/man-pages/man1/pic2graph.1.html](https://man7.org/linux/man-pages/man1/pic2graph.1.html) which converts
 #' PIC files, see [https://en.wikipedia.org/wiki/PIC_(markup_language)](https://en.wikipedia.org/wiki/PIC_(markup_language)) into some graphics format like png or other file formats which can be converted by the the ImageMagick tool *convert*. 
@@ -132,12 +132,13 @@
 #' 
 #' ## See also:
 #' 
+#' * [Pantcl Readme](../../README.html)
+#' * [Pantcl documentation](../../pantcl.html)
+#' * [Pantcl tutorial](../../pantcl-tutorial.html)
 #' * [Unix Text Processing](https://www.oreilly.com/library/view/unix-text-processing/9780810462915/Chapter10.html)
 #' * [Gnu PIC manual](https://pikchr.org/home/uv/gpic.pdf)
 #' * [Dpic by Dwight Aplevich](https://gitlab.com/aplevich/dpic/)
 #' * [Pikchr filter](filter-pik.html)
-#' * [pandoc-tcl-filter Readme](../Readme.html)
-#' * [pandoc-tcl-filter documentation](../pandoc-tcl-filter.html)
 #' 
 
 proc filter-dpic {cont dict} {
