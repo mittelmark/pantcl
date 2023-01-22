@@ -46,7 +46,22 @@
 #' - _results_ - should the code output be shown, either "show", "hide" or "asis", default: "show"
 #' - _echo_ - should the code itself been shown, default: true
 #' 
-#' Here an example where we hide the code itself and only show the output using the chunk argument `echo=false`:
+#' You can set these options in the YAML header of the document like this to make other defaults:
+#' 
+#' ```
+#'     ---
+#'     title: "your title"
+#'     author: "your name"
+#'     tcl:
+#'        eval: 0
+#'        results: "hide"
+#'        echo: 1
+#'     ---
+#' ```
+#' 
+#' Please note that in the document header *true* or *false* is not possible only using 1 and 0 as values.
+#' 
+#' Now an example where we hide the code itself and only show the output using the chunk argument `echo=false`:
 #' 
 #' ```
 #'     ```{.tcl echo=false}
@@ -346,7 +361,7 @@ mdi eval {
 proc filter-tcl {cont a} {
     set ret ""
     set b [dict create fig false width 400 height 400 include true \
-            label null]
+            label null eval false]
     set a [dict merge $b $a]
     if {[dict get $a eval]} {
         mdi eval "set ::filter::res {}; incr ::filter::chunk"

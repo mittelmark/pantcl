@@ -259,6 +259,7 @@ proc lineFilter {argv} {
         set yamltext ""
         set filt "xxx"
         set ind ""
+        # TODO: should be default false??
         set ddef [dict create echo true results show eval true] 
         set yamldict [dict create]
         set pre false
@@ -1127,9 +1128,9 @@ proc main {jsonData} {
     append ret ",\"pandoc-api-version\":[::rl_json::json extract $jsonData pandoc-api-version]"
     
     append ret ",\"meta\":[::rl_json::json extract $jsonData meta]"
-    set out [open out.json w 0600]
-    puts $out "{$ret}"
-    close $out
+    #set out [open out.json w 0600]
+    #puts $out "{$ret}"
+    #close $out
     return "{$ret}"
 }
 
