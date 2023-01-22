@@ -231,6 +231,11 @@ proc debug {jsonData} {
 }
 
 proc lineFilter {argv} {
+    if {[info exists ::env(FILTEREVAL)]} {
+        set evalvar  $::env(FILTEREVAL)
+    } else {
+        set evalvar true
+    }
     set args [split $argv " "]
     set infile [lindex $args 0]
     set outfile [lindex $args 1]
@@ -260,7 +265,7 @@ proc lineFilter {argv} {
         set filt "xxx"
         set ind ""
         # TODO: should be default false??
-        set ddef [dict create echo true results show eval true] 
+        set ddef [dict create echo true results show eval $evalvar] 
         set yamldict [dict create]
         set pre false
         while {[gets $infh line] >= 0} {
@@ -344,7 +349,7 @@ proc lineFilter {argv} {
                         if {[info procs filter-$filt] eq "filter-$filt"} {
                             set code [regsub {.*`\.?[a-z]{2,4} ([^`]+)`.+} $line "\\1"]
                             puts "processing inline code $code"
-                            set res [lindex [filter-$filt $code [dict create eval true results show echo false]] 0]
+                            set res [lindex [filter-$filt $code [dict create eval $evalvar results show echo false]] 0]
                             set line [regsub {(.*)`\.?[a-z]{2,4} ([^`]+)`(.+)} $line "\\1$res\\3"]
                         }
                     }
@@ -958,7 +963,7 @@ proc codeBlock {} {
     uplevel 1 {
         set type [rl_json::json get $jsonData blocks {*}$tkey] ;#type
         set attr [rl_json::json get $jsonData blocks {*}$akey] ;# attributes
-        set a [dict create echo true results show eval true] 
+        set a [dict create echo true results show eval $evalvar] 
         set d [getMetaDict $meta $type]
         set a [dict merge $a $d]
         if {[llength $attr] > 0} {
@@ -1026,6 +1031,11 @@ proc codeBlock {} {
 }
 # the main method parsing the json data
 proc main {jsonData} {
+    if {[info exists ::env(FILTEREVAL)]} {
+        set evalvar $::env(FILTEREVAL)
+    } else {
+        set evalvar true
+    }
     set blocks ""
     set jsonImg {
        {

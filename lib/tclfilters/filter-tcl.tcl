@@ -46,7 +46,8 @@
 #' - _results_ - should the code output be shown, either "show", "hide" or "asis", default: "show"
 #' - _echo_ - should the code itself been shown, default: true
 #' 
-#' You can set these options in the YAML header of the document like this to make other defaults:
+#' You can set these options either in the YAML header or on individual code chunks.
+#' Here a YAML header of the document to make other defaults:
 #' 
 #' ```
 #'     ---
@@ -60,6 +61,8 @@
 #' ```
 #' 
 #' Please note that in the document header *true* or *false* is not possible only using 1 and 0 as values.
+#' 
+#' For the eval option there is as well an environment variable which can be set. If you in a bash shell use `export FILTEREVAL=0` the default of `eval=true` will  be overwritten. You can reset the option later again to `export FILTEREVAL=1` if you like.
 #' 
 #' Now an example where we hide the code itself and only show the output using the chunk argument `echo=false`:
 #' 
