@@ -899,8 +899,9 @@ set jsonData {}
 while {[gets stdin line] > 0} {
    append jsonData $line
 }
-
 # parse Meta data
+#puts stderr $jsonData
+#exit
 proc getMetaDict {meta fkey} {
     set d [dict create]
     if {[rl_json::json exists $meta $fkey c]} {
@@ -942,14 +943,16 @@ proc walk {key {ind 1}} {
         if {$l > 2} {
             lappend tkey t
             lappend ckey c
-            set t [::rl_json::json get $jsonData blocks {*}$tkey]
-            if {$t eq "Code"} {
-                lappend ckey 1
-                #lappend ckey
-                set code [::rl_json::json get $jsonData blocks {*}$ckey]
-                #puts "$sind  code: $code" 
-                if {[regexp {^[a-zA-Z0-9]{1,3} .+} $code]} {
-                    lappend inlineCodes [list $ckey $code]
+            if {[::rl_json::json exists $jsonData blocks {*}$tkey]} {
+                 set t [::rl_json::json get $jsonData blocks {*}$tkey]
+                 if {$t eq "Code"} {
+                    lappend ckey 1
+                    #lappend ckey
+                    set code [::rl_json::json get $jsonData blocks {*}$ckey]
+                    #puts "$sind  code: $code" 
+                    if {[regexp {^[a-zA-Z0-9]{1,3} .+} $code]} {
+                        lappend inlineCodes [list $ckey $code]
+                    }
                 }
             } else {
                 walk $ckey $ind 
@@ -1082,13 +1085,11 @@ proc main {jsonData} {
             }
             set ::inlineCodes [list]
             set k [llength [::rl_json::json get $jsonData blocks $i c]]
-            #puts stderr $blockType
-            #puts stderr [::rl_json::json get $jsonData blocks $i c]
             if {$blockType eq "Header" && $k == 3} {
                 walk [list $i c 2]
             } else {
                 for {set j 0} {$j < $k} {incr j} {
-                    walk [list $i c $j]
+                    walk [list $i c [regsub -all @ $j "\\@"]]
                 }
             }
             foreach item $::inlineCodes {
@@ -1157,5 +1158,5 @@ proc incrHeader {jsonData} {
 }
 
 # give the modified document back to Pandoc again:
-puts -nonewline [main $jsonData]
+puts -nonewline [main $jsonData] 
 
