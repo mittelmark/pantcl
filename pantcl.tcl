@@ -2,9 +2,9 @@
 # pantcl - standalone application and pandoc filter
 #          for literate programming
 # Author: Detlef Groth, Schwielowsee, Germany
-# Version: 0.9.0 - 2023-01-10
+# Version: 0.9.1 - 2023-03-05
 
-package provide pantcl 0.9.0
+package provide pantcl 0.9.1
 
 if {[llength $argv] > 0 && ([lsearch -exact $argv -v] >= 0 || [lsearch -exact $argv --version] >= 0)} {
     puts "[package present pantcl]"
@@ -465,9 +465,9 @@ if {[llength $argv] > 1 && [file exists [lindex $argv 0]]} {
 package require rl_json
 
 #' ---
-#' title: pantcl filter documentation - 0.9.0
+#' title: pantcl filter documentation - 0.9.1
 #' author: Detlef Groth, Schwielowsee, Germany
-#' date: 2023-01-10
+#' date: 2023-03-05
 #' tcl:
 #'    echo: "true"
 #'    results: show
@@ -850,7 +850,8 @@ package require rl_json
 #'    * fix for filter-tcl making variables chunk and res namespace variables, avoiding variable collisions
 #' * 2023-01-10 - version 0.9.0
 #'    * renamed to pantcl.tcl and creating it's own repository
-#'     
+#' * 2023-03-05 - fixing a problem with the @symbol in text
+#'    
 #' ## SEE ALSO
 #' 
 #' * [Readme.html](Readme.html) - more information and small tutorial
