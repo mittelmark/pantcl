@@ -6,6 +6,7 @@
 #'     app: mmdc
 #'     imagepath: images
 #'     ext: png
+#'     eval: 1
 #' ---
 # a simple pandoc filter using Tcl
 # the script pantcl.tcl 
@@ -13,7 +14,7 @@
 #' 
 #' ------
 #' 
-#' ```{.tcl results="asis" echo=false}
+#' ```{.tcl results="asis" echo=false eval=true}
 #' include header.md
 #' ```
 #' 
@@ -41,7 +42,7 @@
 #' > 
 #'   - app - the application to be called, such as mmdc, default: mmdc
 #'   - background - the background color such as transparent, salmon '#ccffff' (only used for png output), default: white
-#'   - eval - should the code in the code block be evaluated, default: true
+#'   - eval - should the code in the code block be evaluated, default: false
 #'   - ext - file file extension, can be svg, png, pdf, default: svg
 #'   - fig - should a figure be created, default: true
 #'   - height - the image height, default: 600
@@ -56,7 +57,8 @@
 #' 
 #' To change the defaults the YAML header can be used. Here an example to change the 
 #' default command line application to mmdc-8.10 and the image output path to nfigures
-#' and the output image format to png.
+#' and the output image format to png, to activate code evaluation in the complete document
+#' use `eval: 1` in the YAML header, do not use 'true' here..
 #' 
 #' ```
 #'  ----
@@ -67,6 +69,7 @@
 #'      app: mmdc-8.10
 #'      imagepath: nfigures
 #'      ext: png
+#'      eval: 1
 #'  ----
 #' ```
 #'
@@ -74,7 +77,19 @@
 #' 
 #' Here an example for a simple flowchart:
 #' 
-#' ```{.mmd}
+#' ```
+#'        ```{.mmd eval=true}
+#'        graph TD;
+#'        A-->B;
+#'        A-->C;
+#'        B-->D;
+#'        C-->D;
+#'        ```
+#' ```
+#
+#' And here the output:
+#' 
+#' ```{.mmd eval=true}
 #' graph TD;
 #'     A-->B;
 #'     A-->C;
@@ -82,9 +97,10 @@
 #'     C-->D;
 #' ```
 #' 
-#' Next an example for a sequence diagram with the forest theme and cornsilk background:
+#' Next an example for a sequence diagram with the forest theme and cornsilk background
+#' (`{.mmd theme=forest background=cornsilk eval=true}`):
 #'
-#' ```{.mmd theme=forest background=cornsilk}
+#' ```{.mmd theme=forest background=cornsilk eval=true}
 #' sequenceDiagram
 #'     participant Alice
 #'     participant Bob

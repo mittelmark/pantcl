@@ -4,11 +4,12 @@
 #' date: 2022-01-15
 #' cmd:
 #'     results: show
+#'     eval: 1
 #' ---
 #' 
 #' ------
 #' 
-#' ```{.tcl results="asis" echo=false}
+#' ```{.tcl eval=true results="asis" echo=false}
 #' include header.md
 #' ```
 #' 

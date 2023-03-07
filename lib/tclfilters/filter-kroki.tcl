@@ -2,10 +2,11 @@
 #' title: "filter-kroki.tcl documentation"
 #' author: "Detlef Groth, Caputh-Schwielowsee, Germany"
 #' date: 2022-02-18
-#' dot:
-#'     app: wget
+#' kroki:
+#'     app: curl
 #'     imagepath: images
-#'     ext: png
+#'     ext: svg
+#'     eval: 1
 #' ---
 #' 
 # a simple pandoc filter using Tcl the script pantcl.tcl 
@@ -13,7 +14,7 @@
 #' 
 #' ------
 #' 
-#' ```{.tcl results="asis" echo=false}
+#' ```{.tcl eval=true results="asis" echo=false}
 #' include header.md
 #' ```
 #' 
@@ -34,18 +35,19 @@
 #' 
 #' The file `filter-kroki.tcl` is not used directly but sourced automatically by the `pantcl.bin` file.
 #' If code blocks with the `.kroki` marker are found, the contents in the code block is processed to the 
-#' Kroki webservices and optionally download locally using wget.
+#' Kroki webservices and optionally download locally the file using wget.
 #' 
 #' The following options can be given via code chunks or in the YAML header.
 #' 
-#' > - app - the application to do the download, if none images are just displayed inline: wget
+#' > - app - the application to do the download, if none images are just displayed inline, 
+#'           currently only curl or wget are supported: default: wget
 #'   - ext - file file extension, can be svg, png, pdf, default: svg
 #'   - dia - the diagram tool, graphviz, plantuml, pikchr, mermaid etc, default: graphviz
+#'   - eval - should the code in the code block be evaluated, default: false
+#'   - fig - should a figure be created, default: true
 #'   - imagepath - output imagepath, default: images
 #'   - include - should the created image be automatically included, default: true
 #'   - results - should the output of the command line application been shown, should be show or hide, default: hide
-#'   - eval - should the code in the code block be evaluated, default: true
-#'   - fig - should a figure be created, default: true
 #' 
 #' To change the defaults the YAML header can be used. Here an example to change the 
 #' default layout engine to neato and the image output path to nfigures
@@ -58,7 +60,8 @@
 #'  dot:
 #'      app: wget
 #'      imagepath: nfigures
-#'      ext: png
+#'      ext: svg
+#'      eval: 1
 #'  ----
 #' ```
 #'
@@ -74,7 +77,7 @@
 #' ## Dot graph
 #' 
 #' ```
-#'      ```{.kroki label=digraph echo=true}
+#'      ```{.kroki label=digraph eval=true echo=true}
 #'      digraph G {
 #'        main -> parse -> execute;
 #'        main -> init [dir=none];
@@ -103,7 +106,7 @@
 #' }
 #' ```
 #' 
-#' Here a ditaa diagram `{.kroki label=ditaa echo=true dia=ditaa}`:
+#' Here a ditaa diagram `{.kroki label=ditaa eval=true echo=true dia=ditaa}`:
 #' 
 #' ```{.kroki label=ditaa echo=true dia=ditaa}
 #' +----------------------------------------+
@@ -123,7 +126,7 @@
 #' +----------------------+-----------------+
 #' ```
 #'
-#' Support for UniCode is there as well where the monospaced front has some problems in aligning (`{.kroki label=ditaauc dia=ditaa}`):
+#' Support for UniCode is there as well where the monospaced front has some problems in aligning (`{.kroki label=ditaauc eval=true dia=ditaa}`):
 #'
 #' ```{.kroki label=ditaauc dia=ditaa}
 #' A₀ ---> A₁ ---> A₂ ---> A₃ ---> A₄
@@ -136,7 +139,7 @@
 #' B₀ ---> B₁ ---> B₂ ---> B₃ ---> B₄
 #' ````
 #'
-#' A nonoml example `{.kroki label=nomnoml ext=svg dia=nomnoml}`:
+#' A nonoml example `{.kroki label=nomnoml ext=svg eval=true dia=nomnoml}`:
 #'
 #' ```{.kroki label=nomnoml ext=svg dia=nomnoml}
 #' [Pirate|eyeCount: Int|raid();pillage()|
@@ -163,7 +166,7 @@
 #' [<actor>Sailor] - [<usecase>shiver me;timbers]
 #' ```
 #' 
-#' ### Svgbob example `{.kroki label=svgbob dia=svgbob}`:
+#' ### Svgbob example `{.kroki label=svgbob dia=svgbob eval=true}`:
 #' 
 #' ```{.kroki label=svgbob dia=svgbob}
 #'    0       3                     
@@ -218,7 +221,7 @@
 #' }
 #' ```
 #'
-#' ### ERD example `{.kroki label=erd dia=erd}`
+#' ### ERD example `{.kroki label=erd dia=erd eval=true}`
 #' 
 #' ```{.kroki label=erd dia=erd}
 #' [Person]
@@ -288,6 +291,8 @@ proc filter-kroki {cont dict} {
     set url [dia2kroki $cont [dict get $dict dia] [dict get $dict ext]]
     if {[dict get $dict app] eq "wget"} {
         set res [exec -ignorestderr wget $url -O $fname.[dict get $dict ext] 2> &1]
+    } elseif {[dict get $dict app] eq "curl"} {
+        set res [exec -ignorestderr curl $url --output $fname.[dict get $dict ext] 2> &1]
     }
     if {[dict get $dict results] eq "show"} {
         # should be usually empty
@@ -298,7 +303,7 @@ proc filter-kroki {cont dict} {
     set img ""
     if {[dict get $dict fig]} {
         if {[dict get $dict include]} {
-            if {[dict get $dict app] eq "wget"} {
+            if {[dict get $dict app] in [list wget curl]} {
                 set img $fname.[dict get $dict ext]
             } else {
                 set img $url

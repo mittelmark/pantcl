@@ -3,17 +3,18 @@
 #' author: "Detlef Groth, Caputh-Schwielowsee, Germany"
 #' date: 2021-12-12
 #' dot:
-#'     app: neato
+#'     app: dot
 #'     imagepath: images
 #'     ext: png
+##'    eval: 1
 #' ---
 #' 
-# a simple pandoc filter using Tcl the script pantcl.tcl or the standalone application `pantcl.bin` 
-# must be in the in the parent directory of the filter directory
+# Pandoc filter using Tcl the script pantcl.tcl or the standalone application `pantcl.bin` 
+# must be in the in the parent directory of the filter directory.
 #' 
 #' ------
 #' 
-#' ```{.tcl results="asis" echo=false}
+#' ```{.tcl eval=true results="asis" echo=false}
 #' include header.md
 #' ```
 #' 
@@ -33,14 +34,15 @@
 #' ```
 #' 
 #' The file `filter-dot.tcl` is not used directly but sourced automatically by the `pantcl.bin` file.
-#' If code blocks with the `.dot` marker are found, the contents in the code block is processed via one of the Graphviz tools.
+#' If code blocks with the `.dot` marker are found, the contents in the code block is processed via
+#' one of the Graphviz tools if the eval property is set to 1/true.
 #' 
 #' The following options can be given via code chunks or in the YAML header.
 #' 
 #' > - app - the application to be called, such as dot, neato, twopi etc default: dot
 #'   - ext - file file extension, can be svg, png, pdf, default: svg
 #'   - echo - should the source code of the code block be shown, default: true
-#'   - eval - should the code in the code block be evaluated, default: true
+#'   - eval - should the code in the code block be evaluated, default: false
 #'   - fig - should a figure be created, default: true
 #'   - imagepath - output imagepath, default: images
 #'   - include - should the created image be automatically included, default: true
@@ -61,6 +63,7 @@
 #'      app: neato
 #'      imagepath: nfigures
 #'      ext: png
+#'      eval: 1
 #'  ----
 #' ```
 #'
@@ -79,7 +82,7 @@
 #' ## Dot graph
 #' 
 #' ```
-#'      ```{.dot label=digraph echo=true}
+#'      ```{.dot label=digraph eval=true echo=true}
 #'      digraph G {
 #'        main -> parse -> execute;
 #'        main -> init [dir=none];
@@ -95,7 +98,7 @@
 #' 
 #' Which will produce the following output:
 #' 
-#' ```{.dot label=digraph echo=true}
+#' ```{.dot label=digraph eval=true echo=true}
 #' digraph G {
 #'   main -> parse -> execute;
 #'   main -> init [dir=none];
@@ -114,7 +117,7 @@
 #' create *neato* graphs. Here an example:
 #' 
 #' ```
-#'       ```{.dot label=neato-sample app=neato}
+#'       ```{.dot label=neato-sample eval=true app=neato}
 #'       graph G {
 #'           node [shape=box,style=filled,fillcolor=skyblue,
 #'               color=black,width=0.4,height=0.4];
@@ -125,7 +128,7 @@
 #' 
 #' Here the output.
 #' 
-#' ```{.dot label=neato-sample app=neato}
+#' ```{.dot label=neato-sample eval=true app=neato}
 #' graph G {
 #'     node [shape=box,style=filled,fillcolor=skyblue,
 #'         color=black,width=0.4,height=0.4];

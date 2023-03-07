@@ -5,13 +5,14 @@
 #' mtex:
 #'     imagepath: images
 #'     ext: png
+#'     eval: 1
 #' ---
 # a simple pandoc filter using Tcl the script pantcl.tcl 
 # must be in the in the parent directory of the filter directory
 #' 
 #' ------
 #' 
-#' ```{.tcl results="asis" echo=false}
+#' ```{.tcl eval=true results="asis" echo=false}
 #' include header.md
 #' ```
 #' 
@@ -53,7 +54,7 @@
 #' 
 #' The following options can be given via code chunks or in the YAML header.
 #' 
-#' > - eval - should the code in the code block be evaluated, default: true
+#' > - eval - should the code in the code block be evaluated, default: false
 #'   - ext - file file extension, can be svg (needs texlive-dvisvgm - [https://dvisvgm.de/](https://dvisvgm.de/) or pdf2svg - [https://github.com/dawbarton/pdf2svg](https://github.com/dawbarton/pdf2svg)), png, pdf, default: png
 #'   - fig - should a figure be created, default: true
 #'   - header - file with LaTeX code to be included in the document preamble, useful for embed more extensive package configurations and macros, default: null
@@ -65,11 +66,10 @@
 #'   - resize - if latex engine pdflatex or latex the percent to resize the final png image, default: 100%
 #'   - results - should the output of the command line application been shown, should be show or hide, default: hide
 #' 
-#' The  options *results* and *eval* should be normally not used, they are here just for 
-#' compatibility reasons with the other filters.
+#' The  option *eval* should be set to true or 1 to enable code evaluation.
 #'
 #' To change the code chunk defaults for a complete document, 
-#' the YAML header can be used. Here an example to change the 
+#' the YAML header should be used. Here an example to change the 
 #' default image output path to *nfigures* and the filename extension
 #' to *pdf* and to use the *chemformula* LaTeX package:
 #' 
@@ -83,6 +83,7 @@
 #'      packages: chemformula
 #'      latex:    pdflatex
 #'      ext: pdf
+#'      eval: 1
 #'  ----
 #' ```
 #'
@@ -90,7 +91,8 @@
 #' 
 #' The filter needs an existing LaTeX installation and the LaTeX packages *standalone* and *preview*.
 #' 
-#' In the background quite a set of different tools is used such as convert (conversion to png if first output is pdf), `pdf2svg` or if LaTeX engine is latex `dvi2svgm` for conversion into svg. Here a table with the require tools:
+#' In the background quite a set of different tools is used such as convert (conversion to png if first output is pdf),
+#' `pdf2svg` or if LaTeX engine is latex `dvi2svgm` for conversion into svg. Here a table with the required tools:
 #' 
 #' > | latex         | png           | pdf     | svg     |
 #' > | ------------- | ------------- | ------- | ------- |
@@ -102,7 +104,15 @@
 #' 
 #' LaTeX Math
 #' 
-#' ```{.mtex}
+#' ```
+#'     ```{.mtex eval=true}
+#'     $ E=mc^2 $
+#'     ```
+#' ```
+#'
+#' And here the output:
+#
+#' ```{.mtex eval=true}
 #' $ E=mc^2 $
 #' ```
 #' 

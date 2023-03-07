@@ -234,7 +234,7 @@ proc lineFilter {argv} {
     if {[info exists ::env(FILTEREVAL)]} {
         set evalvar  $::env(FILTEREVAL)
     } else {
-        set evalvar true
+        set evalvar false
     }
     set args [split $argv " "]
     set infile [lindex $args 0]
@@ -1038,7 +1038,7 @@ proc main {jsonData} {
     if {[info exists ::env(FILTEREVAL)]} {
         set evalvar $::env(FILTEREVAL)
     } else {
-        set evalvar true
+        set evalvar false
     }
     set blocks ""
     set jsonImg {
@@ -1099,7 +1099,8 @@ proc main {jsonData} {
                     set tkey [lrange $key 0 end-2]
                     lappend tkey t
                     set c [regsub {^[^ ]+} $code ""]
-                    if {[regexp {\.?tcl } $code]} {
+                    # puts stderr $code
+                    if {[regexp {^\.?tcl } $code]} {
                         if {[catch {
                              set ::errorInfo {}
                              set res [interp eval mdi $c]
@@ -1109,24 +1110,33 @@ proc main {jsonData} {
                          }
                          set jsonData [rl_json::json set jsonData blocks {*}$ckey [rl_json::json string "$res"]]
                          set jsonData [rl_json::json set jsonData blocks {*}$tkey Str]
-                     } elseif {[regexp -nocase {\.?R } $code]} {
-                         set d [dict create results show echo false pipe R]
+                     } elseif {[regexp -nocase {^\.?R } $code]} {
+                         #puts stderr "R inline"
+                         set dm [getMetaDict $meta pipe]
+                         set d [dict merge [dict create results show echo false pipe R] $dm]
                          set res [lindex [filter-pipe $c $d] 0]
                          set res [regsub {^>.+\[1\]} $res ""]
                          set jsonData [rl_json::json set jsonData blocks {*}$ckey [rl_json::json string "$res"]]
                          set jsonData [rl_json::json set jsonData blocks {*}$tkey Str]
-                     } elseif {[regexp -nocase {\.?oc } $code]} {
-                         set d [dict create results show echo false pipe octave]
+                     } elseif {[regexp -nocase {^\.?oc } $code]} {
+                         # octave does not work
+                         set dm [getMetaDict $meta pipe]
+                         set d [dict merge [dict create results show echo false pipe octave] $dm]
                          set res [regsub {.+?> } [lindex [filter-pipe "$c\n" $d] 0] ""]
                          set jsonData [rl_json::json set jsonData blocks {*}$ckey [rl_json::json string "$res"]]
                          set jsonData [rl_json::json set jsonData blocks {*}$tkey Str]
-                     } elseif {[regexp {\.?py } $code]} {
-                         # this does not work (yet)
-                         set d [dict create pipe python3 terminal true]
-                         set res [regsub {.+> } [lindex [filter-pipe [string trim $c] $d] 0] ""]
-                         #set res [regsub {^>.+\[1\]} $res ""]
-                         set jsonData [rl_json::json set jsonData blocks {*}$ckey [rl_json::json string "$res"]]
-                         set jsonData [rl_json::json set jsonData blocks {*}$tkey Str]
+                     } elseif {[regexp {^\.?py } $code]} {
+                         set dm [getMetaDict $meta pipe]
+                         #puts stderr "python chunk inline: $dm"
+                         set d [dict merge [dict create pipe python3 terminal true eval false] $dm]
+                         if {[dict get $d eval]} {
+                            set res [regsub {.+> } [lindex [filter-pipe [string trim $c] $d] 0] ""]
+                            set res [lindex [split $res "\n"] 1]
+                            #puts stderr "res $res"
+                             #set res [regsub {^>.+\[1\]} $res ""]
+                             set jsonData [rl_json::json set jsonData blocks {*}$ckey [rl_json::json string "$res"]]
+                             set jsonData [rl_json::json set jsonData blocks {*}$tkey Str]
+                         } 
                      }
                  }
             }

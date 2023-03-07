@@ -1,11 +1,12 @@
 #' ---
 #' title: "filter-abc.tcl documentation"
 #' author: "Detlef Groth, Caputh-Schwielowsee, Germany"
-#' date: 2021-12-12
-#' dot:
+#' date: 2023-03-07
+#' abc:
 #'     app: abcm2ps
 #'     imagepath: images
 #'     ext: svg
+#'     eval: 1
 #' ---
 #' 
 # A simple pandoc filter using the script _pantcl.tcl_ which
@@ -14,7 +15,7 @@
 #' 
 #' ------
 #' 
-#' ```{.tcl results="asis" echo=false}
+#' ```{.tcl eval=true results="asis" echo=false}
 #' include header.md
 #' ```
 #' 
@@ -37,7 +38,7 @@
 #'      ABC music code
 #'      ```
 #'      # show only the output (as svg file):
-#'      ```{.abc echo=false}
+#'      ```{.abc eval=true echo=false}
 #'      ABC music code
 #'      ```
 #' ```
@@ -61,9 +62,11 @@
 #' 
 #' The arguments after the output file are delegated to pandoc.
 #' 
-#' The internal file `filter-abc.tcl` is not used directly but sourced automatically by the `pantcl.tcl` file.
-#' If code blocks with the `.abc` marker are found, the contents in the code block is processed via the abcm2ps command line tool.
-#' Conversion to png or pdf requires teh Python command line application cairosvg which can be usually installed as well with your package manager or using the Python package manager like this:
+#' The internal file `filter-abc.tcl` is not used directly but sourced automatically by the 
+#' `pantcl.tcl` file. If code blocks with the `.abc` marker are found, the contents in the code 
+#' block is processed via the abcm2ps command line tool. Conversion to png or pdf requires the 
+#' Python command line application cairosvg which can be usually installed as well with your
+#' package manager or using the Python package manager like this:
 #' 
 #' ```
 #' pip3 install cairosvg --user
@@ -85,16 +88,21 @@
 #' 
 #' To change the defaults the YAML header can be used. Here an example to change the 
 #' default application to an other abcm2ps executable and the output to png.
+#' Please note, that since version 0.9.2 the default is not to eval the code
+#' for security reasons to set the default for the complete document to eval
+#' every abc code chunk you set eval to 1 as shown as well below, the term true
+#' might produce an error, so write `eval: 1`
 #' 
 #' ```
 #'  ----
 #'  title: "filter-abc.tcl documentation"
 #'  author: "Detlef Groth, Caputh-Schwielowsee, Germany"
 #'  date: 2021-12-12
-#'  dot:
+#'  abc:
 #'      app: abcm2ps-new
 #'      imagepath: nfigures
 #'      ext: png
+#'      eval: 1
 #'  ----
 #' ```
 #'
@@ -197,6 +205,9 @@ proc filter-abc {cont dict} {
     set def [dict create results show eval true fig true width 400 height 400 \
              include true imagepath images app abcm2ps label null ext svg]
     set dict [dict merge $def $dict]
+    if {![dict get $dict eval]} {
+        return [list "" ""]
+    }
     if {[auto_execok [dict get $dict app]] eq ""} {
         return [list "Error: This filter requires the command line tool abcm2ps - please install it!" ""]
     }

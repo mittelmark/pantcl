@@ -2,10 +2,11 @@
 #' title: "filter-eqn.tcl documentation"
 #' author: "Detlef Groth, Caputh-Schwielowsee, Germany"
 #' date: 2021-11-20
-#' pik:
+#' eqn:
 #'     app: eqn2graph
 #'     imagepath: images
 #'     ext: png
+##'    eval: 1
 #' ---
 # a simple pandoc filter using Tcl
 # the script pantcl.tcl 
@@ -13,7 +14,7 @@
 #' 
 #' ------
 #' 
-#' ```{.tcl results="asis" echo=false}
+#' ```{.tcl eval=true results="asis" echo=false}
 #' include header.md
 #' ```
 #' 
@@ -35,20 +36,23 @@
 #' The file `filter-eqn.tcl` is not used directly but sourced automatically by the `pantcl.bin` file.
 #' If code blocks with the `.eqn` marker are found, the contents in the code block is processed 
 #' via the *eqn2graph* equation tool [https://man7.org/linux/man-pages/man1/eqn2graph.1.html](https://man7.org/linux/man-pages/man1/eqn2graph.1.html) which converts
-#' convert an eqn equation into a cropped PGN image, see [https://en.wikipedia.org/wiki/Eqn_(software)](https://en.wikipedia.org/wiki/Eqn_(software)) into some graphics format like png or other file formats which can be converted by the the ImageMagick tool *convert*.
+#' convert an eqn equation into a cropped PGN image, see 
+#' [https://en.wikipedia.org/wiki/Eqn_(software)](https://en.wikipedia.org/wiki/Eqn_(software))
+#'  into some graphics format like png or other file formats which can be converted by the the ImageMagick tool *convert*.
 #' 
 #' The following options can be given via code chunks or in the YAML header.
 #' 
 #'   - app - the application to process the eqn code, default: eqn2graph
 #'   - ext - file file extension, can be png or pdf, default: png
+#'   - eval - should the code in the code block be evaluated, default: false
 #'   - imagepath - output imagepath, default: images
 #'   - include - should the created image be automatically included, default: true
 #'   - results - should the output of the command line application been shown, should be show or hide, default: hide
-#'   - eval - should the code in the code block be evaluated, default: true
 #'   - fig - should a figure be created, default: true
 #' 
 #' To change the defaults the YAML header can be used. Here an example to change the 
-#' default the image output path to nfigures
+#' default the image output path to nfigures and to evaluate all code chunks.
+#' Please use the value 1 in the YAML header, not the string 'true'.
 #' 
 #' ```
 #'  ----
@@ -57,6 +61,7 @@
 #'  date: 2021-11-20
 #'  eqn:
 #'      imagepath: nfigures
+#'      eval: 1
 #'  ----
 #' ```
 #'
@@ -64,7 +69,15 @@
 #' 
 #' Here an example for a simple neat undirected graph:
 #' 
-#' ```{.eqn}
+#' ```
+#'       ```{.eqn eval=true}
+#'       x = {-b +- sqrt{b sup 2 - 4ac}} over 2a
+#'       ``` 
+#' ```
+#'
+#' And here the output:
+#'
+#' ```{.eqn eval=true}
 #' x = {-b +- sqrt{b sup 2 - 4ac}} over 2a
 #' ```
 #' 
