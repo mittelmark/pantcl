@@ -2,6 +2,8 @@
 #' title: filter-tcl documentation
 #' author: Detlef Groth, Schwielowsee, Germany
 #' date: 2022-02-04
+#' tcl:
+#'      eval: 1
 #' ---
 #'
 #' ------

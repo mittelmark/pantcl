@@ -2,13 +2,14 @@
 #' title: "filter-pipe.tcl documentation"
 #' author: "Detlef Groth, Caputh-Schwielowsee, Germany"
 #' date: 2022-01-12
-#' cmd:
+#' pipe:
 #'     results: show
+#'     eval: 1
 #' ---
 #' 
 #' ------
 #' 
-#' ```{.tcl results="asis" echo=false}
+#' ```{.tcl eval=true results="asis" echo=false}
 #' include header.md
 #' ```
 #' 
@@ -33,21 +34,23 @@
 #' 
 #' The following options can be given via code chunks or in the YAML header.
 #' 
-#' > - eval - should the code in the code block be evaluated, default: true
+#' > - eval - should the code in the code block be evaluated, default: eval
 #'   - echo - should the input code been shown, default: false
 #'   - pipe - the programming language to be used, either R or python, which is python3, default: python3
 #'   - results - should the output of the command line application been shown, should be asis, show or hide, default: show
 #' 
 #' To change the defaults the YAML header can be used. Here an example to change the 
-#' default pipe command to R.
+#' default pipe command to R and evaluate all code chunks. Please note that you
+#' should write `eval: 1` and not(!) `eval: true`
 #' 
 #' ```
 #'  ----
 #'  title: "filter-pipe.tcl documentation"
 #'  author: "Detlef Groth, Caputh-Schwielowsee, Germany"
 #'  date: 2022-01-12
-#'  cmd:
+#'  pipe:
 #'      pipe: R
+#'      eval: 1
 #'  ----
 #' ```
 #'
@@ -296,68 +299,72 @@ proc piperead {pipe args} {
 proc filter-pipe {cont dict} {
     incr ::fpipe::n
     set ::fpipe::pipecode ""
-    set def [dict create results show eval true label null \
+    set def [dict create results show eval false label null \
              include true pipe python3 terminal true]
     set dict [dict merge $def $dict]
-    if {$::fpipe::pypipe eq "" && [string range [dict get $dict pipe] 0 1] eq "py"} {
-        set ::fpipe::pypipe [open "|python3 -ui 2>@1" r+]
-        fconfigure $::fpipe::pypipe -buffering line -blocking false
-        fileevent $::fpipe::pypipe readable [list piperead $::fpipe::pypipe]
-    }
-    if {$::fpipe::opipe eq "" && [string range [dict get $dict pipe] 0 1] eq "oc"} {
-        set ::fpipe::opipe [open "|octave --interactive --no-gui --norc --silent 2>@1" r+]
-        fconfigure $::fpipe::opipe -buffering none -blocking false
-        fileevent $::fpipe::opipe readable [list piperead $::fpipe::opipe]
-        puts $::fpipe::opipe {PS1("")}
-        puts $::fpipe::opipe "page_screen_output(1);"
-        puts $::fpipe::opipe "page_output_immediately(1);"
-        puts $::fpipe::opipe "fflush(stdout)"
-        flush $::fpipe::opipe
-        after 100 [list append wait ""]
-        vwait wait
-        set ::fpipe::pipecode ""
-    }
-    #  
-    if {$::fpipe::rpipe eq "" && [string range [dict get $dict pipe] 0 0] eq "R"} {
-        set ::fpipe::rpipe [open "|R -q --interactive --vanilla  2>@1" r+]
-        fconfigure $::fpipe::rpipe -buffering line -blocking false
-        fileevent $::fpipe::rpipe readable [list piperead $::fpipe::rpipe]
+    if {[dict get $dict eval]} {
+        if {$::fpipe::pypipe eq "" && [string range [dict get $dict pipe] 0 1] eq "py"} {
+            set ::fpipe::pypipe [open "|python3 -ui 2>@1" r+]
+            fconfigure $::fpipe::pypipe -buffering line -blocking false
+            fileevent $::fpipe::pypipe readable [list piperead $::fpipe::pypipe]
+        }
+        if {$::fpipe::opipe eq "" && [string range [dict get $dict pipe] 0 1] eq "oc"} {
+            set ::fpipe::opipe [open "|octave --interactive --no-gui --norc --silent 2>@1" r+]
+            fconfigure $::fpipe::opipe -buffering none -blocking false
+            fileevent $::fpipe::opipe readable [list piperead $::fpipe::opipe]
+            puts $::fpipe::opipe {PS1("")}
+            puts $::fpipe::opipe "page_screen_output(1);"
+            puts $::fpipe::opipe "page_output_immediately(1);"
+            puts $::fpipe::opipe "fflush(stdout)"
+            flush $::fpipe::opipe
+            after 100 [list append wait ""]
+            vwait wait
+            set ::fpipe::pipecode ""
+        }
+        #  
+        if {$::fpipe::rpipe eq "" && [string range [dict get $dict pipe] 0 0] eq "R"} {
+            set ::fpipe::rpipe [open "|R -q --interactive --vanilla  2>@1" r+]
+            fconfigure $::fpipe::rpipe -buffering line -blocking false
+            fileevent $::fpipe::rpipe readable [list piperead $::fpipe::rpipe]
         
-    }
-    set wait [list]
-    set term ">>>"
-    if {[string range [dict get $dict pipe] 0 1] eq "oc"} {
-        set term "octave>"
-    }
-    if {[string range [dict get $dict pipe] 0 0] ne "X"} {
-        foreach line [split $cont \n] {
-            #  && [string range [dict get $dict pipe] 0 0] ne "R"
-            if {[dict get $dict terminal] && [string range [dict get $dict pipe] 0 1] in [list "py" "oc"]}  {
-                append ::fpipe::pipecode "$term $line\n" 
+        }
+        set wait [list]
+        set term ">>>"
+        if {[string range [dict get $dict pipe] 0 1] eq "oc"} {
+            set term "octave>"
+        }
+        if {[string range [dict get $dict pipe] 0 0] ne "X"} {
+            foreach line [split $cont \n] {
+                #  && [string range [dict get $dict pipe] 0 0] ne "R"
+                if {[dict get $dict terminal] && [string range [dict get $dict pipe] 0 1] in [list "py" "oc"]}  {
+                    append ::fpipe::pipecode "$term $line\n" 
                 
-            }
-            if {[string range [dict get $dict pipe] 0 1] eq "py"} {
-                puts $::fpipe::pypipe "$line"
-            }
-            if {[string range [dict get $dict pipe] 0 1] eq "oc"} {
-                puts $::fpipe::opipe "$line"
-                flush $::fpipe::opipe
-            }
-            if {[string range [dict get $dict pipe] 0 0] eq "R"} {
-                puts $::fpipe::rpipe "$line"
-                flush $::fpipe::rpipe
-            }
-            if {[regexp {^[^\s]} $line]} {
-                # delay only if first letter is non-whitespace
-                # to allow to flush output
-                after 100 [list append wait ""]
-                vwait wait
+                }
+                if {[string range [dict get $dict pipe] 0 1] eq "py"} {
+                    puts $::fpipe::pypipe "$line"
+                }
+                if {[string range [dict get $dict pipe] 0 1] eq "oc"} {
+                    puts $::fpipe::opipe "$line"
+                    flush $::fpipe::opipe
+                }
+                if {[string range [dict get $dict pipe] 0 0] eq "R"} {
+                    puts $::fpipe::rpipe "$line"
+                    flush $::fpipe::rpipe
+                }
+                if {[regexp {^[^\s]} $line]} {
+                    # delay only if first letter is non-whitespace
+                    # to allow to flush output
+                    after 100 [list append wait ""]
+                    vwait wait
+                }
             }
         }
+        after 100 [list append wait ""]
+        vwait wait
+        set res $::fpipe::pipecode
+    } else {
+        set res ""
     }
-    after 100 [list append wait ""]
-    vwait wait
-    set res $::fpipe::pipecode
     # TODO: dict app using
     if {!([dict get $dict results] in [list show asis])} {
         set res ""

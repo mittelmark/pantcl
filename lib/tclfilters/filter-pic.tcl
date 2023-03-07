@@ -2,10 +2,11 @@
 #' title: "filter-pic.tcl documentation"
 #' author: "Detlef Groth, Caputh-Schwielowsee, Germany"
 #' date: 2021-11-19
-#' pik:
+#' pic:
 #'     app: pic2graph
 #'     imagepath: images
-#'     ext: pgn
+#'     ext: png
+#'     eval: 1
 #' ---
 # a simple pandoc filter using Tcl
 # the script pantcl.tcl 
@@ -13,7 +14,7 @@
 #' 
 #' ------
 #' 
-#' ```{.tcl results="asis" echo=false}
+#' ```{.tcl eval=true results="asis" echo=false}
 #' include header.md
 #' ```
 #' 
@@ -44,11 +45,11 @@
 #' 
 #'   - app - the application to process the pic code, usually pic2graph or dpic, default: pic2graph
 #'   - ext - file file extension, can be png or pdf for pic2graph and pdf, svg and tikz for dpic, default: png
+#'   - eval - should the code in the code block be evaluated, default: false
+#'   - fig - should a figure be created, default: true
 #'   - imagepath - output imagepath, default: images
 #'   - include - should the created image be automatically included, default: true
 #'   - results - should the output of the command line application been shown, should be show or hide, default: hide
-#'   - eval - should the code in the code block be evaluated, default: true
-#'   - fig - should a figure be created, default: true
 #' 
 #' To change the defaults the YAML header can be used. Here an example to change the 
 #' default the image output path to nfigures, the default file format to svg and the application to dpic.
@@ -62,6 +63,7 @@
 #'      app: dpic
 #'      imagepath: nfigures
 #'      ext: svg
+#'      eval: 1
 #'  ----
 #' ```
 #'
@@ -70,12 +72,12 @@
 #' Let's start with the usual "Hello World!" script:
 #'
 #' ``` 
-#'     ```{.pic}
+#'     ```{.pic eval=true}
 #'     box wid 1.2 "Hello World!" fill 0.3;
 #'     ```
 #' ```
 #'
-#' and here the output:
+#' And here the output:
 #' 
 #' ```{.pic}
 #' box wid 1.2 "Hello World!" fill 0.3;
@@ -109,7 +111,7 @@
 #' Here an example for the dpic application [https://gitlab.com/aplevich/dpic/](https://gitlab.com/aplevich/dpic/):
 #' 
 #' ```
-#'      ```{.dpic ext=svg}
+#'      ```{.dpic ext=svg eval=true}
 #'      [
 #'      box dashed wid 1.2 "Hello World" ; move ;
 #'      circle "circle" rad 0.5 fill 0.7; move ; arrow ; move ; 
@@ -120,7 +122,7 @@
 #' 
 #' Here is the output:
 #'
-#' ```{.dpic ext=svg}
+#' ```{.dpic ext=svg eval=true}
 #' [
 #' box dashed wid 1.2 "Hello World" ; move ;
 #' circle "circle" rad 0.5 fill 0.7; move ; arrow ; move ; 
@@ -149,6 +151,9 @@ proc filter-dpic {cont dict} {
              include true imagepath images app dpic label null \
              ext svg border 15 density 150 background white]
     set dict [dict merge $def $dict]
+    if {![dict get $dict eval]} {
+        return [list "" ""]
+    }
     if {[auto_execok [dict get $dict app]] eq ""} {
         return [list "Error: This filter requires the command line tool dpic https://gitlab.com/aplevich/dpic - please install it!" ""]
     }
@@ -194,6 +199,9 @@ proc filter-pic {cont dict} {
              include true imagepath images app pic2graph label null ext png \
              border 15 density 150 background white]
     set dict [dict merge $def $dict]
+    if {![dict get $dict eval]} {
+        return [list "" ""]
+    }
     if {[regexp {^dpic} [dict get $dict app]]} {
         return [filter-dpic $cont $dict]
     }

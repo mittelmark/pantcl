@@ -6,6 +6,7 @@
 #'     app: fossil
 #'     imagepath: images
 #'     ext: svg
+#'     eval: 1
 #' ---
 # a simple pandoc filter using Tcl
 # the script _pandoc-tcl-filter.tapp_ must be execuable and in the PATH
@@ -14,7 +15,7 @@
 #' 
 #' ------
 #' 
-#' ```{.tcl results="asis" echo=false}
+#' ```{.tcl eval=true results="asis" echo=false}
 #' include header.md
 #' ```
 #' 
@@ -50,13 +51,13 @@
 #' 
 #'   - app - the application to process the pikchr code, should be fossil or pikchr default: fossil
 #'   - ext - file file extension, can be svg, png, pdf, png and pdf needs the tool *cairosvg* [https://cairosvg.org/](https://cairosvg.org/), default: svg
-#'   - imagepath - output imagepath, default: images
-#'   - include - should the created image be automatically included, default: true
-#'   - results - should the output of the command line application been shown, should be show or hide, default: hide
-#'   - eval - should the code in the code block be evaluated, default: true
+#'   - eval - should the code in the code block be evaluated, default: false
 #'   - fig - should a figure be created, default: true
 #'   - font - which alternative OTF font should be used, default: 'default'
 #'   - fontsize - what should be the fontsize, 0 means that pikchr chooses the font size, default: 0  
+#'   - imagepath - output imagepath, default: images
+#'   - include - should the created image be automatically included, default: true
+#'   - results - should the output of the command line application been shown, should be show or hide, default: hide
 #' 
 #' To change the defaults the YAML header can be used. Here an example to change the 
 #' default layout engine for _.pik_ code blocks with to _pikchr_ and the image output path to nfigures
@@ -70,11 +71,13 @@
 #'      app: pikchr
 #'      imagepath: nfigures
 #'      ext: png
+#'      eval: 1
 #'  ## the .pikchr code blocks should be processed with fossil
 #'  pikchr:
 #'      app: fossil-2.17
 #'      imagepath: nfigures
 #'      ext: png
+#'      eval: 1
 #'  ----
 #' ```
 #'
@@ -85,7 +88,7 @@
 #' ```
 #'     # remove indentation it is just to 
 #'     # protect against interpretation
-#'     ```{.pik}
+#'     ```{.pik eval=true}
 #'     scale = 0.8
 #'     fill  = cornsilk
 #'     arrow right 200% "Markdown" "Source"
@@ -98,7 +101,7 @@
 #' 
 #' And here the output:
 #' 
-#' ```{.pik}
+#' ```{.pik eval=true}
 #' scale = 0.8
 #' fill  = cornsilk
 #' arrow right 200% "Markdown" "Source"
@@ -110,7 +113,7 @@
 #' 
 #' Now to an other larger examples from the Pikchr website - [https://pikchr.org/home/doc/trunk/doc/examples.md](https://pikchr.org/home/doc/trunk/doc/examples.md):
 #' 
-#' ```{.pik}
+#' ```{.pik eval=true}
 #'   scale = 0.9
 #'             filewid *= 1.2
 #'   Src:      file "pikchr.y" fill 0xc6ffe2; move
@@ -143,7 +146,7 @@
 #' Here the code for a sample diagram (leading 5 character whitespaces must be removed, the whitepace are just here to avoid interpretation):
 #'
 #' ```
-#'     ```{.pikchr app=fossil}
+#'     ```{.pikchr app=fossil eval=true}
 #'     box "box"
 #'     circle "circle" fill cornsilk at 1 right of previous
 #'     ellipse "ellipse" at 1 right of previous
@@ -155,7 +158,7 @@
 #'
 #' Here the output:
 #'
-#' ```{.pikchr app=fossil}
+#' ```{.pikchr app=fossil eval=true}
 #' box "box"
 #' circle "circle" fill cornsilk at 1 right of previous
 #' ellipse "ellipse" at 1 right of previous
@@ -183,6 +186,9 @@ proc filter-pik {cont dict} {
     set def [dict create results show eval true fig true width 0 height 0 \
              include true imagepath images app pikchr label null ext svg font default fontsize 0]
     set dict [dict merge $def $dict]
+    if {![dict get $dict eval]} {
+        return [list "" ""]
+    }
     if {[auto_execok [dict get $dict app]] eq ""} {
         return [list "Error: This filter requires the command line tool pikchr https://pikchr.org/ - or fossil version 2.13 or newer - https://fossil-scm.org - please install it" ""]
     }

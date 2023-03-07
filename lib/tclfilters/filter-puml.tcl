@@ -6,6 +6,7 @@
 #'     app: plantuml
 #'     imagepath: images
 #'     ext: png
+#'     eval: 1
 #' ---
 #
 # a simple pandoc filter using Tcl the script pantcl.tcl 
@@ -13,7 +14,7 @@
 #' 
 #' ------
 #' 
-#' ```{.tcl results="asis" echo=false}
+#' ```{.tcl eval=true results="asis" echo=false}
 #' include header.md
 #' ```
 #' 
@@ -47,7 +48,7 @@
 #' 
 #' > 
 #'   - app - the application to be called, such as plantuml, so the name of your shell script which must be in the PATH, default: plantuml
-#'   - eval - should the code in the code block be evaluated, default: true
+#'   - eval - should the code in the code block be evaluated, default: false
 #'   - ext - file file extension, can be svg, png, pdf, default: png
 #'   - fig - should a figure be created, default: true
 #'   - imagepath - output imagepath, default: images
@@ -60,17 +61,18 @@
 #' 
 #' To change the defaults the YAML header can be used. Here an example to change the 
 #' default command line application to plantuml-1.2020 and the image output path to nfigures
-#' and the output image format to svg.
+#' and the output image format to svg and to evaluate all code chunks in the document - `eval: 1`.
 #' 
 #' ```
 #'  ----
 #'  title: "filter-puml.tcl documentation"
 #'  author: "Detlef Groth, Caputh-Schwielowsee, Germany"
 #'  date: 2021-12-11
-#'  mmd:
+#'  puml:
 #'      app: plantuml-1.2020
 #'      imagepath: nfigures
 #'      ext: svg
+#'      eval: 1
 #'  ----
 #' ```
 #'
@@ -345,6 +347,9 @@ proc filter-puml {cont dict} {
     set def [dict create results show eval true fig true  \
              include true imagepath images app plantuml label null ext png theme _none_]
     set dict [dict merge $def $dict]
+    if {![dict get $dict eval]} {
+        return [list "" ""]
+    }
     set ret ""
     if {[auto_execok [dict get $dict app]] == ""} {
         return [list "Error: Command line tool [dict get $dict app] is not installed!" ""]
