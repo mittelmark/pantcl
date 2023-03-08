@@ -1,14 +1,15 @@
 #' ---
 #' title: "filter-tcrd.tcl documentation"
 #' author: "Detlef Groth, Caputh-Schwielowsee, Germany"
-#' date: 2021-12-22
+#' date: 2023-03-08
 #' tcrd:
 #'     results: show
+#'     eval: 1 
 #' ---
 #' 
 #' ------
 #' 
-#' ```{.tcl results="asis" echo=false}
+#' ```{.tcl eval=true results="asis" echo=false}
 #' include header.md
 #' ```
 #' 
@@ -33,12 +34,12 @@
 #' 
 #' The following options can be given via code chunks options or as defaults in the YAML header.
 #' 
-#' > - eval - should the code in the code block be evaluated, default: true
+#' > - eval - should the code in the code block be evaluated, default: false (0)
 #'   - label - the code chunk label used as well for the image name, default: null
 #'   - results - should the output, the song text be show(n) or hid(d)e(n), default: show
 #'   - transpose - how many steps up or down to transpose, can be negative or positive, 0 means no transpose default: 0
 #' 
-#' Options can be set globally in the YAML header for all chunks. below is an example which shows only the source but not the output.
+#' Options can be set globally in the YAML header for all chunks. Below is an example which shows only the source but not the output.
 #' 
 #' ```
 #'  ----
@@ -48,15 +49,16 @@
 #'  tdot:
 #'      echo: true
 #'      results: hide
+#'      eval: 1
 #'  ----
 #' ```
 #'
 #' ## Examples
 #' 
-#' Here an example for a simple hello world image:
+#' Here an example for a song with an intro and verse and chorus:
 #' 
 #' ```
-#'      ```{.tcrd echo=false}
+#'      ```{.tcrd echo=false eval=true}
 #'      [Intro]
 #'       
 #'      [G] - [C] - [G] - [C] - [D7] - [G]
@@ -91,10 +93,11 @@
 #' Will I p[G]lay the wild ro[C]ver, no n[D7]ever, no m[G]ore
 #' ```
 #'
-#' To change the background color you just need to change the used style sheet.
+#' To change the background color you just need to change the used style sheet
+#' for your HTML file.
 #' 
-#' Let's now tranpose the song by two steps from G to A. The 
-#' chunk options are then just changed to: `{.tcrd echo=false transpose=2}`. Below the result:
+#' Let's now transpose the song by two steps from G to A. The 
+#' chunk options are then just changed to: `{.tcrd echo=false eval=true transpose=2}`. Below the result:
 #' 
 #' ```{.tcrd echo=false transpose=2}
 #' [Intro]
@@ -129,6 +132,9 @@
 #' Remember [F]me to one who [C]lives there 
 #' [Dm]He once [C]was a true love of [Dm]mine
 #' ``` 
+#'
+#' Obviously in a song book you do not want to show the source code, you can
+#' hide the source for the output by applying the chunk option `echo=false`.
 #' 
 #' ## See also:
 #' 
@@ -244,6 +250,9 @@ proc filter-tcrd {cont dict} {
     incr n
     set def [dict create results show eval true include true label null transpose 0]
     set dict [dict merge $def $dict]
+    if {![dict get $dict eval]} {
+        return [list "" ""]
+    }
     if {[catch {
          set res [tcrd::chords $cont [dict get $dict transpose]] 
      }]} {
