@@ -6,11 +6,12 @@
 #'     imagepath: images
 #'     ext: svg
 #'     results: hide
+#'     eval: 1
 #' ---
 #' 
 #' ------
 #' 
-#' ```{.tcl results="asis" echo=false}
+#' ```{.tcl eval=true results="asis" echo=false}
 #' include header.md
 #' ```
 #' 
@@ -20,7 +21,7 @@
 #' 
 #' _filter-tdot.tcl_ - Filter which can be used to display dot/neato diagrams
 #'  within a Pandoc processed document using the Tcl library [tdot](https://github.com/mittelmark/DGTcl).
-#' together with the pantcl filter application.
+#' together with the Pantcl filter application.
 #' 
 #' ## Usage
 #' 
@@ -37,7 +38,7 @@
 #' 
 #' The following options can be given via code chunks options or as defaults in the YAML header.
 #' 
-#' > - eval - should the code in the code block be evaluated, default: true
+#' > - eval - should the code in the code block be evaluated, default: false
 #'   - ext - file file extension, can be svg, png or pdf, default: svg
 #'   - fig - should a figure be created, default: true
 #'   - imagepath - output imagepath, default: images
@@ -48,7 +49,9 @@
 #' To change the defaults the YAML header can be used. Here an example to change the 
 #' the image output path to nfigures and the file extension to pdf 
 #' (useful for Pdf output of the document as in LaTeX mode of pandoc). You should usually always change the 
-#' options results: to hide.
+#' options results: to hide and more importantly the option `eval` to 1 (true).
+#' For security reasons and to avoid automatic code interpretation this per
+#' default is set to 0 (false): 
 #' 
 #' ```
 #'  ----
@@ -59,15 +62,19 @@
 #'      imagepath: nfigures
 #'      ext: pdf
 #'      results: hide
+#'      eval: 1
 #'  ----
 #' ```
+#' 
+#' Please note that in the header you can only use 1 and 0 for boolean values,
+#' but not true and false.
 #'
 #' ## Examples
 #' 
 #' Here an example for a simple hello world image:
 #' 
 #' ```
-#'     ```{.tdot}
+#'     ```{.tdot eval=true}
 #'     tdot set type "strict digraph G"
 #'     tdot graph margin=0.2 
 #'     tdot node width=1 height=0.7 style=filled fillcolor=salmon shape=box
@@ -120,7 +127,7 @@
 #' }
 #' ```
 #' 
-#' Image you would to have the dot-code by hand ...
+#' Imagine you would to have to code this dot graphics by hand ...
 #' 
 #' ## See also:
 #' 
@@ -145,6 +152,9 @@ proc filter-tdot {cont dict} {
     set def [dict create results hide eval true fig true width 100 height 100 \
              include true label null imagepath images ext svg]
     set dict [dict merge $def $dict]
+    if {![dict get $dict eval]} {
+        return [list "" ""]
+    }
     set ret ""
     set owd [pwd] 
     if {[dict get $dict label] eq "null"} {

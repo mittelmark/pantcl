@@ -1100,19 +1100,25 @@ proc main {jsonData} {
                     lappend tkey t
                     set c [regsub {^[^ ]+} $code ""]
                     # puts stderr $code
+
                     if {[regexp {^\.?tcl } $code]} {
-                        if {[catch {
-                             set ::errorInfo {}
-                             set res [interp eval mdi $c]
-                         }]} {
-                                set res "error: $c"
-                                set res "Error: [regsub {\n +invoked.+} $::errorInfo {}]"
-                         }
-                         set jsonData [rl_json::json set jsonData blocks {*}$ckey [rl_json::json string "$res"]]
-                         set jsonData [rl_json::json set jsonData blocks {*}$tkey Str]
+
+                        set dm [getMetaDict $meta tcl]
+                        set dict [dict merge [dict create eval false] $dm]
+                        if {[dict get $dict eval]} {
+                            if {[catch {
+                                 set ::errorInfo {}
+                                set res [interp eval mdi $c]
+                            }]} {
+                                    set res "error: $c"
+                                    set res "Error: [regsub {\n +invoked.+} $::errorInfo {}]"
+                            }
+                            set jsonData [rl_json::json set jsonData blocks {*}$ckey [rl_json::json string "$res"]]
+                            set jsonData [rl_json::json set jsonData blocks {*}$tkey Str]
+                        }
                      } elseif {[regexp -nocase {^\.?R } $code]} {
-                         #puts stderr "R inline"
                          set dm [getMetaDict $meta pipe]
+                         #puts stderr "R inline"
                          set d [dict merge [dict create results show echo false pipe R] $dm]
                          set res [lindex [filter-pipe $c $d] 0]
                          set res [regsub {^>.+\[1\]} $res ""]

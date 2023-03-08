@@ -87,7 +87,7 @@
 <header id="title-block-header">
 <h1 class="title">filter-tcl documentation</h1>
 <p class="author">Detlef Groth, Schwielowsee, Germany</p>
-<p class="date">Jan 22, 2023</p>
+<p class="date">Mar 08, 2023</p>
 </header>
 <hr/>
 <p></p>
@@ -103,61 +103,61 @@ Documentation: <a href="../../pantcl.html">Pantcl filter documentation</a> - <a 
 <p>Here an example:</p>
 <pre><code>    # indentation just to avoid 
     # interpretation
-    ```{.tcl}
+    ```{.tcl eval=true}
     set x 1
     puts $x
     ```</code></pre>
 <p>Here the output:</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode tcl"><code class="sourceCode tcl"><span id="cb2-1"><a aria-hidden="true" href="#cb2-1" tabindex="-1"></a><span class="kw">set</span> <span class="ot">x</span> <span class="dv">1</span></span>
+<div class="sourceCode" data-eval="true" id="cb2"><pre class="sourceCode tcl"><code class="sourceCode tcl"><span id="cb2-1"><a aria-hidden="true" href="#cb2-1" tabindex="-1"></a><span class="kw">set</span> <span class="ot">x</span> <span class="dv">1</span></span>
 <span id="cb2-2"><a aria-hidden="true" href="#cb2-2" tabindex="-1"></a><span class="kw">puts</span> <span class="dt">$x</span></span></code></pre></div>
-<pre class="tclout"><code>1
+<pre class="tclout" data-eval="true"><code>1
 </code></pre>
 <h3 id="code-chunk-options">Code chunk options</h3>
 <p>The basic Tcl filter has three code chunk options:</p>
 <ul>
-<li><em>eval</em> - should the code be evaluated, default: true</li>
-<li><em>results</em> - should the code output be shown, either “show”, “hide” or “asis”, default: “show”</li>
 <li><em>echo</em> - should the code itself been shown, default: true</li>
+<li><em>eval</em> - should the code be evaluated, default: false</li>
+<li><em>results</em> - should the code output be shown, either “show”, “hide” or “asis”, default: “show”</li>
 </ul>
 <p>You can set these options either in the YAML header or on individual code chunks. Here a YAML header of the document to make other defaults:</p>
 <pre><code>    ---
     title: "your title"
     author: "your name"
     tcl:
-       eval: 0
-       results: "hide"
        echo: 1
+       eval: 1
+       results: "hide"
     ---</code></pre>
 <p>Please note that in the document header <em>true</em> or <em>false</em> is not possible only using 1 and 0 as values.</p>
-<p>For the eval option there is as well an environment variable which can be set. If you in a bash shell use <code>export FILTEREVAL=0</code> the default of <code>eval=true</code> will be overwritten. You can reset the option later again to <code>export FILTEREVAL=1</code> if you like.</p>
+<p>For the <code>eval</code> option there is as well an environment variable which can be set. If you in a bash shell use <code>export FILTEREVAL=0</code> the default of <code>eval=0</code> (false) will be overwritten. You can reset the default option <code>eval</code> later again to <code>export FILTEREVAL=1</code> if you like.</p>
 <p>Now an example where we hide the code itself and only show the output using the chunk argument <code>echo=false</code>:</p>
-<pre><code>    ```{.tcl echo=false}
+<pre><code>    ```{.tcl echo=false eval=true}
     puts "The sinus of 3 is [expr {round(sin(3))}]"
     ```</code></pre>
 <p>And here the output where the code is as well hidden:</p>
 <p></p>
-<pre class="tclout" data-echo="false"><code>The sinus of 3 is 0.141
+<pre class="tclout" data-echo="false" data-eval="true"><code>The sinus of 3 is 0.141
 </code></pre>
-<p>With the option eval we can just avoid interpretations of code chunks.</p>
+<p>With the option <code>eval</code> we can just avoid interpretations of code chunks.</p>
 <pre><code>    ```{.tcl eval=false}
     puts "The sinus of 3 is [format %0.3f [expr {sin(3)}]]"
     ```</code></pre>
 <p>And here the “output”:</p>
 <div class="sourceCode" data-eval="false" id="cb8"><pre class="sourceCode tcl"><code class="sourceCode tcl"><span id="cb8-1"><a aria-hidden="true" href="#cb8-1" tabindex="-1"></a><span class="kw">puts</span> <span class="st">"The sinus of 3 is [format %0.3f [expr {sin(3)}]]"</span></span></code></pre></div>
 <p>As we can use the <em>echo</em> chunk option to hide and show the code itself, we can as well do the same with the output. So if we combine <em>echo=“false”</em> and <em>results=“hide”</em> the code will be evaluated but we will not seen anything in the output. This option is useful if you like to hide the Tcl code and just use it in the background for some computations.</p>
-<p>But what does the code chunk option <em>results=“asis”</em> mean? It allows you to create Markup code, such as Markdown if we you are writing in Markdown, using the Tcl programmiong language.</p>
-<pre><code>    ```{.tcl results="asis"}
+<p>But what does the code chunk option <em>results=“asis”</em> mean? It allows you to create Markup code, such as Markdown if we you are writing in Markdown, using the Tcl programming language.</p>
+<pre><code>    ```{.tcl results="asis" eval=true}
     set md "This is **bold** and this is _italic_ text.\n"
     append md "\nYou get the point?\n"
     set md
     ```</code></pre>
 <p>And here is the output:</p>
-<div class="sourceCode" data-results="asis" id="cb10"><pre class="sourceCode tcl"><code class="sourceCode tcl"><span id="cb10-1"><a aria-hidden="true" href="#cb10-1" tabindex="-1"></a><span class="kw">set</span> md <span class="st">"This is **bold** and this is _italic_ text.</span><span class="ch">\n</span><span class="st">"</span></span>
+<div class="sourceCode" data-eval="true" data-results="asis" id="cb10"><pre class="sourceCode tcl"><code class="sourceCode tcl"><span id="cb10-1"><a aria-hidden="true" href="#cb10-1" tabindex="-1"></a><span class="kw">set</span> md <span class="st">"This is **bold** and this is _italic_ text.</span><span class="ch">\n</span><span class="st">"</span></span>
 <span id="cb10-2"><a aria-hidden="true" href="#cb10-2" tabindex="-1"></a><span class="kw">append</span> md <span class="st">"</span><span class="ch">\n</span><span class="st">You get the point?</span><span class="ch">\n</span><span class="st">"</span></span>
 <span id="cb10-3"><a aria-hidden="true" href="#cb10-3" tabindex="-1"></a><span class="kw">set</span> md</span></code></pre></div>
 <p>This is <strong>bold</strong> and this is <em>italic</em> text.</p>
 <p>You get the point?</p>
-<p>Let’s create a table based on a nested Tcl list, code chunk options - <code>{.tcl results="show"}</code>:</p>
+<p>Let’s create a table based on a nested Tcl list, code chunk options - <code>{.tcl results="show" eval=true}</code>:</p>
 <div class="sourceCode" data-results="show" id="cb11"><pre class="sourceCode tcl"><code class="sourceCode tcl"><span id="cb11-1"><a aria-hidden="true" href="#cb11-1" tabindex="-1"></a><span class="kw">set</span> l <span class="kw">[list</span> <span class="kw">[list</span> A B C D E<span class="kw">]</span> \</span>
 <span id="cb11-2"><a aria-hidden="true" href="#cb11-2" tabindex="-1"></a>   <span class="kw">[list</span> <span class="dv">1</span> <span class="dv">2</span> <span class="dv">3</span> <span class="dv">4</span> <span class="dv">5</span><span class="kw">]</span> \</span>
 <span id="cb11-3"><a aria-hidden="true" href="#cb11-3" tabindex="-1"></a>   <span class="kw">[list</span> <span class="dv">6</span> <span class="dv">7</span> <span class="dv">8</span> <span class="dv">9</span> <span class="dv">10</span><span class="kw">]</span> \</span>
@@ -270,7 +270,7 @@ Documentation: <a href="../../pantcl.html">Pantcl filter documentation</a> - <a 
 </table>
 </center>
 <h3 id="graphics">Graphics</h3>
-<p>R has no default graphics engine for plotting etc. There is however the <em>tsvg</em> package which allows us to create SVG graphics. As this package is included in the pantcl filter application we can use it here and later include the generated graphis using the Markdown image markup:</p>
+<p>R has no default graphics engine for plotting etc. There is however the <em>tsvg</em> package which allows us to create SVG graphics. As this package is included in the Pantcl filter application we can use it here and later include the generated graphics using the Markdown image markup:</p>
 <div class="sourceCode" id="cb15"><pre class="sourceCode tcl"><code class="sourceCode tcl"><span id="cb15-1"><a aria-hidden="true" href="#cb15-1" tabindex="-1"></a><span class="kw">package</span> <span class="ot">require</span> tsvg</span>
 <span id="cb15-2"><a aria-hidden="true" href="#cb15-2" tabindex="-1"></a>tsvg <span class="kw">set</span> code <span class="st">""</span></span>
 <span id="cb15-3"><a aria-hidden="true" href="#cb15-3" tabindex="-1"></a>tsvg circle<span class="ot"> -cx</span> <span class="dv">50</span><span class="ot"> -cy</span> <span class="dv">50</span><span class="ot"> -r</span> <span class="dv">45</span><span class="ot"> -stroke</span> black \</span>
@@ -296,8 +296,8 @@ Documentation: <a href="../../pantcl.html">Pantcl filter documentation</a> - <a 
 <span id="cb16-14"><a aria-hidden="true" href="#cb16-14" tabindex="-1"></a>    tsvg <span class="kw">text</span><span class="ot"> -x</span> <span class="kw">[expr</span> <span class="kw">{</span>(<span class="dt">$i</span>+<span class="dv">1</span>)*<span class="dv">70</span>+<span class="dv">20</span><span class="kw">}]</span><span class="ot"> -y</span> <span class="dv">370</span> <span class="kw">[lindex</span> <span class="dt">$labels</span> <span class="dt">$i</span><span class="kw">]</span></span>
 <span id="cb16-15"><a aria-hidden="true" href="#cb16-15" tabindex="-1"></a><span class="kw">}</span></span>
 <span id="cb16-16"><a aria-hidden="true" href="#cb16-16" tabindex="-1"></a>tsvg write barplot.png</span></code></pre></div>
-<p><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAZAAAAGQCAYAAACAvzbMAAAABmJLR0QA/wD/AP+gvaeTAAALe0lEQVR4nO3dS4jV9f/H8Xd/JC3MclKsRLsHJaEYQuXUJNkFTKgksI2IVORGAgMxIYqgCxR0wU2muKgcMQztglItlLGNhW1ctFAIXBjETKPdnEp/iz9J/wr+/l4d5zOOjwccGDnDlxfj4Tzne25TBQAAAAAAAAAAAAAAAAAAAH92zql+Y39//4nTOQSAkaGrq+uU2vA/p3sIAKOTgAAQERAAIgICQERAAIgICAARAQEgIiAARMZ08mB9fX21Z8+eTh4SgA6ZO3dudXd3d+x4HT0D2bNnT/X19XXykAB0wOn4Bb+jZyBVVd3d3bVq1apOHxaAEcZzIABEBASAiIAAEBEQACICAkBEQACICAgAEQEBICIgAEQEBICIgAAQERAAIgICQERAAIgICAARAQEgIiAARAQEgIiAABAREAAiAgJAREAAiAgIABEBASAiIABEBASAiIAAEBEQACICAkBEQACICAgAEQEBICIgAEQEBICIgAAQERAAIgICQERAAIgICAARAQEgIiAARAQEgIiAABAREAAiAgJAREAAiAgIABEBASAiIABEBASAiIAAEBEQACICAkBEQACICAgAEQEBICIgAEQEBICIgAAQERAAIgICQERAAIgICAARAQEgIiAARAQEgIiAABAREAAiAgJAREAAiAgIABEBASAiIABEBASAiIAAEBEQACICAkBEQACICAgAEQEBICIgAEQEBICIgAAQERAAIgICQERAAIgICAARAQEgMqb1AM4sEw9+2npCRwxcNb/1BDjjOQMBICIgAEQEBICIgAAQERAAIgICQERAAIgICAARAQEgIiAARAQEgIiAABAREAAiAgJAREAAiAgIABEBASAiIABEBASAiIAAEBEQACICAkBEQACICAgAEQEBICIgAEQEBICIgAAQERAAIgICQERAAIgICAARAQEgIiAARAQEgIiAABAREAAiAgJAREAAiAgIABEBASAiIABEBASAiIAAEBEQACICAkBEQACICAgAEQEBICIgAEQEBICIgAAQERAAIgICQERAAIgICAARAQEgIiAARAQEgIiAABAREAAiAgJAREAAiAgIABEBASAiIABEBASAiIAAEBEQACICAkBEQACICAgAEQEBIDKm9YCRauKnn7ae0BED8+e3ngCMUs5AAIgICAARAQEgIiAARAQEgIiAABAREAAiAgJAREAAiAgIABEBASAiIABEBASAiIAAEBEQACICAkBEQACICAgAEQEBICIgAEQEBICIgAAQERAAIgICQERAAIgICAARAQEgIiAARAQEgIiAABAREAAiAgJAREAAiAgIABEBASAiIABEBASAiIAAEBEQACICAkBEQACICAgAEQEBIDKm9QBg9Pp04sTWEzpi/sBA6wkjkjMQACICAkBEQACICAgAEQEBICIgAEQEBICIgAAQERAAIgICQERAAIgICAARAQEgIiAARAQEgIiAABAREAAiAgJAREAAiAgIABEBASAiIABEBASAiIAAEBnTegCMBhM/Pdh6QkcMzL+q9QTOIM5AAIgICAARAQEgIiAARAQEgIiAABAREAAiAgJAREAAiAgIABEBASAiIABEBASAiIAAEBEQACICAkBEQACICAgAEQEBICIgAEQEBICIgAAQERAAIgICQERAAIgICAARAQEgIiAARAQEgIiAABAREAAiAgJAREAAiAgIABEBASAiIABEBASAiIAAEBEQACICAkBEQACICAgAEQEBICIgAEQEBICIgAAQERAAIgICQERAAIgICAARAQEgIiAARAQEgIiAABAREAAiAgJAREAAiAgIABEBASAiIABEBASAiIAAEBEQACICAkBEQACICAgAEQEBICIgAEQEBICIgAAQERAAIgICQERAAIgICAARAQEgIiAARAQEgIiAABAREAAiAgJAREAAiAgIABEBASAiIABEBASAiIAAEBnTesBINTB/fusJI9LAVX4u/2Rg/lWtJ4xI8wcGWk/gNHIGAkBEQACICAgAEQEBICIgAEQEBICIgAAQERAAIgICQERAAIgICAARAQEgIiAARAQEgIiAABAREAAiAgJAREAaWbFiRXV1ddWaNWtaT2lu3bp11dXVdfIyadKkmjFjRj3yyCN18ODB1vOa+/LLL2vZsmV1/fXX15QpU+qaa66phx56qD744IPW05r46+1l6tSpNWvWrFqyZElt3769Tpw40XriWcOftG3gl19+qW3btlVV1XvvvVfPPvtsjRnjv+KVV16pyy67rH7//fc6cOBAvfHGG7V3797as2dPjR8/vvW8JtatW1erV6+u6667rpYvX17Tp0+vI0eO1K5du2rZsmX19ttv1z333NN6ZhN/3F6Ghobq0KFDtWPHjlq6dGnNmzev3n333Ro7dmzriaOee60GPvzwwzp69Gjddddd9cknn9Rnn3121t4J/Fl3d3dde+21J/89ZcqUevzxx+uLL76oO+64o92wRvbu3VurV6+uBQsW1Pr16//PLxlLliyp/fv316+//tpwYVt/vb0sX768NmzYUE8++WQ988wz9cILLzRcd3bwEFYDmzZtqosuuqjWrl1b48aNq97e3taTRqSJEydWVZ21d5Kvv/56nXvuufXqq6/+4xnqjBkzatasWQ2WjVzLli2rnp6e2rhxY/3888+t54x6AjLMDh8+XLt27aoHHnigJk2aVAsWLKgdO3bU999/33pacz/99FP9+OOPdeTIkdq3b1+9+OKLdemll9bcuXNbT2ti9+7ddeutt54MKafm3nvvrWPHjtW+fftaTxn1BGSYbd68uY4fP16LFy+uqqqHH364jh07Vu+//37jZe3Nmzevpk2bVldccUXdeeed1d/fX1u2bKnzzz+/9bRhd+TIkTp69GhdfvnlraeccaZNm1ZVVd9++23jJaOfgAyz3t7euvrqq2vOnDlVVdXT01OXXHKJh7Gq6s0336yPP/64Pvroo3rrrbdq8uTJtWjRIq/E4r9y/Pjxqqo655xzGi8Z/QRkGO3bt6++/vrruu+++2pwcLAGBwfrhx9+qIULF9bevXvrwIEDrSc2NXPmzLr55pvrlltuqQcffLC2bNlSg4OD9fLLL7eeNuwmTJhQF1xwQX3zzTetp5xxDh06VFX/+yIMTi8BGUabNm2qqqrXXnutrrzyypOXdevWVVU5C/mLCy+8sKZOnVr79+9vPaWJ22+/vT7//PMaGBhoPeWMsnPnzho7dqwXGAwDARkmQ0NDtXXr1rrppptq+/btf7vceOONtXnzZm+C+pPvvvuuDh06VBdffHHrKU2sWLGihoaG6oknnqjffvvtb9fv37+/vvrqqwbLRq4NGzacfI/Meeed13rOqOd9IMNk586d1d/fX88991x1d3f/7fqlS5fWypUrq6+vr2677bYGC9vr6+urgwcP1okTJ+rw4cO1fv36GhoaqkcffbT1tCbmzJlTzz//fD311FPV09NTixcvrunTp9fg4GDt3r27tm3bVu+8807rmc38cXv5442EO3furN27d9e8efPq6aefbj3vrCAgw6S3t7fGjx9f999//z9ev2jRolqzZk319vaetQFZuXLlya8nT55cN9xwQ23durV6enoarmrrscceq9mzZ9fatWtr7dq11d/fXxMmTKjZs2fXxo0b6+677249sZk/bi/jxo2ryZMn18yZM2vjxo21cOFCT6APk1P+Kff39/+/j6289NJLVVW1atWqfzEJgE77b+6fu7q6TqkNngMBICIgAEQEBICIgAAQERAAIgICQERAAIgICACRjr8Tva+vr9OHBOBf6uvr+8ePUfo3OhqQs/UvxwGMdN3d3R2/j+7oR5kAcObzUSYAnFYCAkBEQACICAgAEQEBICIgAEQEBICIgAAAAAAAAAAAAAAAAAAAAAAAHfAfJ87dBfTNOpcAAAAASUVORK5CYII="/><!--URL:barplot.png--></p>
-<p>PDF and PNG output might be prefered if your final document is a PDF document created via LaTeX.</p>
+<p><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAZAAAAGQCAYAAACAvzbMAAAABmJLR0QA/wD/AP+gvaeTAAALfUlEQVR4nO3dS4jVhd/H8W8PkhZmOSlWot2DklAMoXJqGpouYEIlgW1EhorcSGAgJkQRdIGCLrjJlFlUjhiGdsEhWyhjmyls46KFQjALg5hptJtT6X/xJ+mpHh77dJzfOL5ecEAZ+fFhPJz3/M45vzNVAAAAAAAAAAAAAAAAAAAA8EfnnOo/HBoaOnE6hwAwPrS1tZ1SG/7ndA8BYGISEAAiAgJAREAAiAgIABEBASAiIABEBASAyKRWHqy/v7/27dvXykMC0CKLFy+u9vb2lh2vpWcg+/btq/7+/lYeEoAWOB0/4Lf0DKSqqr29vdauXdvqwwIwzngNBICIgAAQERAAIgICQERAAIgICAARAQEgIiAARAQEgIiAABAREAAiAgJAREAAiAgIABEBASAiIABEBASAiIAAEBEQACICAkBEQACICAgAEQEBICIgAEQEBICIgAAQERAAIgICQERAAIgICAARAQEgIiAARAQEgIiAABAREAAiAgJAREAAiAgIABEBASAiIABEBASAiIAAEBEQACKTmh7AmWX6od1NT2iJ4au6mp4AZzxnIABEBASAiIAAEBEQACICAkBEQACICAgAEQEBICIgAEQEBICIgAAQERAAIgICQERAAIgICAARAQEgIiAARAQEgIiAABAREAAiAgJAREAAiAgIABEBASAiIABEBASAiIAAEBEQACICAkBEQACICAgAEQEBICIgAEQEBICIgAAQERAAIgICQERAAIgICAARAQEgIiAARAQEgIiAABAREAAiAgJAREAAiAgIABEBASAiIABEBASAiIAAEBEQACICAkBEQACICAgAEQEBICIgAEQEBICIgAAQERAAIgICQERAAIgICAARAQEgIiAARAQEgIiAABAREAAiAgJAREAAiAgIABEBASAiIABEBASAiIAAEBEQACICAkBEQACICAgAEQEBICIgAEQEBICIgAAQERAAIgICQERAAIgICAARAQEgIiAARAQEgIiAABAREAAiAgJAREAAiAgIABEBASAiIABEBASAiIAAEBEQACICAkBEQACICAgAEQEBICIgAEQEBICIgAAQERAAIgICQERAAIgICAARAQEgIiAARAQEgIiAABAREAAiAgJAREAAiAgIABEBASAiIABEBASAiIAAEBEQACICAkBEQACICAgAEQEBICIgAEQEBICIgAAQERAAIgICQERAAIgICAARAQEgMqnpATARTN99qOkJLTHcdVXTEziDOAMBICIgAEQEBICIgAAQERAAIgICQERAAIgICAARAQEg4kr0/8P03bubntASw11dTU8AJihnIABEBASAiIAAEBEQACICAkBEQACICAgAEQEBICIgAEQEBICIgAAQERAAIgICQERAAIgICAARAQEgIiAARAQEgIiAABAREAAiAgJAREAAiAgIABEBASAiIABEBASAiIAAEBEQACICAkBEQACICAgAEQEBICIgAEQEBICIgAAQERAAIgICQERAAIgICAARAQEgIiAARAQEgIiAABAREAAiAgJAREAAiAgIABEBASAiIABEBASAiIAAEBEQACICAkBEQACICAgAEQEBICIgAEQEBICIgAAQERAAIgICQERAAIgICAARAQEgIiAARAQEgIiAABAREAAiAgJAREAAiAgIABEBASAiIABEBASAiIAAEBEQACICAkBEQACICAgAEQEBICIgAEQmNT0AmLh2T5/e9ISW6BoebnrCuOQMBICIgAAQERAAIgICQERAAIgICAARAQEgIiAARAQEgIiAABAREAAiAgJAREAAiAgIABEBASAiIABEBASAiIAAEBEQACICAkBEQACICAgAEQEBICIgAEQEBICIgAAQERAAIgICQERAAIgICAARAQEgIiAARAQEgIiAABAREAAiAgJAREAAiAgIABEBASAiIABEBASAiIAAEBEQACICAkBEQACITGp6wHg13NXV9IRxafgq35e/M9x1VdMTxqWu4eGmJ3AaOQMBICIgAEQEBICIgAAQERAAIgICQERAAIgICAARAQEgIiAARAQEgIiAABAREAAiAgJAREAAiAgIABEBASAiIA1ZvXp1tbW11fr165ue0riNGzdWW1vbyduMGTNq3rx59cgjj9ShQ4eante4L774orq7u+v666+vWbNm1TXXXFMPPfRQffDBB01Pa8Sf7y+zZ8+uBQsW1IoVK2rnzp114sSJpieeNfxK2wb8/PPPtWPHjqqqeu+99+rZZ5+tSZP8V7zyyit12WWX1W+//VYHDx6sN954owYGBmrfvn01derUpuc1YuPGjbVu3bq67rrratWqVTV37tw6cuRI7dmzp7q7u+vtt9+ue+65p+mZjfj9/jI6OlqDg4O1a9euWrlyZXV2dta7775bkydPbnrihOdRqwEffvhhHT16tO6666765JNP6tNPPz1rHwT+qL29va699tqTf581a1Y9/vjj9fnnn9cdd9zR3LCGDAwM1Lp162rJkiW1adOm//VDxooVK+rAgQP1yy+/NLiwWX++v6xatao2b95cTz75ZD3zzDP1wgsvNLju7OAprAZs2bKlLrrootqwYUNNmTKlent7m540Lk2fPr2q6qx9kHz99dfr3HPPrVdfffVvz1DnzZtXCxYsaGDZ+NXd3V0dHR3V09NTP/30U9NzJjwBGWOHDx+uPXv21AMPPFAzZsyoJUuW1K5du+q7775relrjfvzxx/rhhx/qyJEjtX///nrxxRfr0ksvrcWLFzc9rRF79+6tW2+99WRIOTX33ntvHTt2rPbv39/0lAlPQMbY1q1b6/jx47V8+fKqqnr44Yfr2LFj9f777ze8rHmdnZ01Z86cuuKKK+rOO++soaGh2rZtW51//vlNTxtzR44cqaNHj9bll1/e9JQzzpw5c6qq6ptvvml4ycQnIGOst7e3rr766lq0aFFVVXV0dNQll1ziaayqevPNN+vjjz+ujz76qN56662aOXNmLVu2zDux+EeOHz9eVVXnnHNOw0smPgEZQ/v376+vvvqq7rvvvhoZGamRkZH6/vvva+nSpTUwMFAHDx5semKj5s+fXzfffHPdcsst9eCDD9a2bdtqZGSkXn755aanjblp06bVBRdcUF9//XXTU844g4ODVfXfN2FwegnIGNqyZUtVVb322mt15ZVXnrxt3LixqspZyJ9ceOGFNXv27Dpw4EDTUxpx++2312effVbDw8NNTzmj9PX11eTJk73BYAwIyBgZHR2t7du310033VQ7d+78y+3GG2+srVu3ugjqD7799tsaHBysiy++uOkpjVi9enWNjo7WE088Ub/++utfvn7gwIH68ssvG1g2fm3evPnkNTLnnXde03MmPNeBjJG+vr4aGhqq5557rtrb2//y9ZUrV9aaNWuqv7+/brvttgYWNq+/v78OHTpUJ06cqMOHD9emTZtqdHS0Hn300aanNWLRokX1/PPP11NPPVUdHR21fPnymjt3bo2MjNTevXtrx44d9c477zQ9szG/319+v5Cwr6+v9u7dW52dnfX00083Pe+sICBjpLe3t6ZOnVr333//33592bJltX79+urt7T1rA7JmzZqTf545c2bdcMMNtX379uro6GhwVbMee+yxWrhwYW3YsKE2bNhQQ0NDNW3atFq4cGH19PTU3Xff3fTExvx+f5kyZUrNnDmz5s+fXz09PbV06VIvoI+RU/4uDw0N/b/Prbz00ktVVbV27dp/MQmAVvsnj89tbW2n1AavgQAQERAAIgICQERAAIgICAARAQEgIiAARAQEgEjLr0Tv7+9v9SEB+Jf6+/v/9mOU/o2WBuRs/c1xAONde3t7yx+jW/pRJgCc+XyUCQCnlYAAEBEQACICAkBEQACICAgAEQEBICIgAAAAAAAAAAAAAAAAAAAAAEAL/AfI/d0FfFGTVwAAAABJRU5ErkJggg=="/><!--URL:barplot.png--></p>
+<p>PDF and PNG output might be preferred if your final document is a PDF document created via LaTeX.</p>
 <p>For more information about the tsvg package you might consult the <a href="http://htmlpreview.github.io/?https://github.com/mittelmark/pantcl/blob/master/lib/tsvg/tsvg.html">tsvg package documentation</a>.</p>
 <h2 id="include-files">INCLUDE FILES</h2>
 <p>An other utility function is the include function where e can include other files, for instance some which contain as well Markdown markup. This can be used for instance to include common header and footers in your documents. Below an example we create an external file and the include this file afterwards, we would like to have links to all filters here in the document (chunk options - <code>{.tcl results="asis"})</code>.</p>
@@ -331,10 +331,10 @@ Documentation: <a href="../../pantcl.html">Pantcl filter documentation</a> - <a 
 </ul>
 <p>This allows in a nice way to create the same links for all documentation files such as these which are on top of this document visible.</p>
 <h2 id="inline-code">INLINE CODE</h2>
-<p>Short statements can be as well directy embedded into the main text. Here an example:</p>
+<p>Short statements can be as well directly embedded into the main text. This will work only if the option <code>eval: 1</code> is set in the YAML header or using the global environment variable <code>FILTEREVAL</code>: Here an example:</p>
 <pre><code>The current time of document creation is : `tcl clock format [clock seconds]`.</code></pre>
 <p>Here the output:</p>
-<p>The current time of document creation is : Sun Jan 22 14:11:29 CET 2023.</p>
+<p>The current time of document creation is : Wed Mar 08 07:04:23 CET 2023.</p>
 <h2 id="todo">TODO:</h2>
 <ul>
 <li>more flexible list2mdtab function</li>
@@ -356,4 +356,4 @@ Documentation: <a href="../../pantcl.html">Pantcl filter documentation</a> - <a 
 <h2 id="license">LICENSE</h2>
 <p>MIT - License</p>
 </body>
-</html><!--Generated by HTMLArk 2023-01-22 14:11:30.463687. Original URL temp.html-->
+</html><!--Generated by HTMLArk 2023-03-08 07:04:24.338909. Original URL temp.html-->

@@ -1,9 +1,9 @@
 #' ---
 #' title: filter-tcl documentation
 #' author: Detlef Groth, Schwielowsee, Germany
-#' date: 2022-02-04
+#' date: 2023-03-08
 #' tcl:
-#'      eval: 1
+#'      eval: 1 
 #' ---
 #'
 #' ------
@@ -18,7 +18,8 @@
 #' 
 #' _filter-tcl.tcl_ - filter to embed Tcl code in documentation.
 #' 
-#' The code for the Tcl filter is in `pantcl.tcl` or in the standalone application `pantcl.bin`. It is to deeply involved into the main filter engine which drives the other Tcl and all other filters.
+#' The code for the Tcl filter is in `pantcl.tcl` or in the standalone application `pantcl.bin`.
+#' It is to deeply involved into the main filter engine which drives the other Tcl and all other filters.
 #'
 #' ## CODE BLOCKS
 #' 
@@ -27,7 +28,7 @@
 #' ```
 #'     # indentation just to avoid 
 #'     # interpretation
-#'     ```{.tcl}
+#'     ```{.tcl eval=true}
 #'     set x 1
 #'     puts $x
 #'     ```
@@ -35,7 +36,7 @@
 #' 
 #' Here the output:
 #' 
-#' ```{.tcl}
+#' ```{.tcl eval=true}
 #' set x 1
 #' puts $x
 #' ```
@@ -44,9 +45,9 @@
 #' 
 #' The basic Tcl filter has three code chunk options:
 #' 
-#' - _eval_ - should the code be evaluated, default: true
-#' - _results_ - should the code output be shown, either "show", "hide" or "asis", default: "show"
 #' - _echo_ - should the code itself been shown, default: true
+#' - _eval_ - should the code be evaluated, default: false
+#' - _results_ - should the code output be shown, either "show", "hide" or "asis", default: "show"
 #' 
 #' You can set these options either in the YAML header or on individual code chunks.
 #' Here a YAML header of the document to make other defaults:
@@ -56,31 +57,33 @@
 #'     title: "your title"
 #'     author: "your name"
 #'     tcl:
-#'        eval: 0
-#'        results: "hide"
 #'        echo: 1
+#'        eval: 1
+#'        results: "hide"
 #'     ---
 #' ```
 #' 
 #' Please note that in the document header *true* or *false* is not possible only using 1 and 0 as values.
 #' 
-#' For the eval option there is as well an environment variable which can be set. If you in a bash shell use `export FILTEREVAL=0` the default of `eval=true` will  be overwritten. You can reset the option later again to `export FILTEREVAL=1` if you like.
+#' For the `eval` option there is as well an environment variable which can be set.
+#' If you in a bash shell use `export FILTEREVAL=0` the default of `eval=0` (false) will  be overwritten.
+#' You can reset the default option `eval` later again to `export FILTEREVAL=1` if you like.
 #' 
 #' Now an example where we hide the code itself and only show the output using the chunk argument `echo=false`:
 #' 
 #' ```
-#'     ```{.tcl echo=false}
+#'     ```{.tcl echo=false eval=true}
 #'     puts "The sinus of 3 is [expr {round(sin(3))}]"
 #'     ```
 #' ```
 #' 
 #' And here the output where the code is as well hidden:
 #' 
-#' ```{.tcl echo=false}
+#' ```{.tcl echo=false eval=true}
 #' puts "The sinus of 3 is [format %0.3f [expr {sin(3)}]]"
 #' ```
 #' 
-#' With the option eval we can just avoid interpretations of code chunks.
+#' With the option `eval` we can just avoid interpretations of code chunks.
 #' 
 #' ```
 #'     ```{.tcl eval=false}
@@ -100,10 +103,10 @@
 #' 
 #' But what does the code chunk option *results="asis"* mean? 
 #' It allows you to create Markup code, such as Markdown if we you are writing
-#' in Markdown, using the Tcl programmiong language. 
+#' in Markdown, using the Tcl programming language. 
 #' 
 #' ```
-#'     ```{.tcl results="asis"}
+#'     ```{.tcl results="asis" eval=true}
 #'     set md "This is **bold** and this is _italic_ text.\n"
 #'     append md "\nYou get the point?\n"
 #'     set md
@@ -112,13 +115,13 @@
 #' 
 #' And here is the output:
 #' 
-#' ```{.tcl results="asis"}
+#' ```{.tcl results="asis" eval=true}
 #' set md "This is **bold** and this is _italic_ text.\n"
 #' append md "\nYou get the point?\n"
 #' set md
 #' ```
 #' 
-#' Let's create a table based on a nested Tcl list, code chunk options - `{.tcl results="show"}`:
+#' Let's create a table based on a nested Tcl list, code chunk options - `{.tcl results="show" eval=true}`:
 #' 
 #' ```{.tcl results="show"}
 #' set l [list [list A B C D E] \
@@ -169,7 +172,7 @@
 #' ### Graphics
 #' 
 #' R has no default graphics engine for plotting etc. There is however the *tsvg* package which allows us to create SVG graphics. 
-#' As this package is included in the pantcl filter application we can use it here and later include the generated graphis using the Markdown image markup:
+#' As this package is included in the Pantcl filter application we can use it here and later include the generated graphics using the Markdown image markup:
 #' 
 #' ```{.tcl}
 #' package require tsvg
@@ -207,7 +210,7 @@
 #' 
 #' ![](barplot.png)
 #' 
-#' PDF and PNG output might be prefered if your final document is a PDF document created via LaTeX.
+#' PDF and PNG output might be preferred if your final document is a PDF document created via LaTeX.
 #' 
 #' For more information about the tsvg package you might consult the 
 #' [tsvg package documentation](http://htmlpreview.github.io/?https://github.com/mittelmark/pantcl/blob/master/lib/tsvg/tsvg.html).
@@ -215,7 +218,8 @@
 #' ## INCLUDE FILES
 #' 
 #' An other utility function is the include function where
-#' e can include other files, for instance some which contain as well Markdown markup. This can be used for instance to include common header and footers in your documents. 
+#' e can include other files, for instance some which contain as well Markdown markup. 
+#' This can be used for instance to include common header and footers in your documents. 
 #' Below an example we create an external file and the include this file afterwards,
 #' we would like to have links to all filters here in the document (chunk options - `{.tcl results="asis"})`.
 #' 
@@ -236,7 +240,9 @@
 #' 
 #' ## INLINE CODE
 #' 
-#' Short statements can be as well directy embedded into the main text. Here an example:
+#' Short statements can be as well directly embedded into the main text.
+#' This will work only if the option `eval: 1` is set in the YAML header or
+#' using the global environment variable `FILTEREVAL`: Here an example:
 #' 
 #' ```
 #' The current time of document creation is : `tcl clock format [clock seconds]`.
