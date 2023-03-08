@@ -5,6 +5,7 @@
 #' sqlite:
 #'     app: sqlite3
 #'     mode: markdown
+#'     eval: 1
 #' ---
 #' 
 # a simple pandoc filter using Tcl the script pantcl.tcl 
@@ -12,7 +13,7 @@
 #' 
 #' ------
 #' 
-#' ```{.tcl results="asis" echo=false}
+#' ```{.tcl eval=true results="asis" echo=false}
 #' include header.md
 #' ```
 #' 
@@ -38,12 +39,15 @@
 #' The following options can be given via code chunks or in the YAML header.
 #' 
 #' > - app - the application to be called, such as sqlite3, default: sqlite3
+#'   - eval - should the code in the code block be evaluated, default: false
 #'   - results - should the output of the command line application been shown, should be asis, show or hide, default: asis
-#'   - eval - should the code in the code block be evaluated, default: true
 #'   - mode - the output mode, default: markdown
 #' 
 #' To change the defaults the YAML header can be used. Here an example to change the 
-#' default command line application to sqlite3-35
+#' default command line application to sqlite3-35 and to evaluate all code
+#' chunks, `eval: 1`. Please note, that in the chunk options in the YAML header for `true` and `false`
+#' you can only use numbers, 1 and 0, whereas in the code chunks you can use as
+#' well `true` and `false` instead of 1 and 0: 
 #' 
 #' ```
 #'  ----
@@ -52,14 +56,34 @@
 #'  date: 2021-12-12
 #'  sqlite:
 #'      app: sqlite3-35
+#'      eval: 1
 #'  ----
 #' ```
 #'
 #' ## Examples
 #' 
 #' Here an example for a new database created on the fly and the we check for the created table ({.sqlite results="asis"}).
+#'
+#' ``` 
+#'     ```{.sqlite results="asis" eval=true}
+#'     CREATE TABLE contacts (
+#' 	   contact_id INTEGER PRIMARY KEY,
+#' 	   first_name TEXT NOT NULL,
+#' 	   last_name TEXT NOT NULL,
+#' 	   email TEXT NOT NULL UNIQUE,
+#' 	   phone TEXT NOT NULL UNIQUE
+#'         );
+#'     INSERT INTO contacts (contact_id, first_name, last_name, email, phone)
+#'         VALUES       (1, "Max", "Musterman", "musterm@mail.de","1234");
+#'     INSERT INTO contacts (contact_id, first_name, last_name, email, phone)
+#'        VALUES       (2, "Maxi", "Musterwoman", "musterw@mail.de","1235");
+#'     select * from contacts;
+#'     ```
+#' ``` 
 #' 
-#' ```{.sqlite results="asis"}
+#' And here the output (space indentation above is only to avoid interpretation):
+#' 
+#' ```{.sqlite results="asis" eval=true}
 #' CREATE TABLE contacts (
 #' 	contact_id INTEGER PRIMARY KEY,
 #' 	first_name TEXT NOT NULL,
@@ -101,6 +125,9 @@ proc filter-sqlite {cont dict} {
     set def [dict create results asis eval true file null \
              include true app sqlite3 label null mode markdown]
     set dict [dict merge $def $dict]
+    if {![dict get $dict eval]} {
+        return [list "" ""]
+    }
     set ret ""
     set owd [pwd] 
     if {[auto_execok [dict get $dict app]] eq ""} {
