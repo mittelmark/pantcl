@@ -1,16 +1,17 @@
 #' ---
 #' title: "filter-tsvg.tcl documentation"
 #' author: "Detlef Groth, Caputh-Schwielowsee, Germany"
-#' date: 2021-12-12
+#' date: 2023-03-08
 #' tsvg:
 #'     imagepath: images
 #'     ext: svg
 #'     results: hide
+#'     eval: 1
 #' ---
 #' 
 #' ------
 #' 
-#' ```{.tcl results="asis" echo=false}
+#' ```{.tcl eval=true results="asis" echo=false}
 #' include header.md
 #' ```
 #' 
@@ -36,7 +37,7 @@
 #' 
 #' The following options can be given via code chunks options or as defaults in the YAML header.
 #' 
-#' > - eval - should the code in the code block be evaluated, default: true
+#' > - eval - should the code in the code block be evaluated, default: false
 #'   - ext - file file extension, can be svg, png or pdf, teh latter two require the command application 
 #'     cairsvg to be installed default: svg
 #'   - fig - should a figure be created, default: true
@@ -48,7 +49,12 @@
 #' To change the defaults the YAML header can be used. Here an example to change the 
 #' the image output path to nfigures and the file extension to pdf 
 #' (useful for Pdf output of the document as in LaTeX mode of pandoc). You should usually always change the 
-#' options results: to hide.
+#' options results: to hide. It is as well important to change the default
+#' option for code evaluation in the YAML header to 1 as a new default. Without
+#' this option you would have to set the `eval` argument for every code chunk
+#' again and again to true for code evaluation. This is done for security
+#' reasons to avoid running Tcl just by accident. In the YAML header you have
+#' to use 0 or 1 as defaults for boolean values instead of false and true.  
 #' 
 #' ```
 #'  ----
@@ -57,6 +63,7 @@
 #'  date: 2021-12-12
 #'  tsvg:
 #'      imagepath: nfigures
+#'      eval: 1
 #'      ext: pdf
 #'      results: hide
 #'  ----
@@ -67,7 +74,7 @@
 #' Here an example for a simple hello world image:
 #' 
 #' ```
-#'     ```{.tsvg}
+#'     ```{.tsvg eval=true}
 #'     tsvg set code "" ;# clear 
 #'     tsvg circle -cx 50 -cy 50 -r 45 -stroke black -stroke-width 2 -fill green
 #'     tsvg text -x 29 -y 45 Hello
@@ -75,7 +82,8 @@
 #      ```
 #' ```
 #' 
-#' And here is the output:
+#' Please note that the `eval` setting is not needed if you did `eval: 1` in
+#' the YAML header. Here is the output:
 #' 
 #' ```{.tsvg}
 #' tsvg set code "" ;# clear 
@@ -118,6 +126,9 @@ proc filter-tsvg {cont dict} {
     set def [dict create results hide eval true fig true width 100 height 100 \
              include true label null imagepath images ext svg]
     set dict [dict merge $def $dict]
+    if {![dict get $dict eval]} {
+        return [list "" ""]
+    }
     set ret ""
     set owd [pwd] 
     if {[dict get $dict label] eq "null"} {

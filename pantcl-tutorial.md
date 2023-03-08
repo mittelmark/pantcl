@@ -8,13 +8,16 @@ toc: true
 css: mini.css
 mainfont: Georgia
 monofont: Monaco
+tcl:
+    eval: 1
 
 abstract: >
-    The pantcl pandoc Tcl filter allows you the embed Tcl code in code blocks
+    The Pantcl Pandoc Tcl filter allows you the embed Tcl code in code blocks
     and short Tcl statements as well in the normal text of a Markdown 
     document. The code fragments will be executed dynamically and the output
     of the Tcl commands can be shown in an extra code block or can replace
-    the code block as well. The pantcl application as well embeds other filters written in Tcl for other tools like GraphViz dot, LateX etc.
+    the code block as well. The pantcl application as well embeds other filters 
+    written in Tcl for other tools like GraphViz dot, LateX etc.
 ---
 
 ------
@@ -83,10 +86,10 @@ Windows users should install the *rl_json* package via the Magicplats Tcl-Instal
 
 ## Tcl filter
 
-Below some basic information about the Tcl filter, more examples are given in the pantcl filter documentation file here: [pantcl.html](pantcl.html).
+Below some basic information about the Tcl filter, more examples are given in the Pantcl filter documentation file here: [pantcl.html](pantcl.html).
 
 Tcl code can be embedded either within single backtick marks where the first
-backtick is immediately followed by the string tcl and the the tcl code such
+backtick is immediately followed by the string `tcl` and the Tcl code such
 as in the following example:
  
 ```
@@ -110,7 +113,7 @@ Larger chunks of code can be placed within triple backticks such as in the
 example below.
 
 ```
-     ```{.tcl}
+     ```{.tcl eval=true}
      # please remove the spaces before these lines 
      #  they are used to guard against code evaluation
      set x 3
@@ -126,7 +129,7 @@ by nested triple tickmarks, remove those spaces in your code.
 
 And here the output:
 
-```{.tcl}
+```{.tcl eval=true}
 set x 3
 proc add {x y} {
     return [expr {$x+$y}]
@@ -145,7 +148,21 @@ Within the curly braces the following attributes are currently supported:
 * _results=show|hide_ - show the output of the Tcl code execution
 * _echo=true|false_ - show the Tcl code
 
-Errors in the tcl code will be usually trapped and the error info is shown
+Please note, that since version 0.9.9 the default for the `eval` option is
+`false` (0), so you should enable this code evaluation manually for each code
+chunk by writing in the code chunk options something like `eval=true` or in the
+YAML header using `eval: 1` - here you can't use true or false.
+
+Here an example for a YAML header:
+
+```
+---
+tcl:
+    eval: 1
+--- 
+```
+
+Errors in the Tcl code will be usually trapped and the error info is shown
 instead of the regular output.
 
 ### Images
@@ -436,13 +453,16 @@ and programming languages using the Tcl programming language. The standalone app
 |.tdot  | Tcl tdot package     | [https://github.com/mittelmark/DGTcl](https://github.com/mittelmark/DGTcl) |
 |.tsvg  | Tcl tsvg package     | [https://github.com/mittelmark/DGTcl](https://github.com/mittelmark/DGTcl) |
 
+
+## Dot file filter
+
 Let's finish our small tutorial with the implementation of a filter for a
 command line application. Below you see the code for the GraphViz dot application.
 
-Here the code example (remove the space after the first backtick, space was added to avoid intpretation):
+Here the code example (remove the space after the first backtick, space was added to avoid interpretation):
 
 ```
-` ``{.dot label=digraph echo=true}
+` ``{.dot label=digraph echo=true eval=true}
 digraph G {
   main -> parse -> execute;
   main -> init [dir=none];
@@ -458,7 +478,7 @@ digraph G {
 
 Which will produce the following output:
 
-```{.dot label=digraph echo=true}
+```{.dot label=digraph echo=true eval=true}
 digraph G {
   main -> parse -> execute;
   main -> init [dir=none];
@@ -475,7 +495,7 @@ Using the chunk option _echo=false_, we can as well hide the source code.
 If you would like to see the code you now have to consult the Markdown file.
 
 
-```{.dot label=digraph2 echo=false}
+```{.dot label=digraph2 echo=false eval=true}
 digraph G {
   main [shape=box,style=filled,fillcolor=".5 .8 1.0"] ;
   main -> parse -> execute;
@@ -495,7 +515,7 @@ to false _include=false_ and then create the usual Markdown code for the figure
 where the basename is defined by a `images` subfolder the chunk label.
 
 ```
-` ``{.dot label=digraph3 echo=false include=false}
+` ``{.dot label=digraph3 echo=false include=false eval=true}
 digraph G {
   main [shape=box,style=filled,fillcolor=".5 .8 1.0"] ;
   main -> parse -> execute;
@@ -515,7 +535,7 @@ digraph G {
 
 This will produce the following:
 
-```{.dot label=digraph3 echo=false include=false}
+```{.dot label=digraph3 echo=false include=false eval=true}
 digraph G {
   main [shape=box,style=filled,fillcolor="0.95 0.90 .90"] ;
   main -> parse -> execute;
@@ -533,7 +553,7 @@ digraph G {
 
 ![](images/digraph3.svg)
 
-Ok, now you know what was the code to create the graphic above.
+OK, now you know what was the code to create the graphic above.
 
 The dot filter supports as well the other command line applications from the
 GraphViz toolbox. To switch for instance from the `dot` command line
@@ -542,11 +562,11 @@ you can enter neato code in your code chunk here an example:
 
 
 ```
-` ``{.dot label=neato-sample app=neato}
+` ``{.dot label=neato-sample app=neato eval=true}
 graph G {
     node [shape=box,style=filled,fillcolor=skyblue,
         color=black,width=0.4,height=0.4];
-    n0 -- n1 -- n2 -- n3 -- n0;
+    n0 -- n1 -- n2 -- n3 -- n0 ;
 }
 ` ``
 ```
@@ -554,11 +574,11 @@ graph G {
 Which will produce this:
 
 
-```{.dot label=neato-sample app=neato}
+```{.dot label=neato-sample app=neato eval=false}
 graph G {
     node [shape=box,style=filled,fillcolor=skyblue,
         color=black,width=0.4,height=0.4];
-    n0 -- n1 -- n2 -- n3 -- n0;
+    n0 -- n1 -- n2 -- n3 -- n0 ;
 }
 ```
 
@@ -574,7 +594,7 @@ That way you can include code creating svg files using the described syntax abov
 Please not that the plugin object is named `tsvg`. Here an example.
 
 ```
-` ``{.tsvg label=tsvg-hello-world results=hide echo=false}
+` ``{.tsvg label=tsvg-hello-world results=hide echo=false eval=true}
 tsvg circle cx 50 cy 50 r 45 stroke black stroke-width 2 fill salmon
 tsvg text x 29 y 45 Hello
 tsvg text x 26 y 65 World!
@@ -583,7 +603,7 @@ tsvg text x 26 y 65 World!
 
 Which will produce this:
 
-```{.tsvg fig=true label=tsvg-hello-world results=hide echo=true}
+```{.tsvg fig=true label=tsvg-hello-world results=hide echo=true eval=true}
 tsvg circle cx 50 cy 50 r 45 stroke black stroke-width 2 fill salmon
 tsvg text x 29 y 45 Hello
 tsvg text x 26 y 65 World!
@@ -596,7 +616,7 @@ copy and paste procedure for existing svg examples, you in many cases just have 
 the leading and trailing greater and lower signs.
 Here is an example using different syntax types:
 
-```{.tsvg label=tsvg-polyline results=hide echo=true}
+```{.tsvg label=tsvg-polyline results=hide echo=true eval=true}
 tsvg set code ""
 tsvg set width 180
 tsvg set height 200
@@ -618,13 +638,13 @@ part of the LaTeX installation. Please note that currently only single line equa
 
 Here two examples:
 
-```{.mtex fontsize=LARGE}
+```{.mtex fontsize=LARGE eval=true}
 $ E = m \times c^2 $
 ```
 
 And here the second example:
 
-```{.mtex fontsize=LARGE}
+```{.mtex fontsize=LARGE eval=true}
 $ F(x) = \int^a_b \frac{1}{3}x^3 $
 ```
 
@@ -638,7 +658,7 @@ diagram code written in the PIC programming language into PNG graphics. Below ar
 
 Here an example for the PIC language:
 ```
-     ```{.pic ext=png}
+     ```{.pic ext=png eval=true}
      circle "circle" rad 0.5 fill 0.3; arrow ;
      ellipse "ellipse" wid 1.4 ht 1 fill 0.1 ; line;
      box wid 1 ht 1 fill 0.05 "A";
@@ -651,7 +671,7 @@ Here an example for the PIC language:
 
 And here the output:
 
-```{.pic ext=png}
+```{.pic ext=png eval=true}
 circle "circle" rad 0.5 fill 0.3; arrow ;
 ellipse "ellipse" wid 1.4 ht 1 fill 0.1 ; line;
 box wid 1 ht 1 fill 0.05 "A";
@@ -665,7 +685,7 @@ box wid 0.2 ht 0.2 fill 0.05 "C";
 The complete code was:
 
 ```
-     ```{.pic ext=png}
+     ```{.pic ext=png eval=true}
      circle "circle" rad 0.5 fill 0.3; arrow ;
      ellipse "ellipse" wid 1.4 ht 1 fill 0.1 ; line;
      box wid 1 ht 1 fill 0.05 "A";
@@ -679,14 +699,14 @@ The complete code was:
 And here an example for the EQN language:
 
 
-```{.eqn echo=false}
+```{.eqn echo=false eval=true}
 x = {-b +- sqrt{b sup 2 - 4ac}} over 2a
 ```
 
 The code here was (the indentation of five spaces is just to avoid interpretation):
 
 ```
-     ```{.eqn echo=false}
+     ```{.eqn echo=false eval=true}
      x = {-b +- sqrt{b sup 2 - 4ac}} over 2a
      ```
 ```
@@ -704,7 +724,7 @@ diagrams. The downloads of *fossil* for various platforms can be found here
 If the *fossil* application is in your PATH ou can create easily as well
 *pikchr* diagrams. Here an example:
 
-```{.pikchr app=fossil-2.17 ext=svg}
+```{.pikchr app=fossil-2.17 ext=svg eval=true}
 box "box"
 circle "circle" fill cornsilk at 1 right of previous
 ellipse "ellipse" at 1 right of previous
@@ -716,7 +736,7 @@ file "file" at 1 right of previous
 The code for this diagram follows below:
 
 ```
-` ``{.pikchr app=fossil-2.17 ext=pdf}
+` ``{.pikchr app=fossil-2.17 ext=pdf eval=true}
 box "box"
 circle "circle" fill cornsilk at 1 right of previous
 ellipse "ellipse" at 1 right of previous
@@ -738,11 +758,11 @@ called cairosvg which can be installed as a Python packagte using pip:
 pip3 install cairosvg --user
 ```
 
-should do this. The advantage if using this tool is, that we beside resizing
+Should do this. The advantage if using this tool is, that we beside resizing
 we can as well create PDF's for inclusion into LaTeX documents. 
 Here an example for a PNG image.
 
-```{.pikchr label=fossil-sample app=fossil-2.17 ext=png width=500 height=300}
+```{.pikchr label=fossil-sample app=fossil-2.17 ext=png width=500 height=300 eval=true}
 box "box"
 circle "circle" fill cornsilk at 1 right of previous
 ellipse "ellipse" at 1 right of previous
@@ -755,7 +775,7 @@ file "file" at 1 right of previous
 Here is the code:
 
 ```
-` ``{.pikchr app=fossil-2.17 ext=png  width=500 height=300}
+` ``{.pikchr app=fossil-2.17 ext=png  width=500 height=300 eval=true}
 ` ``
 ```
 
@@ -773,7 +793,7 @@ is however not favourable if you just would like to add a few plots or execute
 a few statements. For a few simple plots you can use the filter `.rplot` to
 embed them within your document. Here an example.
 
-```{.rplot label=iris echo=true results="hide" width=800 height=600}
+```{.rplot label=iris echo=true results="hide" width=800 height=600 eval=true}
 data(iris)
 pairs(iris[,1:3],pch=19,col=as.numeric(iris$Species)+1)
 x=1
@@ -782,7 +802,7 @@ x=1
 Here is the code:
 
 ```
-` ``{.rplot label=iris echo=true results="hide" width=800 height=600}
+` ``{.rplot label=iris echo=true results="hide" width=800 height=600 eval=true}
 data(iris)
 pairs(iris[,1:3],pch=19,col=as.numeric(iris$Species)+1)
 ` ``
@@ -790,28 +810,28 @@ pairs(iris[,1:3],pch=19,col=as.numeric(iris$Species)+1)
 
 And here just some code without a figure.
 
-```{.rplot fig=false} 
+```{.rplot fig=false eval=true} 
 print(head(iris))
 ```
 
 That is the code:
 
 ```
-` ``{.rplot fig=false} 
+` ``{.rplot fig=false eval=true} 
 print(head(iris))
 ` ``
 ```
 
 Session are as well retained, so you can use variables created in code chunks before.
 
-```{.rplot fig=false} 
+```{.rplot fig=false eval=true} 
 print(x)
 ```
 
 Here the code:
 
 ```
-` ``{.rplot fig=false} 
+` ``{.rplot fig=false eval=true} 
 print(x)
 ` ``
 ```
@@ -899,10 +919,12 @@ Please look at the source Markdown file to see which Markdown code was the input
 * 2022-01-09 - generic shell filter (filter-cmd), tdot filter for Tcl/dot   
 * 2022-02-07 - graphical user interface and pipe filter for embedding R, Python and Octave
 * 2023-01-12 - version 0.9.0 released on own Github page as pantcl repository
+* 2023-05-08 - version 0.9.9 with setting eval to false per default to avoid
+  evaluations just by accident, should become 1.0.0 soon 
 
 ## Author
 
-Detlef Groth, Caputh-Schwielowsee, Germany
+@2021-2023: Detlef Groth, Caputh-Schwielowsee, Germany
 
 ## License
 

@@ -443,6 +443,9 @@ set codeend {
              include true label null fontsize Large envir equation imagepath images \
              density 144 packages null latex latex header null resize 100%]
     set dict [dict merge $def $dict]
+    if {![dict get $dict eval]} {
+        return [list "" ""]
+    }
     set codestart [regsub {__FONTSIZE__} $codestart [dict get $dict fontsize]]
     if {[dict get $dict packages] eq "null"} {
         set codestart [regsub {__PACKAGES__} $codestart ""]

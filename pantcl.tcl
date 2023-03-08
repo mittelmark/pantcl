@@ -2,9 +2,9 @@
 # pantcl - standalone application and pandoc filter
 #          for literate programming
 # Author: Detlef Groth, Schwielowsee, Germany
-# Version: 0.9.1 - 2023-03-05
+# Version: 0.9.9 - 2023-03-08
 
-package provide pantcl 0.9.1
+package provide pantcl 0.9.9
 
 if {[llength $argv] > 0 && ([lsearch -exact $argv -v] >= 0 || [lsearch -exact $argv --version] >= 0)} {
     puts "[package present pantcl]"
@@ -465,12 +465,13 @@ if {[llength $argv] > 1 && [file exists [lindex $argv 0]]} {
 package require rl_json
 
 #' ---
-#' title: pantcl filter documentation - 0.9.1
+#' title: pantcl filter documentation - 0.9.9
 #' author: Detlef Groth, Schwielowsee, Germany
-#' date: 2023-03-05
+#' date: 2023-03-08
 #' tcl:
 #'    echo: "true"
 #'    results: show
+#'    eval: 1
 #' ---
 #'
 #' ------
