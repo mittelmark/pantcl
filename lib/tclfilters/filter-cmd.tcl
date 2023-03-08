@@ -34,7 +34,7 @@
 #' 
 #' The following options can be given via code chunks or in the YAML header.
 #' 
-#' > - eval - should the code in the code block be evaluated, default: true
+#' > - eval - should the code in the code block be evaluated, default: false
 #'   - file - the output filename for the code which will be executed using the given shebang line on top, if not given, code will be evaluated line by line, default: null
 #'   - results - should the output of the command line application been shown, should be asis, show or hide, default: show
 #' 
@@ -48,9 +48,14 @@
 #'  date: 2021-12-27
 #'  cmd:
 #'      results: hide
+#'      eval: 1
 #'  ----
 #' ```
 #'
+#' The option 'eval: 1' is required to activate code evaluation in the code
+#' chunks for all chunks of type `.cmd`. You can also set this option for every
+#' code chunk separately
+#' 
 #' ## Examples
 #' 
 #' ### Line by line commands
@@ -58,13 +63,15 @@
 #' Here an example for executing the `ls` command on a Unix system for all Tcl files in the current folder:.
 #' 
 #' ```
-#'     ```{.cmd results="show"}
+#'     ```{.cmd results="show" eval=true}
 #'     ls -l *.tcl
 #'     ```
 #' ```
 #' 
 #' Please remove the spaces at the beginning, they are just used to avoid the 
-#' the code evaluation here. Code chunk options will be given in parenthesis like this  (chunk options: `{.cmd results="show"}`) to explain them if necessary. Below now the output of the code block above:
+#' the code evaluation here. Code chunk options will be given in parenthesis like this
+#' (chunk options: `{.cmd results="show"}`) to explain them if necessary. 
+#' Below now the output of the code block above:
 #' 
 #' ```{.cmd results="show"}
 #' ls -l *.tcl
@@ -73,9 +80,9 @@
 #' Here an example to execute the sqlite3 command line application with the 
 #' option of Markdown output, using the chunk option `results="asis"` 
 #' we can directly embed the result of the created Markdown table 
-#' (chunk options: `{.cmd results="asis"}`).
+#' (chunk options: `{.cmd results="asis" eval=true}`).
 #' 
-#' ```{.cmd results="asis"}
+#' ```{.cmd results="asis" eval=true}
 #' sqlite3 -markdown uni.sqlite "select * from Student limit 5"
 #' ```
 #' 
@@ -105,7 +112,7 @@
 #' ```
 #' 
 #' Let's save this script as an executable shell script hwbutton.sh in 
-#' a directory beloning to our PATH. We can thereafter create a few image buttons
+#' a directory belonging to our PATH. We can thereafter create a few image buttons
 #' in one go (`{.cmd results="hide"}`):
 #' 
 #' ```{.cmd results="hide"}
@@ -116,7 +123,7 @@
 #' 
 #' So we created three png files in this directory (`{.cmd}`):
 #' 
-#' ```{.cmd}
+#' ```{.cmd eval=true}
 #' ls -l hw-*png
 #' ```
 #' 
@@ -135,10 +142,11 @@
 #' 
 #' ### Python scripts
 #' 
-#' The chunk option *file* allows us as well to embed code for other programming languages and interprete them. Here an example to execute a Python script.
+#' The chunk option *file* allows us as well to embed code for other programming languages
+#' and interpret them. Here an example to execute a Python script.
 #' 
 #' ```
-#'      ```{.cmd file="sample.py"}
+#'      ```{.cmd file="sample.py" eval=true}
 #'      #!/usr/bin/env python3
 #'      import sys
 #'      print ("Hello Python World!")
@@ -157,11 +165,11 @@
 #' 
 #' ### Gnu Octave scripts
 #' 
-#' As usually using the code chunk option echo=false you can hide the Python code and only show the output.
-#' Here an Octave script which does a little plot.
+#' As usually using the code chunk option `echo=false` you can hide the Python code and only show the output.
+#' Here an Octave script which does a little plot:
 #' 
 #' ```
-#'     ```{.cmd file="sample.m"}
+#'     ```{.cmd file="sample.m" eval=true}
 #'     #!/usr/bin/env octave
 #'     x = -10:0.1:10;
 #'     aux=figure('visible','off');
@@ -211,7 +219,7 @@
 #' In the next chunk we use this function by sourcing the file.
 #' 
 #' ```
-#'     ```{.cmd file="doplot.R" results="hide"}
+#'     ```{.cmd file="doplot.R" results="hide" eval=true}
 #'     #!/usr/bin/env Rscript
 #'     source('plot.R') # file was created in the previous chunk.
 #'     x=seq(0,8,by=0.1)
@@ -242,11 +250,12 @@
 #' ![](plotR.png)
 #' 
 #' There is as well a separate filter for R called *rplot*, see [filter-rplot.html](filter-rplot.html). 
-#' This filter supports as well session management, so that separate code chunks share the same R-session and syntax hightlighting.
+#' This filter supports as well session management, so that separate code chunks share the same 
+#' R-session and syntax highlighting.
 #' 
 #' ### Gnuplot scripts
 #' 
-#' Next a Gnuplot script (`{.cmd file="sin.gp"}`):
+#' Next a Gnuplot script (`{.cmd file="sin.gp" eval=true}`):
 #' 
 #' ```{.cmd file="sin.gp"}
 #' #!/usr/bin/env gnuplot
@@ -264,7 +273,7 @@
 #' 
 #' ### GraphViz dot scripts
 #' 
-#' Here an example for a standalone dot-script (`{.cmd file="digraph.dot"}`): 
+#' Here an example for a standalone dot-script (`{.cmd file="digraph.dot" eval=true}`): 
 #' 
 #' ```{.cmd file="digraph.dot"}
 #' #!/usr/bin/env -S dot -Tpng -odot.png
@@ -278,7 +287,7 @@
 #' 
 #' ### Simple shell scripts
 #' 
-#' First a mathematical calculation (`{.cmd file="calc.sh"}`):
+#' First a mathematical calculation (`{.cmd file="calc.sh" eval=true}`):
 #' 
 #' ```{.cmd file="calc.sh"}
 #' #!/bin/sh
@@ -287,7 +296,7 @@
 #' echo $(($x+$y))
 #' ```
 #' 
-#' Then a mathematical equation (`{.cmd file="math.eqn"}`):
+#' Then a mathematical equation (`{.cmd file="math.eqn" eval=true}`):
 #' 
 #' ```{.cmd file="math.eqn"}
 #' #!/bin/sh
@@ -297,7 +306,8 @@
 #' 
 #' ![](eqn.png)
 #' 
-#' And here let's use this for the formula of the most important biochemical reaction on planet Earth (`{.cmd file="photo.eqn"}`):
+#' And here let's use this for the formula of the most important biochemical
+#' reaction on planet Earth (`{.cmd file="photo.eqn" eval=true}`):
 #' 
 #' ```{.cmd file="photo.eqn"}
 #' #!/bin/sh
@@ -309,7 +319,8 @@
 #' 
 #' ![](photo.png)
 #' 
-#' For more information on how to typeset equations using the EQN syntax have a look here: [https://www.oreilly.com/library/view/unix-text-processing/9780810462915/Chapter09.html](https://www.oreilly.com/library/view/unix-text-processing/9780810462915/Chapter09.html).
+#' For more information on how to typeset equations using the EQN syntax have a look here: 
+#' [https://www.oreilly.com/library/view/unix-text-processing/9780810462915/Chapter09.html](https://www.oreilly.com/library/view/unix-text-processing/9780810462915/Chapter09.html).
 #'
 #' ### Lilypond example
 #' 
@@ -349,7 +360,9 @@
 #' # EOF
 #' ```
 #' 
-#' If we copy this file as lilyscript.sh into a folder belonging to our PATH variable we can then embed lilypond code into a executable script easily. Here an example (chunk options are: `{.cmd file="mini.ly" results="hide"}`):
+#' If we copy this file as lilyscript.sh into a folder belonging to our PATH variable we 
+#' can then embed lilypond code into a executable script easily.
+#' Here an example (chunk options are: `{.cmd file="mini.ly" results="hide" eval=true}`):
 #' 
 #' ```{.cmd file="mini.ly" results="hide"}
 #' #!/usr/bin/env -S lilyscript.sh mini.ly mini.svg
@@ -393,7 +406,8 @@
 #' 
 #' ![](mini.svg){#id width=140}
 #'
-#' Alternativly you can as well create a shell script without the need of a wrapper script like this (`{.cmd file="mini4.ly" results="hide"}`):
+#' Alternatively you can as well create a shell script without the need of a wrapper
+#' script like this (`{.cmd file="mini4.ly" results="hide" eval=true}`):
 #' 
 #' ```{.cmd file="mini4.ly" results="hide"}
 #' #!/usr/bin/bash
@@ -417,7 +431,7 @@
 #' We here use the shebang script implementation for gcc found here: 
 #' [https://rosettacode.org/wiki/Native_shebang#2nd_version._Pure_C.2C_no_extra_bash_script](https://rosettacode.org/wiki/Native_shebang#2nd_version._Pure_C.2C_no_extra_bash_script)
 #' 
-#' Now an example (`{.cmd file="test.csr"}`):
+#' Now an example (`{.cmd file="test.csr" eval=true}`):
 #' 
 #' ```{.cmd file="test.csr"}
 #' #!/usr/bin/env -S script_gcc -lm
@@ -434,7 +448,9 @@
 #' }
 #' ```
 #' 
-#' Again there is a simpler approach without a wrapper function using a pseudo-shebang line (`{.cmd file="hello2.c"}`): 
+#' Again there is a simpler approach without a wrapper function using a pseudo-
+#' shebang line (`{.cmd file="hello2.c" eval=true}`):
+#'  
 #' ```{.cmd file="hello2.c"}
 #' ///usr/bin/cc -o "${0%.c}" "$0" -lm && exec "./${0%.c}"
 #' 
@@ -474,6 +490,14 @@
 #'     println("Hello Go World!")
 #' }
 #' ```
+#'
+#' Now as an example the new programming language V:
+#'
+#' ```{.cmd file="hello.v"}
+#' ///usr/local/bin/v run $0 $@  2>&1 && exit 0
+#' println("Hello V World!")
+#' ```
+#'
 #' ### Other programming languages
 #' 
 #' I left it as an exercise to embed Perl, Ruby, Julia scripts using the standard Shebang mechanism. 
@@ -482,7 +506,6 @@
 #' ## TODO:
 #' 
 #' * compile option to embed/Java etc code
-#' * own Python filter with terminal mode and line by line interpretation (see [filter-pipe](filter-pipe.html)
 #' 
 #' ## See also:
 #' 
@@ -492,6 +515,7 @@
 #' * [Abc filter](filter-abc.html)
 #' * [GraphViz dot filter](filter-dot.html)
 #' * [Rplot filter](filter-rplot.html)
+#' * [Pipe filter for Python, R, Octave](filter-pipe.html)
 #' 
 
 
@@ -502,6 +526,9 @@ proc filter-cmd {cont dict} {
              include true app sh]
     # TODO: dict app using
     set dict [dict merge $def $dict]
+    if {![dict get $dict eval]} {
+        return [list "" ""]
+    }
     set res ""
     if {[dict get $dict file] eq "null"} {
         if {[dict get $dict eval]} {

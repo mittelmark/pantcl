@@ -1065,7 +1065,8 @@ proc main {jsonData} {
       }
     }
     set meta  [rl_json::json extract $jsonData meta] 
-    for {set i 0} {$i < [llength [::rl_json::json get $jsonData blocks]]} {incr i} {
+    set len  [llength [::rl_json::json get $jsonData blocks]]
+    for {set i 0} {$i < $len} {incr i} {
         if {$i > 0} {
             append blocks ","
         }

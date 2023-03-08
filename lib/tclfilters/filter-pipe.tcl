@@ -317,7 +317,7 @@ proc filter-pipe {cont dict} {
             puts $::fpipe::opipe "page_output_immediately(1);"
             puts $::fpipe::opipe "fflush(stdout)"
             flush $::fpipe::opipe
-            after 100 [list append wait ""]
+            after 10 [list append wait ""]
             vwait wait
             set ::fpipe::pipecode ""
         }
@@ -354,7 +354,7 @@ proc filter-pipe {cont dict} {
                 if {[regexp {^[^\s]} $line]} {
                     # delay only if first letter is non-whitespace
                     # to allow to flush output
-                    after 100 [list append wait ""]
+                    after 10 [list append wait ""]
                     vwait wait
                 }
             }
