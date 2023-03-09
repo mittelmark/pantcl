@@ -11,17 +11,14 @@ if {[llength $argv] > 0 && ([lsearch -exact $argv -v] >= 0 || [lsearch -exact $a
     exit 0
 }   
 if {[llength $argv] > 0 && [lsearch -regex $argv -h] >= 0} {
-    puts "Usage (filter):    pandoc \[arguments\] --filter $argv0 \[arguments\]"
-    puts "          This is the pandoc Tcl filter which should be run as filter"
-    puts "          for the pandoc document converter with a syntax like shown above."
-    puts "          This filter allows you to embed Tcl code within"
-    puts "          ```{.tcl} ... ``` code blocks."   
-    puts "          For a list of other filters which are available see below." 
-    puts "Version:  [package present pantcl]"
-    puts "Homepage: https://github.com/mittelmark/pantcl"
-    puts "Readme:   http://htmlpreview.github.io/?https://github.com/mittelmark/pantcl/blob/master/pantcl/Readme.html"
-    puts "Filters:  "
-    puts "       - ```{.tcl}    Tcl code```"
+    puts {Usage (filter):    pandoc [pandoc arguments] --filter $argv0 [pandoc arguments]
+        
+      This is the pandoc Tcl filter which should be run as filter for the pandoc document
+      converter with a syntax like shown above.  This filter allows you to embed Tcl code 
+      and other tools code within Markdown and other Text format documents. 
+      For a list of filters which are available see below.
+    } 
+    puts "Filters: \n"
     puts "       - ```{.abc}    ABC music notation code```"    
     puts "       - ```{.cmd}    Command line application code```"        
     puts "       - ```{.dot}    GraphViz dot/neato code```"
@@ -33,27 +30,42 @@ if {[llength $argv] > 0 && [lsearch -regex $argv -h] >= 0} {
     puts "       - ```{.pipe}   Embed Python, R or Octave code```" 
     puts "       - ```{.puml}   PlantUML diagram code```"    
     puts "       - ```{.rplot}  R plot code```"    
-    puts "       - ```{.sqlite} SQLite3 code code```\n"
-    puts "       - ```{.tcrd}   Songs with embedded chords```\n"        
-    puts "       - ```{.tdot}   Tcl package tdot code```\n"    
+    puts "       - ```{.sqlite} SQLite3 code code```"
+    puts "       - ```{.tcl}    Tcl code```"
+    puts "       - ```{.tcrd}   Songs with embedded chords```"        
+    puts "       - ```{.tdot}   Tcl package tdot code```"    
     puts "       - ```{.tsvg}   Tcl package tsvg code```\n"
     
-    puts "Usage (standalone): $argv0 infile outfile"
-    puts "                       converting infile to outfile"
-    puts "                       if infile is a source code file like .tcl .py"
-    puts "                       it is assumed that it contains mkdoc documentation"  
-    puts "                       mkdoc documentation is embedded Markdown markup after a #' comment" 
-    puts "                       in case pandoc is installed the pantcl filter application will be used afterwards"
-    puts "                    $argv0 --help               - display this help page"
-    puts "                    $argv0 --version            - display the version"
-    puts "                    $argv0 infile --tangle .tcl - extract all code from .tcl chunks"
-    puts "\nUsage (GUI)      : $argv0 --gui \[infile]"
-    puts "                     supported infiles: abc, dot, eqn, mmd, mtex, pic, pik, puml, rplot, tdot, tsvg"
-    puts "Example: "
-    puts "         ./pantcl.tcl pantcl.tcl pantcl.html -s --css mini.css"
-    puts "             will extract the documentation from itself and create a HTML file executing all filters available"
-    puts "             all pandoc options can be passed after the output file name" 
-    puts "Author: Detlef Groth, University of Potsdam, Germany"
+    puts "Usage (standalone): $argv0 \[arguments] infile outfile"
+    puts {      
+        Converting the given infile to outfile.
+        If infile is a source code file ending with.tcl or .py, it is assumed that it
+        contains mkdoc documentation. This is embedded Markdown markup after 
+        a #' comment. In case pandoc is installed the pantcl application will 
+        will be used as filter afterwards.
+
+        Arguments:
+    }
+    puts "         $argv0 --help               - display this help page"
+    puts "         $argv0 --version            - display the version"
+    puts "         $argv0 infile outfile --no-pandoc - use the standalone converter"
+    puts "         $argv0 infile --tangle .tcl - extract all code from .tcl chunks"
+    puts "\nUsage (GUI): $argv0 --gui \[infile]\n"
+    puts "        Supported infiles: abc, dot, eqn, mmd, mtex, pic, pik, puml, rplot, tdot, tsvg\n"
+    puts "Examples:\n"
+    puts "         $argv0 pantcl.tcl pantcl.html -s --css mini.css\n"
+    puts "         will extract the documentation from the file pantcl.tcl itself"
+    puts "         and create a HTML file executing all filters available."
+    puts "         All usual pandoc options can be passed after the output file name.\n" 
+    puts "         $argv0 --no-pandoc pantcl.tcl pantcl.html --css mini.css\n"
+    puts "         Will do the conversion without using pandoc but with its"
+    puts "         Markdown to HTML converter. Please note that in this case"
+    puts "         only Markdown as input and HTML as output are supported.\n"    
+    puts "Version:  [package present pantcl]"
+    puts "Homepage: https://github.com/mittelmark/pantcl"
+    puts "Author:   Detlef Groth, University of Potsdam, Germany"
+    puts "License:  MIT"
+    puts "Readme:   http://htmlpreview.github.io/?https://github.com/mittelmark/pantcl/blob/master/pantcl/Readme.html\n"
     exit 0
 }
 
