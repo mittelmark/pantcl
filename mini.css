@@ -83,6 +83,9 @@
     code.r {
         color: #770000;
     }
+    pre:has(code.tclout) {
+        background: #ffeeee;
+    }
     pre {
         white-space: pre;
         white-space: pre-wrap;

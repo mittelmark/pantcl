@@ -357,11 +357,16 @@ proc lineFilter {argv} {
                 # TODO: more than one inline code per line
                 if {!$pre} {
                     if {[regexp {`\.?[a-z]{2,4} .+`} $line]} {
+                        set eval false
                         set filt [regsub {.*`\.?([a-z]{2,4}) .+`.+} $line "\\1"]
-                        if {[info procs filter-$filt] eq "filter-$filt"} {
+                        if {[dict exists $yamldict $filt eval]} {
+                            if {[dict get $yamldict $filt eval]} {
+                                set eval true
+                            } 
+                        }
+                        if {[info procs filter-$filt] eq "filter-$filt" && $eval} {
                             set code [regsub {.*`\.?[a-z]{2,4} ([^`]+)`.+} $line "\\1"]
-                            puts "processing inline code $code"
-                            set res [lindex [filter-$filt $code [dict create eval $evalvar results show echo false]] 0]
+                            set res [lindex [filter-$filt $code [dict create eval true results show echo false]] 0]
                             set line [regsub {(.*)`\.?[a-z]{2,4} ([^`]+)`(.+)} $line "\\1$res\\3"]
                         }
                     }
