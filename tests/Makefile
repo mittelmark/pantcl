@@ -1,3 +1,8 @@
 rst:
-	pandoc sample.rst --filter pantcl -o sample-rst.html -s \
+	pandoc sample.rst --filter ../pantcl.tcl -o sample-rst.html -s \
 		--metadata-file sample.yaml
+
+rst-standalone:
+	pandoc sample.rst -o sample-rst.md
+	tclsh ../pantcl.tcl sample-rst.md sample-rst.html -s --css mini.css \
+		--metadata-file sample.yaml --no-pandoc

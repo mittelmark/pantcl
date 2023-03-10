@@ -1,5 +1,5 @@
 ---
-title: "This is a test file"
+title: This is a test file
 author: NN
 date: 2023-03-05
 ---

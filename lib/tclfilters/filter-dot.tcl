@@ -168,6 +168,9 @@ proc filter-dot {cont dict} {
     set def [dict create results show eval true fig true width 400 height 400 \
              include true imagepath images app dot label null ext svg]
     set dict [dict merge $def $dict]
+    if {![dict get $dict eval]} {
+        return [list "" ""]
+    }
     set ret ""
     set owd [pwd] 
     if {[dict get $dict label] eq "null"} {

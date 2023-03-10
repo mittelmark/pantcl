@@ -126,11 +126,9 @@ set css {
     }
     h1 {
         text-align: center;
-        font-size: 120%;
     }
     h2.author, h2.date {
         text-align: center;
-        font-size: 110%;
     }
     a {
         color: #0645ad;
@@ -252,6 +250,7 @@ proc lineFilter {argv} {
     set infile [lindex $args 0]
     set outfile [lindex $args 1]
     set mode md
+    set yamldict [dict create]
     if {![regexp {.+\.[a-zA-Z]*md$} $outfile] && ![regexp -nocase {.+\.html} $outfile]} {
         puts "Error: currently only conversion from Markdown to Markdown or to HTML is possible!"
         exit 0
@@ -263,6 +262,19 @@ proc lineFilter {argv} {
     if {![file exists $infile]} {
         puts  "Error: $infile does not exists"
         exit 0
+    }
+    if {[lsearch $argv "--metadata-file"] > -1} {
+        set idx [lsearch $argv "--metadata-file"]
+        incr idx 
+        #puts "metafile $idx"
+        if {[file exists [lindex $argv $idx]]} {
+            set metafile [lindex $argv $idx]
+            set fin [open $metafile r]
+            set txt [read $fin]
+            close $fin
+            #puts $txt
+            set yamldict [yaml::yaml2dict $txt]
+        }
     }
     if [catch {open $infile r} infh] {
         puts stderr "Cannot open $infile: $infh"
@@ -278,7 +290,6 @@ proc lineFilter {argv} {
         set ind ""
         # TODO: should be default false??
         set ddef [dict create echo true results show eval $evalvar] 
-        set yamldict [dict create]
         set pre false
         while {[gets $infh line] >= 0} {
             incr n
@@ -286,12 +297,26 @@ proc lineFilter {argv} {
             if {$n < 5 && !$yamlflag && [regexp {^---} $line]} {
                 set yamlflag true
             } elseif {$yamlflag && [regexp {^---} $line]} {
-                set yamldict [yaml::yaml2dict $yamltext]
+                set yamldict [dict merge [yaml::yaml2dict $yamltext] $yamldict]
                 set yamlflag false
                 set yamltext ""
             } elseif {$yamlflag} {
+                foreach key [list title author date] {
+                    if {[regexp "^${key}:" $line]} {
+                        if {[dict exists $yamldict $key]} {
+                                                  
+                            if {$key eq "date" && [dict exists $yamldict date] && \
+                                [regexp {^[0-9]{10,}} [dict get $yamldict date]]} {
+                                dict set yamldict date [clock format [dict get $yamldict  date] -format "%Y-%m-%d"]
+                            }
+                            set line "${key}: [dict get $yamldict $key]"
+                        }
+                    }
+                }
                 append yamltext "$line\n"
             }
+            #set line [regsub {^``` } $line "```"]
+
             # TODO: indentation parsing "> ```"
             if {[regexp {^>? ?\s{0,2}```} $line]} {
                 if {$pre} {
@@ -300,14 +325,14 @@ proc lineFilter {argv} {
                     set pre true
                 }
             }
-            if {[regexp {^>? ?\s{0,2}```\{\.} $line]} {
+            if {[regexp {^>? ?\s{0,2}``` ?\{\.} $line]} {
                 set dchunk [dict create]    
                 set dchunk [dict merge $ddef $dchunk]                    
                 set ind ""
                 if {[regexp {^> } $line]} {
                     set ind "> "
                 }
-                regexp {```\{\.([a-zA-Z0-9]+)\s*(.*).*\}.*} $line -> filt options    
+                regexp {``` ?\{\.([a-zA-Z0-9]+)\s*(.*).*\}.*} $line -> filt options    
                 if {[dict exists $yamldict $filt]} {
                     set dchunk [dict merge $dchunk [dict get $yamldict $filt]]
                 }
@@ -324,8 +349,6 @@ proc lineFilter {argv} {
                 set flag false
                 #puts $cont
                 if {[info procs filter-$filt] ne ""} {
-                    puts "processing chunk filter[incr i] $filt $options"
-
                     set res [filter-$filt $cont $dchunk]
                     if {[dict get $dchunk echo]} {
                         # TODO: indentation adding if was there"

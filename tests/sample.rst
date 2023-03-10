@@ -63,6 +63,22 @@ Let's now try Tcl code blocks:
    incr x
 
 
+********************
+GraphViz dot example
+********************
+
+Let's continue with a GraphViz dot example:
+
+.. code-block:: dot
+   :caption: GraphViz dot example
+   :eval: false
+
+   digraph g {
+      A -> B ;
+   }
+
+
+ 
 ***************
 Kroki example
 ***************
