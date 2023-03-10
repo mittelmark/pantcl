@@ -455,7 +455,7 @@
 #' shebang line (`{.cmd file="hello2.c" eval=true}`):
 #'  
 #' ```{.cmd file="hello2.c"}
-#' ///usr/bin/cc -o "${0%.c}" "$0" -lm && exec "./${0%.c}"
+#' ///usr/bin/cc -o "${0%.c}" "$0" -lm && exec "${0%.c}"
 #' 
 #' #include <stdio.h>
 #' #include <math.h>
@@ -472,7 +472,7 @@
 #' The same mechanism can be used for C++ code:
 #' 
 #' ```{.cmd file="hello.cxx"}
-#' ///usr/bin/g++ -o "${0%.cxx}" "$0" && exec "./${0%.cxx}"
+#' ///usr/bin/g++ -o "${0%.cxx}" "$0" && exec "${0%.cxx}"
 #' #include <iostream> 
 #' 
 #' int main(int argc, char** argv) {
