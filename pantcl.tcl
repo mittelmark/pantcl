@@ -5,6 +5,7 @@
 # Version: 0.9.9 - 2023-03-08
 
 package provide pantcl 0.9.9
+namespace eval ::pantcl { }
 
 if {[llength $argv] > 0 && ([lsearch -exact $argv -v] >= 0 || [lsearch -exact $argv --version] >= 0)} {
     puts "[package present pantcl]"
@@ -211,7 +212,20 @@ proc luniq {L} {
     set t {}
     foreach i $L {if {[lsearch -exact $t $i]==-1} {lappend t $i}}
     return $t
-} 
+}
+proc ::pantcl::getCacheDir {} {
+    if {[info exists ::env(HOME)]} {
+        set path [file join $::env(HOME) .cache pantcl]
+    } elseif {[info exists ::env(APPDATALOCAL)]} {
+        set path  [file join $::env(APPDATALOCAL) pantcl]
+    } else {
+        set path pantcl
+    } 
+    if {![file exists $path]} {
+        file mkdir $path
+    }
+    return $path
+}
 
 # allow loading Tcl packages and filters
 set appdir [file dirname [info script]]
@@ -433,7 +447,6 @@ tsvg rect -x 10 -y 10 -width 380 -height 380 \
 tsvg circle -cx 200 -cy 200 -r 120 -stroke black -stroke-width 2 -fill #eeffee
 tsvg text -x 155 -y 180 "Hello TSVG"
 tsvg text -x 135 -y 220 "Filter View World!"
-Hello
 }
         close $out
         fview::fileOpen $ftemp

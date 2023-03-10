@@ -77,6 +77,8 @@
 #'         VALUES       (1, "Max", "Musterman", "musterm@mail.de","1234");
 #'     INSERT INTO contacts (contact_id, first_name, last_name, email, phone)
 #'        VALUES       (2, "Maxi", "Musterwoman", "musterw@mail.de","1235");
+#'     INSERT INTO contacts (contact_id, first_name, last_name, email, phone)
+#'        VALUES       (3, "Fido", "Dogkeeper", "fido@dog.de","1236");
 #'     select * from contacts;
 #'     ```
 #' ``` 
@@ -95,6 +97,8 @@
 #'        VALUES       (1, "Max", "Musterman", "musterm@mail.de","1234");
 #' INSERT INTO contacts (contact_id, first_name, last_name, email, phone)
 #'        VALUES       (2, "Maxi", "Musterwoman", "musterw@mail.de","1235");
+#' INSERT INTO contacts (contact_id, first_name, last_name, email, phone)
+#'        VALUES       (3, "Fido", "Dogkeeper", "fido@dog.de","1236");
 #' select * from contacts;
 #' ```
 #' 
@@ -138,7 +142,8 @@ proc filter-sqlite {cont dict} {
         return [list "Error: You need at least sqlite3 version 3.33 which supports Markdown mode!" ""]
     }
     if {[dict get $dict label] eq "null"} {
-        set fname [file join $owd sqlite-$n]
+        set cache [pantcl::getCacheDir]
+        set fname [file join $cache sqlite-$n]
     } else {
         set fname [file join $owd [dict get $dict label]]
     }

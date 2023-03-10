@@ -34,7 +34,10 @@
 #' 
 #' The following options can be given via code chunks or in the YAML header.
 #' 
-#' > - eval - should the code in the code block be evaluated, default: false
+#' > - cachedir - directory where the files should be stored, default to
+#'     `~/.config/pantcl` on Unix systems and  `AppData/Local/pantcl` on
+#'     Windows
+#'   - eval - should the code in the code block be evaluated, default: false
 #'   - file - the output filename for the code which will be executed using the given shebang line on top, if not given, code will be evaluated line by line, default: null
 #'   - results - should the output of the command line application been shown, should be asis, show or hide, default: show
 #' 
@@ -199,7 +202,7 @@
 #' chunk can be reused in an other code chunk.
 #' 
 #' ```
-#'     ```{.cmd file="plot.R" eval=false results=hide}
+#'     ```{.cmd file="plot.R" eval=false results=hide cachedir="."}
 #'     #!/usr/bin/env/Rscript
 #'     doPlot = function (x,y,pch=19,col="red",...) {
 #'        plot(y~x,pch=pch,col=col,...)
@@ -209,8 +212,8 @@
 #' 
 #' This is the output, just code display:
 #' 
-#' ```{.cmd file="plot.R" eval=false results=hide}
-#' #!/usr/bin/env/Rscript
+#' ```{.cmd file="plot.R" eval=true results=hide cachedir="."}
+#' #!/usr/bin/env Rscript
 #' doPlot = function (x,y,pch=19,col="red",...) {
 #'    plot(y~x,pch=pch,col=col,...)
 #' }
@@ -219,7 +222,7 @@
 #' In the next chunk we use this function by sourcing the file.
 #' 
 #' ```
-#'     ```{.cmd file="doplot.R" results="hide" eval=true}
+#'     ```{.cmd file="doplot.R" results="hide" eval=true cachdir="."}
 #'     #!/usr/bin/env Rscript
 #'     source('plot.R') # file was created in the previous chunk.
 #'     x=seq(0,8,by=0.1)
@@ -233,7 +236,7 @@
 #' 
 #' And here the output:
 #' 
-#' ```{.cmd file="doplot.R" results="hide"}
+#' ```{.cmd file="doplot.R" results="hide" cachedir="."}
 #' #!/usr/bin/env Rscript
 #' source('plot.R') # file was created in the previous chunk.
 #' set.seed(123)
@@ -523,7 +526,7 @@ proc filter-cmd {cont dict} {
     global n
     incr n
     set def [dict create results asis eval true label null file null\
-             include true app sh]
+             include true app sh cachedir [pantcl::getCacheDir]]
     # TODO: dict app using
     set dict [dict merge $def $dict]
     if {![dict get $dict eval]} {
@@ -541,11 +544,12 @@ proc filter-cmd {cont dict} {
             }
         }
     } else {
-        set out [open [dict get $dict file] w 0755]
+        #puts stderr $cont
+        set out [open [file join [dict get $dict cachedir] [dict get $dict file]] w 0755]
         puts $out $cont
         close $out
         if {[dict get $dict eval]} {
-            if {[catch { set res [exec ./[dict get $dict file]] }] } {
+            if {[catch { set res [exec [file join [dict get $dict cachedir] [dict get $dict file]]] }] } {
                 set res $::errorInfo
             } 
         }
