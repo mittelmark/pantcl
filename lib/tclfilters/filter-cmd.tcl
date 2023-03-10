@@ -498,7 +498,9 @@
 #'
 #' ```{.cmd file="hello.v"}
 #' ///usr/local/bin/v run $0 $@  2>&1 && exit 0
-#' println("Hello V World!")
+#' fn main () {
+#'   println("Hello V World in 2023!")
+#' }
 #' ```
 #'
 #' ### Other programming languages
