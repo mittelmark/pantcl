@@ -63,8 +63,36 @@ Let's now try Tcl code blocks:
    incr x
 
 
+***************
+Kroki example
+***************
+
+.. code-block:: kroki
+   :caption: kroki example
+   :eval: true
+
+   digraph g {
+      graph[size="8.0,4.0!",scale="3.0!"];
+      rankdir="LR";
+      node[style=filled,fillcolor=skyblue,shape=box];
+      A -> B -> C;
+   }
 
 
+Now an example where we hide the source code:
+
+
+.. code-block:: kroki
+   :caption: kroki example
+   :eval: true
+   :echo: false
+
+   digraph g {
+      
+      rankdir="LR";
+      node[style=filled,fillcolor=salmon,shape=box];
+      A -> B -> C;
+   }
 That's the end.
 
 
