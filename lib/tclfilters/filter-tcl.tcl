@@ -54,8 +54,8 @@
 #' 
 #' ```
 #'     ---
-#'     title: "your title"
-#'     author: "your name"
+#'     title: your title
+#'     author: your name
 #'     tcl:
 #'        echo: 1
 #'        eval: 1
@@ -181,10 +181,10 @@
 #'    -stroke-width 2 -fill green
 #' tsvg text -x 29 -y 45 Hello
 #' tsvg text -x 27 -y 65 World!
-#' tsvg write hw.svg
+#' tsvg write images/hw.svg
 #' ```
 #' 
-#' ![](hw.svg)
+#' ![](images/hw.svg)
 #' 
 #' If [cairosvg](https://cairosvg.org/) is installed as well png files can be created. 
 #' Here an other example which creates a barplot and saves it as a PNG:
@@ -205,10 +205,10 @@
 #'           -fill [lindex $col $i]
 #'     tsvg text -x [expr {($i+1)*70+20}] -y 370 [lindex $labels $i]
 #' }
-#' tsvg write barplot.png
+#' tsvg write images/barplot.png
 #' ```
 #' 
-#' ![](barplot.png)
+#' ![](images/barplot.png)
 #' 
 #' PDF and PNG output might be preferred if your final document is a PDF document created via LaTeX.
 #' 
@@ -218,9 +218,9 @@
 #' ## INCLUDE FILES
 #' 
 #' An other utility function is the include function where
-#' e can include other files, for instance some which contain as well Markdown markup. 
+#' we can include other files, for instance some which contain as well Markdown markup. 
 #' This can be used for instance to include common header and footers in your documents. 
-#' Below an example we create an external file and the include this file afterwards,
+#' Below an example we create an external file and then include this file afterwards,
 #' we would like to have links to all filters here in the document (chunk options - `{.tcl results="asis"})`.
 #' 
 #' ```{.tcl results="asis"} 
@@ -229,10 +229,10 @@
 #'     append md "* \[[regsub {.html} $html {}]\]($html)\n"
 #' }
 #' append md \n
-#' set out [open links.md w 0600]
+#' set out [open images/links.md w 0600]
 #' puts $out $md
 #' close $out
-#' include links.md
+#' include images/links.md
 #' ```
 #' 
 #' This allows in a nice way to create the same links for all documentation files such as these
@@ -255,7 +255,6 @@
 #' ## TODO:
 #' 
 #' - more flexible list2mdtab function
-#' - res bug - fixed (vars are now in namespace filter)
 #' 
 #' ```{.tcl}
 #' set vars [lsort [info vars ::*]]
