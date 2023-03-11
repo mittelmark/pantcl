@@ -5,6 +5,7 @@
 #' pipe:
 #'     results: show
 #'     eval: 1
+#'     wait: 100
 #' ---
 #' 
 #' ------
@@ -38,6 +39,9 @@
 #'   - echo - should the input code been shown, default: false
 #'   - pipe - the programming language to be used, either R or python, which is python3, default: python3
 #'   - results - should the output of the command line application been shown, should be asis, show or hide, default: show
+#'   - wait - the timeout (ms) after every code evaluation to wait for the pipe to
+#'            read, try to decrease the time to get a speedup, increase of you
+#'            observe output at wrong places, default: 100
 #' 
 #' To change the defaults the YAML header can be used. Here an example to change the 
 #' default pipe command to R and evaluate all code chunks. Please note that you
@@ -113,12 +117,12 @@
 #' plt.title('My histogram')
 #' 
 #' # save the file
-#' plt.savefig('pyhist.png')
+#' plt.savefig('images/pyhist.png')
 #' ```
 #' 
 #' We then just display the image file using standard Markdown.
 #'  
-#' ![](pyhist.png)
+#' ![](images/pyhist.png)
 #' 
 #' There is as well the possibility to add inline Python code to display the values of variables or the output of short python commands here an example:
 #' 
@@ -152,7 +156,7 @@
 #'      ```{.pipe pipe="R" results="show"}
 #'      source("~/R/dlibs/chords.R")
 #'      data(iris)
-#'      png("testr.png")
+#'      png("images/testr.png")
 #'      boxplot(iris$Sepal.Length ~ iris$Species,col=2:4)
 #'      dev.off()
 #'      print(2)
@@ -164,20 +168,20 @@
 #' ```{.pipe pipe="R" results="show"}
 #' source("~/R/dlibs/chords.R")
 #' data(iris)
-#' png("testr.png")
+#' png("images/testr.png")
 #' boxplot(iris$Sepal.Length ~ iris$Species,col=2:4)
 #' dev.off()
 #' print(2)
 #' 1
 #' ```
 #' 
-#' ![](testr.png)
+#' ![](images/testr.png)
 #' 
 #' Now a table example:
 #' 
 #' ```{.pipe pipe="R" results="asis"}
 #' data(mtcars)
-#' knitr::kable(head(mtcars[, 1:4]), "pipe")
+#' knitr::kable(head(mtcars[, 1:4]))
 #' ```
 #' 
 #' There is as well the possibility to display inline R code. So for instance we can use the nrow function to 
@@ -212,10 +216,10 @@
 #' r = sqrt (xx .^ 2 + yy .^ 2) + eps;
 #' tz = sin (r) ./ r;
 #' mesh (tx, ty, tz);
-#' saveas(aux, 'mesh-octave.png', 'png');
+#' saveas(aux, 'images/mesh-octave.png', 'png');
 #' ```
 #' 
-#' ![](mesh-octave.png)
+#' ![](images/mesh-octave.png)
 #' 
 #' What about inline code? What is the value of y? 
 #' It should be `oc disp(y)`.  Hmm, not yet working.
@@ -231,22 +235,6 @@
 #' z
 #' disp(k)
 #' ```
-#' 
-#' ### Tcl example (not a pipe)
-#' 
-#' ```{.tcl}
-#' puts "Hello Tcl"
-#' set x 1
-#' ```
-#' 
-#' This is inline Tcl which shows the value of $x and x is: `tcl set x`!
-#'
-#' However until inside lists and in nested structure this is not yet evaluated like here in this list:
-#' 
-#' * a list item with Tcl code, x is: `tcl set x`
-#' * an other list item
-#' * a longer Tcl statement: `tcl set h "Hello World Number [incr x]!"`.
-#' * and here the current date and time: `tcl clock format [clock seconds] -format "%m %b, %Y"`
 #' 
 #' ## TODO:
 #' 
@@ -300,11 +288,11 @@ proc filter-pipe {cont dict} {
     incr ::fpipe::n
     set ::fpipe::pipecode ""
     set def [dict create results show eval false label null \
-             include true pipe python3 terminal true]
+             include true pipe python3 terminal true wait 100]
     set dict [dict merge $def $dict]
     if {[dict get $dict eval]} {
         if {$::fpipe::pypipe eq "" && [string range [dict get $dict pipe] 0 1] eq "py"} {
-            set ::fpipe::pypipe [open "|python3 -ui 2>@1" r+]
+            set ::fpipe::pypipe [open "|python3 -qui 2>@1" r+]
             fconfigure $::fpipe::pypipe -buffering line -blocking false
             fileevent $::fpipe::pypipe readable [list piperead $::fpipe::pypipe]
         }
@@ -317,7 +305,7 @@ proc filter-pipe {cont dict} {
             puts $::fpipe::opipe "page_output_immediately(1);"
             puts $::fpipe::opipe "fflush(stdout)"
             flush $::fpipe::opipe
-            after 10 [list append wait ""]
+            after [dict get $dict wait] [list append wait ""]
             vwait wait
             set ::fpipe::pipecode ""
         }
@@ -354,12 +342,12 @@ proc filter-pipe {cont dict} {
                 if {[regexp {^[^\s]} $line]} {
                     # delay only if first letter is non-whitespace
                     # to allow to flush output
-                    after 10 [list append wait ""]
+                    after [dict get $dict wait] [list append wait ""]
                     vwait wait
                 }
             }
         }
-        after 100 [list append wait ""]
+        after [dict get $dict wait] [list append wait ""]
         vwait wait
         set res $::fpipe::pipecode
     } else {
