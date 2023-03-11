@@ -329,13 +329,14 @@
 #' 
 #' A typical problem are programming languages which do not support the shebang line. 
 #' We can create for such languages a wrapper script which pipe the input of a script but not the very first 
-#' line into the interpreter. Here an example for the lilypond interpreter, a tool to process music notation. Here the wrapper script:
+#' line into the interpreter. Here an example for the lilypond interpreter, 
+#'  a tool to process music notation. Here the wrapper script:
 #' 
 #' ```
 #' #!/usr/bin/env bash
-#' # file lilyscript.sh
+#' # file: lilyscript.sh
 #' if [ -z $2 ]; then
-#'     out=out-file.svg
+#'     out=out.svg
 #'     ext=svg
 #' else
 #'     out=$2
@@ -344,8 +345,11 @@
 #' fi
 #' # echo all lines bit not the shebang line and 
 #' # pipe this into lilypond
-#' perl -ne '$x++ >= 1 and print' $1 > temp.ly
-#' # crop page support for png and pdf output
+#' # crop page
+#' echo "
+#' \version \"2.14.1\"
+#' " > temp.ly
+#' perl -ne '$x++ >= 1 and print' $1 >> temp.ly
 #' echo "
 #' \paper {
 #'   indent = 0\mm
@@ -355,8 +359,9 @@
 #'   oddFooterMarkup = \"\"
 #'   evenFooterMarkup = \"\"
 #' }
+#' \header { tagline = \"\" }
 #' " >> temp.ly
-#' lilypond -dbackend=$ext --output=$out --$ext temp.ly
+#' lilypond --$ext --output=$out  temp.ly
 #' if [ -e "$out-systems.texi" ]; then
 #'      rm $out-* 
 #' fi     
@@ -365,17 +370,18 @@
 #' 
 #' If we copy this file as lilyscript.sh into a folder belonging to our PATH variable we 
 #' can then embed lilypond code into a executable script easily.
-#' Here an example (chunk options are: `{.cmd file="mini.ly" results="hide" eval=true}`):
+#' Here an example (chunk options are: 
+#' `{.cmd file="mini.ly" results="hide" eval=true cachdir="."}`):
 #' 
-#' ```{.cmd file="mini.ly" results="hide"}
+#' **Please note** that this script above creates a few intermediate files, so you need
+#' to set the cachedir usually to the current folder by adding the option
+#' **`cachedir="."`** to your code chunk to get this working.
+#'
+#' ```{.cmd file="mini.ly" results="hide" cachedir="."}
 #' #!/usr/bin/env -S lilyscript.sh mini.ly mini.svg
-#' \version "2.14.1"
-#' % required for svg to manually crop the image
 #' #(set! paper-alist
-#'   (cons '("my size" . (cons (* 3 in) (* 1 in))) paper-alist))
-#' \paper {
-#'   #(set-paper-size "my size")
-#' }
+#'   (cons '("my size" . (cons (* 3 in) (* 0.8 in))) paper-alist))
+#' \paper {  #(set-paper-size "my size") }
 #' {
 #'   % middle tie looks funny here:
 #'   <c' d'' b''>8. ~ <c' d'' b''>8
@@ -383,7 +389,8 @@
 #' ```
 #' 
 #' We then embed the image using Markdown syntax. Using the border-style we can
-#' as well adapt the width and height of the paper size see:
+#' as well adapt the width and height of the paper size see if required if we
+#' add nore notes later:
 #' 
 #' ```
 #' ![](mini.svg){#id width=240 style="border: 3px solid #ddd;"}
@@ -391,23 +398,26 @@
 #' 
 #' Gives:
 #' 
-#' ![](mini.svg){#id width=300 style="border: 3px solid #ddd;"}
+#' ![](mini.svg){#id width=240 style="border: 3px solid #ddd;"}
 #'
-#' Png and Pdf images are automatically cropped, so we do not need to set the paper size (`{.cmd file="mini2.ly" results="hide"}`).
+#' Here an example for a PNG image with the settings
+#' `{.cmd file="mini2.ly" results="hide" cachedir="."}`.
 #' 
-#' ```{.cmd file="mini2.ly" results="hide"}
-#' #!/usr/bin/env -S lilyscript.sh mini2.ly mini.svg
-#' \version "2.14.1"
+#' ```{.cmd file="mini2.ly" results="hide" cachedir="."}
+#' #!/usr/bin/env -S lilyscript.sh mini2.ly mini2.png
+#' #(set! paper-alist
+#'   (cons '("my size" . (cons (* 3 in) (* 0.8 in))) paper-alist))
+#' \paper {  #(set-paper-size "my size") }
 #' {
 #'   % middle tie looks funny here:
 #'   <c' d'' b''>8. ~ <c' d'' b''>8
 #' }
 #' ```
 #' 
-#' We can then include the created 
-#' image using standard Markdown syntax with setting as well a width to scale the image (`![](mini.png){#id width=140}`):
+#' We again include the created image using standard Markdown syntax with setting
+#' as well a width to scale the image (`![](mini2.png){#id width=240}`):
 #' 
-#' ![](mini.svg){#id width=140}
+#' ![](mini2.png){#id width=240}
 #'
 #' Alternatively you can as well create a shell script without the need of a wrapper
 #' script like this (`{.cmd file="mini4.ly" results="hide" eval=true}`):

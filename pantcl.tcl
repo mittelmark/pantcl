@@ -207,7 +207,7 @@ set css {
 # some helper functions
 # some generic helper functions
 
-proc luniq {L} {
+proc ::pantcl::luniq {L} {
     # removes duplicates without sorting the input list
     set t {}
     foreach i $L {if {[lsearch -exact $t $i]==-1} {lappend t $i}}
@@ -250,11 +250,11 @@ foreach file [glob -nocomplain [file join [file dirname [info script]] filter fi
     }
 }
 
-proc debug {jsonData} {
+proc ::pantcl::debug {jsonData} {
     puts [::rl_json::json keys $jsonData]
 }
 
-proc lineFilter {argv} {
+proc ::pantcl::11neFilter {argv} {
     if {[info exists ::env(FILTEREVAL)]} {
         set evalvar  $::env(FILTEREVAL)
     } else {
@@ -500,7 +500,7 @@ if {[llength $argv] > 1 && [file exists [lindex $argv 0]]} {
             exec pandoc $tempfile --filter $argv0 -o {*}[lrange $argv 1 end] 
         }  else {
             set argv [lset argv 0 $tempfile]
-            lineFilter $argv
+            pantcl::lineFilter $argv
         }
         file delete $tempfile
         puts "converting $infile to [lindex $argv 1] done"
@@ -509,7 +509,7 @@ if {[llength $argv] > 1 && [file exists [lindex $argv 0]]} {
         if {$pandoc} {
             exec pandoc [lindex $argv 0] --filter $argv0 -o {*}[lrange $argv 1 end]
         }  else {
-            lineFilter $argv
+            pantcl::lineFilter $argv
         }
         puts "converting [lindex $argv 0] to [lindex $argv 1] done"
     }
@@ -518,9 +518,9 @@ if {[llength $argv] > 1 && [file exists [lindex $argv 0]]} {
 package require rl_json
 
 #' ---
-#' title: pantcl filter documentation - 0.9.9
+#' title: pantcl filter documentation - 0.9.10
 #' author: Detlef Groth, Schwielowsee, Germany
-#' date: 2023-03-08
+#' date: 2023-03-11
 #' tcl:
 #'    echo: "true"
 #'    results: show
@@ -560,26 +560,30 @@ package require rl_json
 #'
 #' ## SYNOPSIS 
 #' 
+#' We assume that you renamed the standalone file `pantcl.tapp` to `pantcl` and
+#' that this file is in your path.
+#' 
 #' ```
 #' # standalone application
-#' pantcl.tapp infile outfile ?options?
+#' pantcl infile outfile ?options?
 #' # as filter
-#' pandoc infile --filter pantcl.tapp ?options?
+#' pandoc infile --filter pantcl ?options?
 #' # as graphics user interface
-#' pantcl.tapp --gui
+#' pantcl --gui [filename]
 #' ```
 #' 
 #' Where options for the filter and the standalone mode
 #' are the usual pandoc options. For HTML conversion you should use for instance:
 #' 
 #' ```
-#' pantcl.tapp infile.md outfile.html --css style.css -s --toc
+#' pantcl infile.md outfile.html --css style.css -s --toc
 #' ```
 #'
-#' Please note, that you can rename as well the file `pantcl.tapp` into just `pantcl` to use it like a normal standalone application without file extension.
+#' Please note, that you can rename as well the file `pantcl.tapp` into other names like 
+#' `pantcl.bin`, however the basename `pantcl` must stay the same.
 #' 
 #' ## Code embedding
-
+#'
 #' Embed code either inline or in form of code chunks like here (triple ticks):
 #' 
 #' ``` 
