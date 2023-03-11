@@ -38,7 +38,7 @@
 #' The following options can be given via code chunks options or as defaults in the YAML header.
 #' 
 #' > - eval - should the code in the code block be evaluated, default: false
-#'   - ext - file file extension, can be svg, png or pdf, teh latter two require the command application 
+#'   - ext - file file extension, can be svg, png or pdf, the latter two require the command application 
 #'     cairsvg to be installed default: svg
 #'   - fig - should a figure be created, default: true
 #'   - imagepath - output imagepath, default: images
