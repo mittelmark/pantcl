@@ -2,9 +2,9 @@
 # pantcl - standalone application and pandoc filter
 #          for literate programming
 # Author: Detlef Groth, Schwielowsee, Germany
-# Version: 0.9.9 - 2023-03-08
+# Version: 0.9.10 - 2023-03-11
 
-package provide pantcl 0.9.9
+package provide pantcl 0.9.10
 namespace eval ::pantcl { }
 
 if {[llength $argv] > 0 && ([lsearch -exact $argv -v] >= 0 || [lsearch -exact $argv --version] >= 0)} {
