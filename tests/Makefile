@@ -1,7 +1,10 @@
 rst:
 	pandoc sample.rst --filter ../pantcl.tcl -o sample-rst.html -s \
 		--metadata-file sample.yaml
-
+	htmlark sample-rst.html -o sample-out.html
+	mv sample-out.html sample-rst.html
+	pandoc sample.rst --filter ../pantcl.tcl -o sample-rst.pdf --metadata documentclass=scrartcl \
+		--metadata-file sample.yaml
 rst-standalone:
 	pandoc sample.rst -o sample-rst.md
 	tclsh ../pantcl.tcl sample-rst.md sample-rst.html -s --css mini.css \

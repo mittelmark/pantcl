@@ -1,21 +1,28 @@
-# pantcl
+# Pantcl
 
+Standalone Tcl application for document conversion with support for Tcl based
+filters using the Pandoc document processor or Tcl only.
 
-Providing document conversion with Tcl based filters using pandoc or Tcl only.
-
-The application `pantcl.bin` is a command line tool which can be used as a
-standalone tool for document conversion for instance from Markdown to HTML. It
-can be used as well as a filter for the pandoc document processor to embed and
-execute Tcl code in documents like Markdown or LaTeX and to write addtional
-filters using the Tcl programming language to embed code for other command line tools for instance GraphViz, ABC music, the Python or R programming language. It as well contains an option to execute code chunks within a graphical user interface.
+The application `pantcl(.bin)` is a command line tool which can be used as a
+standalone tool for document conversion from Markdown to HTML. In the Markdown
+document as well code for programming languages like Tcl, Python, C++, Go or other tools like diagram
+creation tools, image creation tools or for instance music note processors can be embedded.
+For processing other input formats like ReStructuredText, Wiki Syntax, LaTeX it
+can be used as well as a filter for the pandoc document processor. This way it
+is as well possible to target other output format like docx, pdf and many
+others. The tools contains as well a graphical user interface for direct
+editing of code for graphical tools like GraphViz, PlantUml and many others.
 
 So in summary pantcl allows you:
 
-- document conversion from Markdown to HTML
-- extraction of Markdown embedded documentation in Programming code like Tcl, Python or C++.
-- embed and execute Tcl code in Markdown documents
-- write filters for other tools using the Tcl prgramming language /many sample filters already included)
+- document conversion from Markdown to HTNML with evaluation of internal code chunks without pandoc
+- document conversion from many input (Markdown, ReStructuredText, Wiki formats, ...) 
+  to many output formats (HTML, DOCX, PDF, ...) with evaluation of internal code chunks 
+- writing code documentation inside source code using a `#'` prefix followed by
+  Markdown code
+- write filters for other graphical or programming tools using the Tcl programming language
 - use a graphical interface to edit Markdown files with embedded code chunks
+- use a graphical interface to edit diagram code with real time preview
 
 # Documentation
 
@@ -28,7 +35,7 @@ Here are links to the documentation:
 Filter documentation:
 
 - [filter-abc](https://htmlpreview.github.io/?https://raw.githubusercontent.com/mittelmark/pantcl/master/lib/tclfilters/filter-abc.html) - visualize [ABC music notation](https://abcnotation.com/)
-- [filter-cmd](https://htmlpreview.github.io/?https://raw.githubusercontent.com/mittelmark/pantcl/master/lib/tclfilters/filter-cmd.html) - execute shell scripts for instance [Lilypond music scripts](http://lilypond.org/), [GraphViz](https://www.graphviz.org) scripts, [sqlite3](https://www.sqlite.org) scripts etc.
+- [filter-cmd](https://htmlpreview.github.io/?https://raw.githubusercontent.com/mittelmark/pantcl/master/lib/tclfilters/filter-cmd.html) - execute shell scripts for instance [Lilypond music scripts](http://lilypond.org/), [GraphViz](https://www.graphviz.org) scripts, Python, Lua, R scripts, [sqlite3](https://www.sqlite.org) scripts, or code for languages like  C, C++, Go, Rust, V  etc.
 - [filter-dot](https://htmlpreview.github.io/?https://raw.githubusercontent.com/mittelmark/pantcl/master/lib/tclfilters/filter-dot.html) - [GraphViz dot](https://www.graphviz.org) filter
 - [filter-eqn](https://htmlpreview.github.io/?https://raw.githubusercontent.com/mittelmark/pantcl/master/lib/tclfilters/filter-eqn.html) - visualize mathematical equations using eqn2graph, see here [Guide for typesetting using eqn](https://lists.gnu.org/archive/html/groff/2013-10/pdfTyBN2VWR1c.pdf)
 - [filter-kroki](https://htmlpreview.github.io/?https://raw.githubusercontent.com/mittelmark/pantcl/master/lib/tclfilters/filter-kroki.html) - visualize diagram code using the [kroki webservice](https://kroki.io)
@@ -64,13 +71,15 @@ The file `pantcl.bin` contains embedded all the filters mentioned above. You can
     title: Test Markdown witch embedded Tcl code.
     author: Detlef Groth
     date: 2023-01-11
+    tcl:
+       eval: 1
     ---
 
     ## Header
 
     This is some text.
 
-    ```{.tcl}
+    ```{.tcl eval=true}
     set x 1
     set x
     ```
@@ -93,3 +102,46 @@ The output `test.html` should then look like this:
 
 
 If this works you can continue and try to use other code filters from the list shown [above](#filterlist).
+
+Please note, that since version 0.9.2 the filter evaluation is per default set
+to false to avoid interpretation just by accident. You must enable filter
+evaluation either on individual code chunks by setting `eval=true` as the code
+chunk option as shown above or if you like to have it globally enabbled by
+writing it in the YAML header of a Markdown document like this:
+
+```
+---
+title: xyz
+author: nn
+date: 2023-03-11
+tcl:
+    eval: 1
+dot:
+    eval: 1
+---
+```
+
+Which would enable code evaluation for Tcl and graphics generation for every
+GraphViz dot code chunk. If your input document does not support YAML headers
+you can provide a YAML configuration in an external file and like can be seen
+in the file [tests/sample.yaml](tests/sample.yaml) and the provide the required
+argument for the pandoc document converter like this:
+
+```
+pandoc sample.rst --filter pantcl -o sample-rst.html -s \
+		--metadata-file sample.yaml
+```
+
+How to define chunk options in Rst files can be seen here in the file
+[tests/sample.rst](tests/sample.rst).
+
+To create a PDF file you could use a command line like this:
+
+```
+pandoc sample.rst --filter ../pantcl.tcl -o sample-rst.pdf \
+    --metadata documentclass=scrartcl --metadata-file sample.yaml
+```
+
+Here the resulting output file 
+[sample-rst.pdf](https://github.com/mittelmark/pantcl/files/10951380/sample-rst.pdf).
+

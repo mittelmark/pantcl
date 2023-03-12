@@ -18,13 +18,22 @@ This document was created using the following command line:
    pandoc sample.rst --filter pantcl -o sample-rst.html -s \
       --metadata-file sample.yaml
 
+For pdf creation we used a command line like this:
 
+.. code-block:: bash
+
+   pandoc sample.rst --filter ../pantcl.tcl -o sample-rst.pdf --metadata \
+       documentclass=scrartcl --metadata-file sample.yaml
+
+Here the source code of the rst-document:
+`<https://raw.githubusercontent.com/mittelmark/pantcl/main/tests/sample.rst>`_
 
 *************
 Tcl Code
 *************
 
 Let's now try Tcl code blocks:
+
 
 .. code-block:: tcl
    :caption: Tcl-code
@@ -52,15 +61,35 @@ Now some R code:
    plot(1)
 
 
+For more fine tuned output it is recommend to use the pipe filter like this:
 
-Let's now try Tcl code blocks:
+.. code-block:: pipe
+   :eval: true
+   :pipe: R 
+
+   x=2
+   png("sample.png")
+   plot(1:20,pch=1:20,cex=2,col=rainbow(20))
+   dev.off()
+
+ 
+.. image:: sample.png
+  :width: 400
+  :alt: Alternative text  
+
+As this filter does not automatically include the image we write here a PNG
+file using the ``png`` command. The `pipe` filter allows as well to have a 
+continued session over all code chunks. Let's access for instance now the x 
+variable in a next code chunk:
+
+.. code-block:: pipe
+   :eval: true
+   :pipe: R
+
+    print(x)
 
 
-.. code-block:: tcl
-
-   set x 1
-   puts $x
-   incr x
+OK, this should display a two even if x was declared in the previous chunk.
 
 
 ********************
@@ -95,8 +124,8 @@ Kroki example
    }
 
 
-Now an example where we hide the source code:
-
+Now an example where we hide the source code which should be normal if we like
+only to show the image but not the code:
 
 .. code-block:: kroki
    :caption: kroki example
@@ -109,6 +138,9 @@ Now an example where we hide the source code:
       node[style=filled,fillcolor=salmon,shape=box];
       A -> B -> C;
    }
-That's the end.
+
+
+That's the end of this short example on how to use `Rst` files with some of the
+`pantcl` filters.
 
 
