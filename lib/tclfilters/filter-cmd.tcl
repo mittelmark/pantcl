@@ -502,7 +502,7 @@
 #' }
 #' ```
 #' 
-#' The same mechanism can be used for C++ code ({.cmd file="hello.cxx"i}):
+#' The same mechanism can be used for C++ code ({.cmd file="hello.cxx"}):
 #' 
 #' ```{.cmd file="hello.cxx"}
 #' ///usr/bin/g++ -o "${0%.cxx}" "$0" && exec "${0%.cxx}"
@@ -519,8 +519,8 @@
 #' Please take car that you need to use the same file extension in your shebang
 #' line  and for your file argument, if your file ends in `cpp` as well your
 #' shebang has to use not `cxx` but `cpp` in the first line, the compiler line.
-#
-#' Here and example for the Go language:
+#'
+#' Here an example for the Go language:
 #' 
 #' ```{.cmd file="hello.go"}
 #' ///usr/bin/go run $0 $@  2>&1 && exit 0
