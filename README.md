@@ -122,10 +122,14 @@ dot:
 ```
 
 Which would enable code evaluation for Tcl and graphics generation for every
-GraphViz dot code chunk. If your input document does not support YAML headers
-you can provide a YAML configuration in an external file and like can be seen
-in the file [tests/sample.yaml](tests/sample.yaml) and the provide the required
-argument for the pandoc document converter like this:
+GraphViz dot code chunk. 
+
+## Rst files
+
+If your input document does not support YAML headers
+you can provide a YAML configuration in an external file, an example can be seen
+in the file [tests/sample.yaml](tests/sample.yaml). You then provide the required
+argument for the pandoc document converter in the command line like this:
 
 ```
 pandoc sample.rst --filter pantcl -o sample-rst.html -s \
