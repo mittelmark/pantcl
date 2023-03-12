@@ -3,6 +3,10 @@
 Standalone Tcl application for document conversion with support for Tcl based
 filters using the Pandoc document processor or Tcl only.
 
+For a overview about the Pandoc Tcl filter you can see as well the presentation
+at the presentation at [S
+& T 2021](https://raw.githubusercontent.com/mittelmark/DGTcl/master/pandoc-tcl-filter/doc/Groth-S-and-T-2021.pdf).
+
 The application `pantcl(.bin)` is a command line tool which can be used as a
 standalone tool for document conversion from Markdown to HTML. In the Markdown
 document as well code for programming languages like Tcl, Python, C++, Go or other tools like diagram
