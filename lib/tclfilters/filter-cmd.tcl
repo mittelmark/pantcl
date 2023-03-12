@@ -274,6 +274,23 @@
 #' 
 #' ![](sin-gp.png)
 #' 
+#' ### Lua Scripts
+#'
+#' Here a short Lua code example ({.cmd file="factorial.lua" eval=true}):
+#'
+#' ```{.cmd file="factorial.lua" eval=true}
+#' #!/usr/bin/env lua
+#' -- defines a factorial function
+#' function fact (n)
+#'     if n == 0 then
+#'         return 1
+#'     else
+#'         return n * fact(n-1)
+#'     end
+#' end
+#' print(fact(5))
+#' ```
+#'
 #' ### GraphViz dot scripts
 #' 
 #' Here an example for a standalone dot-script (`{.cmd file="digraph.dot" eval=true}`): 
@@ -420,23 +437,29 @@
 #' ![](mini2.png){#id width=240}
 #'
 #' Alternatively you can as well create a shell script without the need of a wrapper
-#' script like this (`{.cmd file="mini4.ly" results="hide" eval=true}`):
+#' script like this (`{.cmd file="mini4.ly" results="hide" eval=true }`):
 #' 
 #' ```{.cmd file="mini4.ly" results="hide"}
 #' #!/usr/bin/bash
-#' exec perl -ne '$x++ > 1 and print' $0 | lilypond --out=mini4 --png - && exit
+#' exec tail +2 $0 | lilypond --out="${0%.ly}" --png - && exit
 #' % now follows the Lilypond code
 #' \version "2.22.0"
 #' #(set! paper-alist
-#'   (cons '("my size" . (cons (* 3 in) (* 0.8 in))) paper-alist))
+#'   (cons '("my size" . (cons (* 6 in) (* 0.8 in))) paper-alist))
 #' \paper {  #(set-paper-size "my size") }
 #' \header { tagline="" }
 #' {
-#' c'4 c' g' g' a' a' g'2
+#' c'4 c' g' g' a' a' g'2 c''4 b' g'2   g' c'
 #' }
 #' ```
 #' 
+#' The script above creates a png file in the same folder as the file mini4.ly
+#' which can be then embedded using standard Markdown syntax:
+#'
 #' ![](mini4.png)
+#'
+#' Please note, that I as well extended the figure width to 6in to avoid the creation
+#' of two separate figures. 
 #' 
 #' ### C and C++ code
 #' 
