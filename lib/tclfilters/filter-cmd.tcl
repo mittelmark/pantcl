@@ -520,7 +520,10 @@
 #' line  and for your file argument, if your file ends in `cpp` as well your
 #' shebang has to use not `cxx` but `cpp` in the first line, the compiler line.
 #'
-#' Here an example for the Go language:
+#' ## Go, Rust and Vlang
+#'
+#' Here an example for the Go language (`{.cmd file="hello.go"}`):
+#'
 #' 
 #' ```{.cmd file="hello.go"}
 #' ///usr/bin/go run $0 $@  2>&1 && exit 0
@@ -530,9 +533,19 @@
 #'     println("Hello Go World!")
 #' }
 #' ```
+#' 
+#' Next try is Rust (`{.cmd file="hello-rust.rs"}`), as there is no `run` for
+#' rust we need to compile and then to execute the file as in C/C++:
 #'
-#' Now as an example the new programming language V:
 #'
+#' ```{.cmd file="hello-rust.rs"}
+#' ///home/groth/.cargo/bin/rustc $0 $@  -o ${0%.rs} 2>&1 && exec "${0%.rs}" && exit 0
+#' fn main () {
+#'   println!("Hello Rust World in 2023!")
+#' }
+#' ```
+#'
+#' Now as an example the new programming language V (`{.cmd file="hello.v"}`):
 #' ```{.cmd file="hello.v"}
 #' ///usr/local/bin/v run $0 $@  2>&1 && exit 0
 #' fn main () {
