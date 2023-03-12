@@ -545,7 +545,8 @@
 #' }
 #' ```
 #'
-#' Now as an example the new programming language V (`{.cmd file="hello.v"}`):
+#' Now as the last example the new programming language [Vlang](https://vlang.io/) (V) (`{.cmd file="hello.v"}`):
+#' 
 #' ```{.cmd file="hello.v"}
 #' ///usr/local/bin/v run $0 $@  2>&1 && exit 0
 #' fn main () {
