@@ -67,10 +67,24 @@ tool. On Ubuntu systems you can install Tcl using your package managers like
 this: `sudo apt install Tcl`. If you have a `tclsh` executable in your `PATH`
 you then download the latest build from the Github page here: 
 
-[https://github.com/mittelmark/pantcl/suites/10325546892/artifacts/508197131](https://github.com/mittelmark/pantcl/suites/10325546892/artifacts/508197131)
+[https://github.com/mittelmark/pantcl/suites/11514896149/artifacts/595403044](https://github.com/mittelmark/pantcl/suites/11514896149/artifacts/595403044)
 
 Unpack the Zip-Archive and make the file pantcl.bin executable using chmod. You can as rename
 it for instance to just `pantcl`. Then move it to a folder within belonging to your `PATH` variable. For instance "~./bin" or "~/.local/bin".
+
+Before you continue check if you executable is working by writing in the
+terminal something like this:
+
+```
+$ pantcl --version
+0.9.11
+$ pandoc --version
+pandoc 2.14.2
+...
+```
+
+Without an installed pandoc executable only conversion from Markdown to HTML
+can be performed.
 
 The file `pantcl.bin` contains embedded all the filters mentioned above. You can try out the installation by creating a simple Markdown file with some embedded Tcl code like this:
 
