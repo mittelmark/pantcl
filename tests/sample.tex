@@ -1,0 +1,33 @@
+\documentclass{article}
+\usepackage{fancyvrb}
+\renewenvironment{verbatim}{%
+  \verbatimenvironment
+  \begin{verbatim}[breaklines,frame=single,gobble=2]%
+}{%
+  \end{verbatim}%
+}
+\title{A sample LaTeX document}
+\author{Detlef Groth, University of Potsdam}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+Hello LaTeX!
+
+\begin{Verbatim}[filter=tcl,label=test,echo=true,eval=true]
+puts "Hello Tcl World!"
+\end{Verbatim}
+
+\begin{Verbatim}[filter=dot,eval=true]
+digraph g {
+  rankdir="LR";
+  node[style=filled,fillcolor=skyblue,shape=box];
+  A -> B
+}
+\end{Verbatim}
+
+This is some more text.
+
+\end{document}

@@ -1025,7 +1025,7 @@ proc codeBlock {} {
     uplevel 1 {
         set type [rl_json::json get $jsonData blocks {*}$tkey] ;#type
         set attr [rl_json::json get $jsonData blocks {*}$akey] ;# attributes
-        set a [dict create echo true results show eval $evalvar] 
+        set a [dict create echo true results show eval $evalvar filter none] 
         set d [getMetaDict $meta $type]
         set a [dict merge $a $d]
         if {[llength $attr] > 0} {
@@ -1034,6 +1034,11 @@ proc codeBlock {} {
             }
             #puts [dict keys $a]
         }
+
+        if {$type eq "" && [dict get $a filter] ne "none"} {
+            set type [dict get $a filter]
+        }
+        #puts stderr "type: $type dict $a"
         set cont [rl_json::json get $jsonData blocks {*}$ckey]
         set cblock "[::rl_json::json extract $jsonData blocks {*}$bkey]"
         
