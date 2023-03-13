@@ -2,9 +2,9 @@
 # pantcl - standalone application and pandoc filter
 #          for literate programming
 # Author: Detlef Groth, Schwielowsee, Germany
-# Version: 0.9.10 - 2023-03-11
+# Version: 0.9.11 - 2023-03-13
 
-package provide pantcl 0.9.10
+package provide pantcl 0.9.11
 namespace eval ::pantcl { }
 
 if {[llength $argv] > 0 && ([lsearch -exact $argv -v] >= 0 || [lsearch -exact $argv --version] >= 0)} {
@@ -909,13 +909,16 @@ package require rl_json
 #' * 2023-01-10 - version 0.9.0
 #'    * renamed to pantcl.tcl and creating it's own repository
 #' * 2023-03-05 - fixing a problem with the @symbol in text
+#' * 2023-03-11 - version 0.9.11
+#'    * eval is now per default `false` for all filters
+#'    * support for Rst and LaTeX as input if pantcl is used as a filter
 #'    
 #' ## SEE ALSO
 #' 
 #' * [Readme.html](Readme.html) - more information and small tutorial
 #' * [Examples](examples/example-eqn.html) - more examples for the filters 
 #' * [Tclers Wiki page](https://wiki.tcl-lang.org/page/pandoc%2Dtcl%2Dfilter) - place for discussion
-#' * [Pandoc filter documentation](https://pandoc.org/filters.html) - more background and information on how to implement filters in Haskell and Markdown
+#' * [Pandoc filter documentation](https://pandoc.org/filters.html) - more background and information on how to implement filters in Haskell and Lua
 #' * [Lua filters on GitHub](https://github.com/pandoc/lua-filters)
 #' * [Plotting filters on Github](https://github.com/LaurentRDC/pandoc-plot)
 #' * [Github Pandoc filter list](https://github.com/topics/pandoc-filter)

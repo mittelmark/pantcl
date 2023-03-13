@@ -7,7 +7,7 @@ rst:
 		--metadata-file sample.yaml
 tex:
 	 pandoc sample.tex --filter ../pantcl.tcl -o sample-tex.pdf \
-		 --metadata documentclass=scrartcl
+		 --metadata documentclass=scrartcl --metadata-file sample.yaml
 rst-standalone:
 	pandoc sample.rst -o sample-rst.md
 	tclsh ../pantcl.tcl sample-rst.md sample-rst.html -s --css mini.css \

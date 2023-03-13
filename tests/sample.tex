@@ -20,8 +20,11 @@ Here a Tcl example:
 
 \begin{Verbatim}[filter=tcl,label=test,echo=true,eval=true]
 puts "Hello Tcl World!"
+set x 1
+set x
 \end{Verbatim}
 
+The value of x is \texttt{tcl set x}!
 And here a dot example:
 
 \begin{Verbatim}[filter=dot,eval=true]
@@ -42,7 +45,7 @@ This is some more text.
 
 Let's finish with some ditaa code:
 
-\begin{Verbatim}[filter=puml,eval=true]
+\begin{Verbatim}[filter=puml,eval=true,ext=png]
 @startditaa
 +---------+           /---------\
 |   cEEF  |           |  cFEE   |
