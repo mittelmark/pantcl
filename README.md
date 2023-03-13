@@ -83,6 +83,13 @@ pandoc 2.14.2
 ...
 ```
 
+For Windows you should download the standalone executable which contains a Tcl
+library and all required libraries and files within.
+[https://github.com/mittelmark/pantcl/releases/download/0.9.11/pantcl.exe](https://github.com/mittelmark/pantcl/releases/download/0.9.11/pantcl.exe).
+Just dowload the file to your harddisk and place it somewhere in your PATH. The
+in a terminal window, Powershell, Cmd, etc. type `pantcl --version` if this
+works you should be able to use it a Pandoc filter.
+
 Without an installed pandoc executable only conversion from Markdown to HTML
 can be performed.
 
