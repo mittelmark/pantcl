@@ -157,3 +157,25 @@ pandoc sample.rst --filter ../pantcl.tcl -o sample-rst.pdf \
 Here the resulting output file 
 [sample-rst.pdf](https://github.com/mittelmark/pantcl/files/10951380/sample-rst.pdf).
 
+## LaTeX files
+
+There is as well support for LaTeX as input file format. You just must use the
+`Verbatim` (uppercase V) environment together with the chunk options in
+brackets. The filtertype will be declared giving the filter option. Here an
+example for a dot filter in your LaTeX code:
+
+```
+\begin{Verbatim}[filter=dot,eval=true]
+digraph g {
+  rankdir="LR";
+  node[style=filled,fillcolor=skyblue,shape=box];
+  A -> B
+}
+\end{Verbatim}
+```
+
+If you like to hide the source code just specify `echo=false` as an additional
+code chunk option. Here an example input file [tests/sample.tex](https://raw.githubusercontent.com/mittelmark/pantcl/main/tests/sample.tex)
+and here the output
+[sample-tex.pdf](https://github.com/mittelmark/pantcl/files/10953559/sample-tex.pdf).
+
