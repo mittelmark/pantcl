@@ -145,12 +145,25 @@ pandoc sample.rst --filter pantcl -o sample-rst.html -s \
 ```
 
 How to define chunk options in Rst files can be seen here in the file
-[tests/sample.rst](tests/sample.rst).
+[tests/sample.rst](https://raw.githubusercontent.com/mittelmark/pantcl/main/tests/sample.rst).
+
+Here an example for an inserted GraphViz dot code chunk in such an Rst file:
+
+```
+.. code-block:: dot
+   :caption: GraphViz dot example
+   :eval: false
+
+   digraph g {
+      A -> B ;
+   }
+
+```
 
 To create a PDF file you could use a command line like this:
 
 ```
-pandoc sample.rst --filter ../pantcl.tcl -o sample-rst.pdf \
+pandoc sample.rst --filter pantcl.tcl -o sample-rst.pdf \
     --metadata documentclass=scrartcl --metadata-file sample.yaml
 ```
 
