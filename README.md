@@ -28,6 +28,10 @@ So in summary pantcl allows you:
 - use a graphical interface to edit Markdown files with embedded code chunks
 - use a graphical interface to edit diagram code with real time preview
 
+# Processing schema
+
+![](https://kroki.io/graphviz/svg/eNqNUrFOwzAQ3fmKU-cWkU4gy0hISDC0EoJuIUMau4kVxw62WwKIf-ccJzRpS0WGnP3u-fn57pjITVoX8ABfFwBVanKh6NVlRHCnNOPxRiun0orTyUKobQMLsebGCcUnxKes-OQ0uk5--bZIa07Xupla9yE53QgpOSM-ZFpqQ235sZZbPn0XzBU0upxPCy7ywuGtNwkB_FDqC0yqSmrxYgLP1sW50dua5lfTgVAqK60SIP4AwL3OGuh50TEPSd-Hykt2TrhXrlPFdIa7u5dVhAGZjpt4fyDTRlkhyyRw5hjCmTmBIPHoKnnGG5wyt-LNP579xDZnhHuz9pRb0l8bGv0HYeSJaYcX8zdFoHK8wXeKzP9KAqaW2hFwdpcTL4pdg9ltXzxctdXDGBx1yHzPaZe-UOCHacn2Gb_HaoyBTj_wuizai8PYCbUTNmmVBup-Rg4grF_LasenN9DhGPxzRpKD47FM11zSsGsT3WQEfIIJl8lXFdDJgDG77dqyh2znHw4grPUh1FZ-DGEb4Agqw4wMsNCjMdY2DC6-fwAhFk2o)
+
 # Documentation
 
 Here are links to the documentation:
