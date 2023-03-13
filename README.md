@@ -152,7 +152,7 @@ Here an example for an inserted GraphViz dot code chunk in such an Rst file:
 ```
 .. code-block:: dot
    :caption: GraphViz dot example
-   :eval: false
+   :eval: true
 
    digraph g {
       A -> B ;
