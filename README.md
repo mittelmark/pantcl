@@ -220,3 +220,20 @@ pandoc sample.tex --filter pantcl -o sample-tex.pdf \
 	 --metadata documentclass=scrartcl
 ```
 
+## GUI application
+
+You can as well run a graphical user interace to edit separate diagram code
+files or to edit several code chunks in a Markdown document. Just call pantcl
+with a option `--gui` like this:
+
+```
+pantcl --gui test.md
+```
+
+Here you see a running session where you can go with your cursor into the
+different code chunks and if you press Ctrl-s for file saving the current code
+chunk is evaluated and the output is visible in the image window on top:
+
+![](https://user-images.githubusercontent.com/75636/224667970-d99b787d-4174-48eb-be79-1076c33f4bc1.png)
+
+
