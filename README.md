@@ -179,3 +179,10 @@ code chunk option. Here an example input file [tests/sample.tex](https://raw.git
 and here the output
 [sample-tex.pdf](https://github.com/mittelmark/pantcl/files/10953559/sample-tex.pdf).
 
+The pdf document can be created with the following command line:
+
+```
+pandoc sample.tex --filter pantcl -o sample-tex.pdf \
+	 --metadata documentclass=scrartcl
+```
+
