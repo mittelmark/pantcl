@@ -27,6 +27,8 @@ pantcl-app:
 	cp -r lib/* pantcl-tapp/pantcl.vfs/lib/
 	rm -f pantcl-tapp/pantcl.vfs/lib/*/*~
 	rm -f pantcl-tapp/pantcl.vfs/lib/*/*md
+	rm -f pantcl-tapp/pantcl.vfs/lib/*/*.ly
+	rm -f pantcl-tapp/pantcl.vfs/lib/*/*.R
 	rm -f pantcl-tapp/pantcl.vfs/lib/*/*lua
 	rm -f pantcl-tapp/pantcl.vfs/lib/*/*.n	
 	rm -f pantcl-tapp/pantcl.vfs/lib/*/*.dot	
