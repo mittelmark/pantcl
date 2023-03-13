@@ -1,4 +1,4 @@
-
+sdx=/home/groth/workspace/delfgroth/mytcl/bin/sdx.kit
 default:
 	echo "Usage: make pantcl-docu"
 	echo "       make pantcl-app"
@@ -46,4 +46,12 @@ pantcl-app:
 install: pantcl-app
 	cp pantcl-tapp/pantcl.tapp ~/.local/bin/pantcl
 	chmod 755 ~/.local/bin/pantcl
-	
+
+winexe: pantcl-app
+	cp pantcl.tcl pantcl-tapp/pantcl.vfs/main.tcl
+	cd pantcl-tapp && tclkit $(sdx) wrap pantcl.exe -runtime tclkit-8.6.12.exe
+
+starkit: pantcl-app
+	cp pantcl.tcl pantcl-tapp/pantcl.vfs/main.tcl
+	cd pantcl-tapp && tclkit $(sdx) wrap pantcl.kit
+
