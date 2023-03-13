@@ -16,9 +16,13 @@
 
 Hello LaTeX!
 
+Here a Tcl example:
+
 \begin{Verbatim}[filter=tcl,label=test,echo=true,eval=true]
 puts "Hello Tcl World!"
 \end{Verbatim}
+
+And here a dot example:
 
 \begin{Verbatim}[filter=dot,eval=true]
 digraph g {
@@ -28,6 +32,37 @@ digraph g {
 }
 \end{Verbatim}
 
+Now a Pic example:
+
+\begin{Verbatim}[filter=pic,eval=true]
+    box wid 1.2 "Hello World!" fill 0.3;
+\end{Verbatim}
+    
 This is some more text.
+
+Let's finish with some ditaa code:
+
+\begin{Verbatim}[filter=puml,eval=true]
+@startditaa
++---------+           /---------\
+|   cEEF  |           |  cFEE   |
+|    A    +----->>----+    B    |
+|         |           |         |
++---------+           \---------/
+@endditaa
+\end{Verbatim}
+
+We can as well hide the code and only show the figure by using
+\texttt{echo=false} as code chunk argument.
+
+\begin{Verbatim}[filter=puml,eval=true,echo=false]
+@startditaa
+/---------\           /---------\
+|   cEFF  |           |  cFFE   |
+|    A    +---<<->>---+    B    |
+|         |           |         |
+\---------/           \---------/
+@endditaa
+\end{Verbatim}
 
 \end{document}
