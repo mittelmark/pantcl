@@ -470,10 +470,11 @@
 #' tail --lines=+3 $0 > temp.emf && me -n -p "@temp.emf" && exit
 #' ; below follows the MicroEmacs code
 #' -1 ml-write "Hello Jasspa MicroEmacs World!"
+#' -1 ml-write &cat "This is MicroEmacs " &cat $version "!"
 #' set-variable %x 1
 #' !while &less %x 10
-#'     set-variable %x &inc %x 1
 #'     -1 ml-write &cat "x is " %x
+#'     set-variable %x &inc %x 1
 #' !done
 #' quick-exit
 #' ```
