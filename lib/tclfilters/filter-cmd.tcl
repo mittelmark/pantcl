@@ -468,6 +468,7 @@
 #' ```{.cmd file="me-sample.emf"}
 #' #!/usr/bin/bash
 #' tail --lines=+3 $0 > temp.emf && me -n -p "@temp.emf" && exit
+#' ; below follows the MicroEmacs code
 #' -1 ml-write "Hello Jasspa MicroEmacs World!"
 #' set-variable %x 1
 #' !while &less %x 10
