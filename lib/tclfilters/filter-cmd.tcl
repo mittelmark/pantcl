@@ -461,6 +461,22 @@
 #' Please note, that I as well extended the figure width to 6in to avoid the creation
 #' of two separate figures. 
 #' 
+#' ### Text Editors
+#' 
+#' Some text editors like [Jasspa MicroEmacs](http://www.jasspa.com) can be as well used for using non-interactive at the command line. Here an example for this nice text editor.
+#' 
+#' ```{.cmd file="me-sample.emf"}
+#' #!/usr/bin/bash
+#' tail --lines=+3 $0 > temp.emf && me -n -p "@temp.emf" && exit
+#' -1 ml-write "Hello Jasspa MicroEmacs World!"
+#' set-variable %x 1
+#' !while &less %x 10
+#'     set-variable %x &inc %x 1
+#'     -1 ml-write &cat "x is " %x
+#' !done
+#' quick-exit
+#' ```
+#' 
 #' ### C and C++ code
 #' 
 #' Using the approach with the lilypond examples we can as well embed C code by creating a wrapper for the compiler.
