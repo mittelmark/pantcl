@@ -58,7 +58,7 @@
 #' 
 #' > - app - the MicroEmacs application to be called, usually me, default: me
 #'   - echo - should the EMF source code be shown, default: true
-#'   - eval - should the code in the code block be evaluated, default: true
+#'   - eval - should the code in the code block be evaluated, default: false
 #'   - results - should the output of the command line application been shown, should be show or hide, default: hide
 #' 
 #' To change the defaults the YAML header can be used. Here an example to change the 
