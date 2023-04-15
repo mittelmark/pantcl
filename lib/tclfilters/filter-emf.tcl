@@ -42,7 +42,7 @@
 #' The conversion of the Markdown documents via Pandoc should be done as follows:
 #' 
 #' ```
-#' pantcl input.md output.html  --pantcl-filter filter-emf.tcl --syntax-definition ../xml/emf.xml -s
+#' pantcl input.md output.html  --pantcl-filter filter-emf.tcl --syntax-definition ../../xml/emf.xml -s
 #' ```
 #' The file `emf.xml` contains syntax highlighting code for the MicroEmacs macro files.
 #' The application file *pantcl* which contains the Tcl filter and all other filters has to be placed in the PATH and the 
@@ -85,16 +85,25 @@
 #' -1 ml-write "Hello MicroEmacs World!"
 #' ```
 #' 
+#' The `-1` at the beginning ensures that we are writing to the terminal, this is required for the embedded code to be shown in our output document but not in the editor 
+#' message line.
+#'
 #' Using the option `{.emf eval=true results="hide"}` the output of the command line tool can be hidden.
 #' 
 #' ```{.emf eval=true results="hide"}
 #' -1 ml-write "Hello MicroEmacs World!"
 #' ```
-#' 
+#'
+#' Believe me, the code above was evaluated but the results is hidden
+#' as we used `results="hide"` as code chunk option.
+#'
 #' Here a more extensive example:
 #' 
 #' ```{.emf results="show" echo=true eval=true}
+#' ; semicolons start comments
+#' ; $version is a system variable 
 #' -1 ml-write &cat "This is MicroEmacs " &cat $version "!"
+#' ; example for a loop using a global variable %x
 #' set-variable %x 1
 #' !while &less %x 10
 #'    -1 ml-write &cat "x is " %x
