@@ -1,7 +1,7 @@
 filter-docs: filter-abc.html \
 	filter-cmd.html \
 	filter-dot.html \
-	filter-emf.html \	
+	filter-emf.html \
 	 filter-eqn.html \
 	 filter-kroki.html \
  	 filter-mmd.html \
