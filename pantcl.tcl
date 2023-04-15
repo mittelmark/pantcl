@@ -2,9 +2,9 @@
 # pantcl - standalone application and pandoc filter
 #          for literate programming
 # Author: Detlef Groth, Schwielowsee, Germany
-# Version: 0.9.11 - 2023-03-13
+# Version: 0.9.12 - 2023-04-15
 
-package provide pantcl 0.9.11
+package provide pantcl 0.9.12
 namespace eval ::pantcl { }
 
 if {[llength $argv] > 0 && ([lsearch -exact $argv -v] >= 0 || [lsearch -exact $argv --version] >= 0)} {
@@ -249,12 +249,25 @@ foreach file [glob -nocomplain [file join [file dirname [info script]] filter fi
         source $file
     }
 }
-
+if {[lsearch $argv --pantcl-filter] >= 0} {
+    # TODO: check if this works in standalone mode
+    # should not work in pandoc mode (yet)
+    set index [lsearch $argv --pantcl-filter]
+    incr index
+    if {![file exists [lindex $argv $index]]} {
+        puts "Error: File [lindex $argv $index] does not exists!"
+        exit 0
+    } else {
+        set fname [lindex $argv $index]
+        source $fname
+        set argv [lreplace $argv [expr {$index-1}] $index]
+    }  
+}   
 proc ::pantcl::debug {jsonData} {
     puts [::rl_json::json keys $jsonData]
 }
 
-proc ::pantcl::11neFilter {argv} {
+proc ::pantcl::lineFilter {argv} {
     if {[info exists ::env(FILTEREVAL)]} {
         set evalvar  $::env(FILTEREVAL)
     } else {
@@ -912,6 +925,8 @@ package require rl_json
 #' * 2023-03-11 - version 0.9.11
 #'    * eval is now per default `false` for all filters
 #'    * support for Rst and LaTeX as input if pantcl is used as a filter
+#' * 2023-04-15 - version 0.9.12
+#'    * adding filter-emf.tcl for MicroEmca macro language
 #'    
 #' ## SEE ALSO
 #' 

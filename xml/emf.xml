@@ -12,6 +12,7 @@
         <DetectChar attribute="String" context="string" char="&quot;" />
         <DetectChar attribute="Command" context="command" char="!" />
         <DetectChar attribute="Variable" context="variable" char="%" />
+        <DetectChar attribute="Variable" context="variable" char="$" />        
         <DetectChar attribute="Operator" context="operator" char="&amp;" /> 
         <DetectChar attribute="Comment" context="comment" char=";" />
       </context>

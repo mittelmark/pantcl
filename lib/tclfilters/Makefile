@@ -1,6 +1,7 @@
 filter-docs: filter-abc.html \
 	filter-cmd.html \
 	filter-dot.html \
+	filter-emf.html \	
 	 filter-eqn.html \
 	 filter-kroki.html \
  	 filter-mmd.html \
@@ -24,7 +25,7 @@ filter-docs: filter-abc.html \
 	pandoc header.md -o header.html
 	# -B header.html 
 	tclsh ../../pantcl.tcl $< temp.html -s --css mini.css \
-		-M date="`date +"%b %d, %Y"`" 
+		-M date="`date +"%b %d, %Y"`" --syntax-definition ../../xml/emf.xml
 	htmlark temp.html -o `basename $< .tcl`.html
 	rm temp.html
 	

@@ -2,6 +2,7 @@
 [filter-abc](../tclfilters/filter-abc.html) -
 [filter-cmd](../tclfilters/filter-cmd.html) -
 [filter-dot](../tclfilters/filter-dot.html) -
+[filter-emf](../tclfilters/filter-emf.html) -
 [filter-eqn](../tclfilters/filter-eqn.html) -
 [filter-kroki](../tclfilters/filter-kroki.html) -
 [filter-mmd](../tclfilters/filter-mmd.html) -
