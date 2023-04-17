@@ -2,7 +2,7 @@
 # pantcl - standalone application and pandoc filter
 #          for literate programming
 # Author: Detlef Groth, Schwielowsee, Germany
-# Version: 0.9.12 - 2023-04-15
+# Version: 0.9.12 - 2023-04-17
 
 package provide pantcl 0.9.12
 namespace eval ::pantcl { }
@@ -23,6 +23,7 @@ if {[llength $argv] > 0 && [lsearch -regex $argv -h] >= 0} {
     puts "       - ```{.abc}    ABC music notation code```"    
     puts "       - ```{.cmd}    Command line application code```"        
     puts "       - ```{.dot}    GraphViz dot/neato code```"
+    puts "       - ```{.emf}    MicroEmacs macro code```"    
     puts "       - ```{.eqn}    EQN equations```"    
     puts "       - ```{.mmd}    Mermaid diagram code```"            
     puts "       - ```{.mtex}   LaTeX equations```"        
@@ -327,6 +328,16 @@ proc ::pantcl::lineFilter {argv} {
                 set yamldict [dict merge [yaml::yaml2dict $yamltext] $yamldict]
                 set yamlflag false
                 set yamltext ""
+                dict for {key val} $yamldict {
+                    if {[dict exists $yamldict $key filter]} {
+                        set fname [dict get $yamldict $key filter]
+                        if {[file exists $fname]} {
+                            source $fname
+                        } else {
+                            puts stderr "Error: File `$fname` does not exists!"
+                        }
+                    }
+                }
             } elseif {$yamlflag} {
                 foreach key [list title author date] {
                     if {[regexp "^${key}:" $line]} {
@@ -342,9 +353,6 @@ proc ::pantcl::lineFilter {argv} {
                 }
                 append yamltext "$line\n"
             }
-            #set line [regsub {^``` } $line "```"]
-
-            # TODO: indentation parsing "> ```"
             if {[regexp {^>? ?\s{0,2}```} $line]} {
                 if {$pre} {
                     set pre false
@@ -629,6 +637,7 @@ package require rl_json
 #' | .tcl   | tclsh   | tsvg | cairosvg | cairosvg | programming | 
 #' | .abc   | abcm2ps | abcm2ps | cairosvg | cairosvg | music |
 #' | .dot   | dot   | native | native | native | diagrams |
+#' | .emf   | jasspa microemacs | no | no | no | editor | 
 #' | .eqn   | eqn2graph | no | convert | no | math | 
 #' | .mmd   | mermaid-cli (mmdc) | native | native | native | diagrams |
 #' | .mtex  | latex  | dvisgm | dvipng | dvipdfm | math, diagrams, games |
@@ -925,8 +934,12 @@ package require rl_json
 #' * 2023-03-11 - version 0.9.11
 #'    * eval is now per default `false` for all filters
 #'    * support for Rst and LaTeX as input if pantcl is used as a filter
-#' * 2023-04-15 - version 0.9.12
-#'    * adding filter-emf.tcl for MicroEmca macro language
+#' * 2023-04-17 - version 0.9.12
+#'    * adding filter-emf.tcl for MicroEmacs macro language
+#'    * adding external Tcl filter support via YAML declaration
+#'    * adding example user/filter-geasy.tcl as example for the latter
+#'    * standalone mode now with Unicode support 
+#'    * fix for standalone mode
 #'    
 #' ## SEE ALSO
 #' 
@@ -940,13 +953,12 @@ package require rl_json
 #' 
 #' ## AUTHOR
 #' 
-#' Dr. Detlef Groth, Caputh-Schwielowsee, Germany, detlef(_at_)dgroth(_dot_).de
+#' Detlef Groth, Caputh-Schwielowsee, Germany, detlef(_at_)dgroth(_dot_).de
 #'  
 #' ## LICENSE
 #' 
-#' *MIT License*
 #' 
-#' Copyright (c) 2021-2022 Dr. Detlef Groth, Caputh-Schwielowsee, Germany
+#' Copyright (c) 2021-2023 Detlef Groth, Caputh-Schwielowsee, Germany
 #' 
 #' Permission is hereby granted, free of charge, to any person obtaining a copy
 #' of this software and associated documentation files (the "Software"), to deal
@@ -966,7 +978,6 @@ package require rl_json
 #' OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 #' SOFTWARE.
 #' 
-## Actual filter code for Tcl and infratstucture to add other filters by writing
 ## proc filter-NAME function in a file filter/filter-NAME.tcl
 
 ## Global variables
@@ -984,6 +995,11 @@ proc getMetaDict {meta fkey} {
     if {[rl_json::json exists $meta $fkey c]} {
         foreach key [rl_json::json keys $meta $fkey c] {
             dict set d $key [rl_json::json get $meta $fkey c $key c 0 c]
+        }
+    }
+    if {[dict exists $d filter]} {
+        if {[info proc filter-$fkey] eq ""} {
+            source [dict get $d filter]
         }
     }
     return $d    

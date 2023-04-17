@@ -4,7 +4,7 @@ exec tclsh "$0" "$@"
 ##############################################################################
 #  Author        : Dr. Detlef Groth
 #  Created       : Fri Nov 15 10:20:22 2019
-#  Last Modified : <220122.0827>
+#  Last Modified : <230417.0609>
 #
 #  Description	 : Command line utility and package to extract Markdown documentation 
 #                  from programming code if embedded as after comment sequence #' 
@@ -122,7 +122,7 @@ package require Tcl 8.4
 if {[package provide Markdown] eq ""} {
     package require Markdown
 }
-package provide mkdoc::mkdoc 0.6.0
+package provide mkdoc::mkdoc 0.6.1
 package provide mkdoc [package present mkdoc::mkdoc]
 namespace eval mkdoc {
     variable mkdocfile [info script]
@@ -130,11 +130,13 @@ namespace eval mkdoc {
 <!DOCTYPE html>
 <html>
 <head>
-<meta http-equiv="Content-Security-Policy" content="default-src 'self' data: ; script-src 'self' 'nonce-d717cfb5d902616b7024920ae20346a8494f7832145c90e0' ; style-src 'self' 'unsafe-inline'" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="title" content="$document(title)">
-<meta name="author" content="$document(author)">
-<title>$document(title)</title>
+  <meta charset="utf-8" />
+  <meta name="generator" content="mkdoc" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: ; script-src 'self' 'nonce-d717cfb5d902616b7024920ae20346a8494f7832145c90e0' ; style-src 'self' 'unsafe-inline'" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="title" content="$document(title)">
+  <meta name="author" content="$document(author)">
+  <title>$document(title)</title>
 $document(style)
 </head>
 <body>
@@ -855,6 +857,7 @@ if {[info exists argv0] && $argv0 eq [info script]} {
 #' - 2020-11-11 command line option  --run with seconds
 #' - 2020-12-30 Release 0.5 (rox2md @section support with preformatted, emph and strong/bold)
 #' - 2022-01-XX Release 0.6 parsing yaml header, workaround for images, seems not to work with library Markdown
+#' - 2023-04-17 0.6.1 - fix for Unicode support within code blocks
 #'
 #' ## <a name='todo'>TODO</a>
 #'
@@ -870,7 +873,7 @@ if {[info exists argv0] && $argv0 eq [info script]} {
 #'
 #' Markdown extractor and converter mkdoc::mkdoc, version __PKGVERSION__
 #'
-#' Copyright (c) 2019-20  Dr. Detlef Groth, E-mail: <detlef(at)dgroth(dot)de>
+#' Copyright (c) 2019-23  Dr. Detlef Groth, E-mail: <detlef(at)dgroth(dot)de>
 #' 
 #' This library is free software; you can use, modify, and redistribute it
 #' for any purpose, provided that existing copyright notices are retained
