@@ -61,6 +61,10 @@ Filter documentation:
 - [filter-tdot](https://htmlpreview.github.io/?https://raw.githubusercontent.com/mittelmark/pantcl/master/lib/tclfilters/filter-tdot.html) - embed Tcl GraphViz diaragrams
 - [filter-tsvg](https://htmlpreview.github.io/?https://raw.githubusercontent.com/mittelmark/pantcl/master/lib/tclfilters/filter-tsvg.html) - embed Tcl created SVG code
 
+External filter:
+
+- [filter-geasy](https://htmlpreview.github.io/?https://raw.githubusercontent.com/mittelmark/pantcl/master/user/filter-geasy.html) - example for an external user defined filter not embedded directly within the pantcl executable.
+
 # Installation
 
 Please note, that you must have a tclsh executable in your PATH to use this
