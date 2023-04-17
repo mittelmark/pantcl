@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta charset="utf-8"/>
+<meta content="pandoc" name="generator"/>
+<meta content="width=device-width, initial-scale=1.0, user-scalable=yes" name="viewport"/>
+<meta content="Detlef Groth" name="author"/>
+<title>Implementing Pandoc filters using the Tcl programming language</title>
+<style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+<link href="data:text/css,%20%20%20%20html%20%7B%0A%20%20%20%20%20%20%20%20overflow-y%3A%20scroll%3B%0A%20%20%20%20%7D%0A%20%20%20%20body%20%7B%0A%20%20%20%20%20%20%20%20color%3A%20%23444%3B%0A%20%20%20%20%20%20%20%20font-family%3A%20Georgia%2C%20Palatino%2C%20%27Palatino%20Linotype%27%2C%20Times%2C%20%27Times%20New%20Roman%27%2C%20serif%3B%0A%20%20%20%20%20%20%20%20line-height%3A%201.2%3B%0A%20%20%20%20%20%20%20%20padding%3A%201em%3B%0A%20%20%20%20%20%20%20%20margin%3A%20auto%3B%0A%20%20%20%20%20%20%20%20max-width%3A%20%20900px%3B%0A%20%20%20%20%7D%0A%20%20%20%20a%20%7B%0A%20%20%20%20%20%20%20%20color%3A%20%230645ad%3B%0A%20%20%20%20%20%20%20%20text-decoration%3A%20none%3B%0A%20%20%20%20%7D%0A%20%20%20%20a%3Avisited%20%7B%0A%20%20%20%20%20%20%20%20color%3A%20%230b0080%3B%0A%20%20%20%20%7D%0A%20%20%20%20a%3Ahover%20%7B%0A%20%20%20%20%20%20%20%20color%3A%20%2306e%3B%0A%20%20%20%20%7D%0A%20%20%20%20a%3Aactive%20%7B%0A%20%20%20%20%20%20%20%20color%3A%20%23faa700%3B%0A%20%20%20%20%7D%0A%20%20%20%20a%3Afocus%20%7B%0A%20%20%20%20%20%20%20%20outline%3A%20thin%20dotted%3B%0A%20%20%20%20%7D%0A%20%20%20%20p%20%7B%0A%20%20%20%20%20%20%20%20margin%3A%200.5em%200%3B%0A%20%20%20%20%7D%0A%20%20%20%20p.date%20%7B%0A%20%20%20%20%20%20%20%20text-align%3A%20center%3B%0A%20%20%20%20%7D%0A%20%20%20%20img%20%7B%0A%20%20%20%20%20%20%20%20max-width%3A%20100%25%3B%0A%20%20%20%20%7D%0A%20%20%20%20%0A%20%20%20%20h1%2C%20h2%2C%20h3%2C%20h4%2C%20h5%2C%20h6%20%7B%0A%20%20%20%20%20%20%20%20color%3A%20%23111%3B%0A%20%20%20%20%20%20%20%20line-height%3A%20115%25%3B%0A%20%20%20%20%20%20%20%20margin-top%3A%201em%3B%0A%20%20%20%20%20%20%20%20font-weight%3A%20normal%3B%0A%20%20%20%20%7D%0A%20%20%20%20h1%20%7B%0A%20%20%20%20%20%20%20%20text-align%3A%20center%3B%0A%20%20%20%20%20%20%20%20font-size%3A%20120%25%3B%0A%20%20%20%20%7D%0A%20%20%20%20p.author%2C%20p.date%20%7B%0A%20%20%20%20%20%20%20%20font-size%3A%20110%25%3B%0A%20%20%20%20%7D%0A%20%20%20%20%0A/%2A%20%20%20%20h2%20%7B%0A%20%20%20%20%20%20%20%20text-transform%3A%20uppercase%3B%0A%20%20%20%20%7D%0A%20%20%20%20%2A/%0A%20%20%20%20pre%2C%20blockquote%20pre%20%7B%0A%20%20%20%20%20%20%20%20border-top%3A%200.1em%20%239ac%20solid%3B%0A%20%20%20%20%20%20%20%20background%3A%20%23e9f6ff%3B%0A%20%20%20%20%20%20%20%20padding%3A%2010px%3B%0A%20%20%20%20%20%20%20%20border-bottom%3A%200.1em%20%239ac%20solid%3B%0A%20%20%20%20%7D%0A%20%20%20%20%0A%20%20%20%20blockquote%20%7B%0A%20%20%20%20%20%20%20%20margin%3A%200%3B%0A%20%20%20%20%20%20%20%20padding-left%3A%203em%3B%20%0A%20%20%20%20%7D%0A%20%20%20%20%0A%20%20%20%20hr%20%7B%0A%20%20%20%20%20%20%20%20display%3A%20block%3B%0A%20%20%20%20%20%20%20%20height%3A%202px%3B%0A%20%20%20%20%20%20%20%20border%3A%200%3B%0A%20%20%20%20%20%20%20%20border-top%3A%201px%20solid%20%23aaa%3B%0A%20%20%20%20%20%20%20%20border-bottom%3A%201px%20solid%20%23eee%3B%0A%20%20%20%20%20%20%20%20margin%3A%201em%200%3B%0A%20%20%20%20%20%20%20%20padding%3A%200%3B%0A%20%20%20%20%7D%0A%20%20%20%20%0A%20%20%20%20pre%2C%20code%2C%20kbd%2C%20samp%20%7B%0A%20%20%20%20%20%20%20%20color%3A%20%23000%3B%0A%20%20%20%20%20%20%20%20font-family%3A%20Monaco%2C%20%27courier%20new%27%2C%20monospace%3B%0A%20%20%20%20%20%20%20%20font-size%3A%2090%25%3B%20%0A%20%20%20%20%7D%0A%20%20%20%20code.r%20%7B%0A%20%20%20%20%20%20%20%20color%3A%20%23770000%3B%0A%20%20%20%20%7D%0A%20%20%20%20pre%20%7B%0A%20%20%20%20%20%20%20%20white-space%3A%20pre%3B%0A%20%20%20%20%20%20%20%20white-space%3A%20pre-wrap%3B%0A%20%20%20%20%20%20%20%20word-wrap%3A%20break-word%3B%0A%20%20%20%20%7D%0A%20%20%20%20/%2A%20fix%2C%20do%20not%20like%20bold%20for%20every%20keyword%20%2A/%0A%20%20%20%20code%20span.kw%20%7B%20color%3A%20%23007020%3B%20font-weight%3A%20normal%3B%20%7D%20/%2A%20Keyword%20%2A/%0A%20%20%20%20%20pre.sourceCode%2C%20pre.cmd%20%7B%0A%20%20%20%20%20%20%20%20background%3A%20%23fff6f6%3B%0A%20%20%20%20%7D%0A%20%20%20%20pre.cmdout%20%7B%0A%20%20%20%20%20%20%20%20background%3A%20%23fffff6%3B%0A%20%20%20%20%7D%0A%20%20%20%20figure%2C%20p.author%20%7B%0A%20%20%20%20%20%20%20%20text-align%3A%20center%3B%0A%20%20%20%20%7D%0A%20%20%20%20table%20%7B%20%20%20%20%0A%20%20%20%20%20%20%20%20border-collapse%3A%20collapse%3B%0A%20%20%20%20%20%20%20%20border-bottom%3A%202px%20solid%3B%0A%20%20%20%20%20%20%20%20border-spacing%3A%205px%3B%0A%20%20%20%20%20%20%20%20min-width%3A%20400px%3B%0A%20%20%20%20%7D%0A%20%20%20%20table%20thead%20tr%20th%20%7B%20%0A%20%20%20%20%20%20%20%20background-color%3A%20%23fde9d9%3B%0A%20%20%20%20%20%20%20%20text-align%3A%20left%3B%20%0A%20%20%20%20%20%20%20%20padding%3A%2010px%3B%0A%20%20%20%20%20%20%20%20border-top%3A%202px%20solid%3B%0A%20%20%20%20%20%20%20%20border-bottom%3A%202px%20solid%3B%0A%20%20%20%20%7D%0A%20%20%20%20table%20td%20%7B%20%0A%20%20%20%20%20%20%20%20background-color%3A%20%23fff9e9%3B%0A%0A%20%20%20%20%20%20%20%20text-align%3A%20left%3B%20%0A%20%20%20%20%20%20%20%20padding%3A%2010px%3B%0A%20%20%20%20%7D%0A" rel="stylesheet"/><!--URL:mini.css-->
+<!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">Implementing Pandoc filters using the Tcl programming language</h1>
+<p class="author">Detlef Groth</p>
+<p class="date">2023-04-17 12:12</p>
+</header>
+<h1 id="adding-your-own-filters">Adding your own filters</h1>
+<p>Since version 0.9.12 it is more easily to add your own filters written in the Tcl programming language. You can just add in a Markdown file in the document’s YAML header for your code chunk settings a <code>filter</code> attribute like this:</p>
+<pre><code>---
+title: "filter-geasy.tcl documentation"
+author: "Detlef Groth, Caputh-Schwielowsee, Germany"
+date: 2023-04-15
+geasy:
+     app: graph-easy
+     eval: 1
+     as: ascii
+     filter: user/filter-geasy.tcl
+---</code></pre>
+<p>For the actual filter documentation you should read <a href="filter-geasy.html">filter-geasy</a>.</p>
+<p>The attribute <code>filter</code> should point using either a relative or an absolute path to your filter implementation. The relative path should be calculated based on your working directory where you do your document conversion.</p>
+<p>How should an actual filter implementation look like? Here an example Tcl procedure outline:</p>
+<pre><code>proc filter-CHUNKTYPE {cont dict} {
+    ## do the processing
+    return [list txt image-path]
+}</code></pre>
+<p>The variable <code>cont</code> contains the code chunk code within the triple backticks, the variable <code>dict</code> contains the code chunk arguments as a dictionary (hash) with key-value pairs for every option given in the code chunk argument. Here an example:</p>
+<pre><code>    ```{.chunk key1=true key2="hello"}
+    print("Hello!")
+    ```</code></pre>
+<p>So in the example above you would need a procedure name <code>filter-chunk</code> the string <code>print("Hello")</code> would be in the variable <code>cont</code> and the keys in the dictionary would be <code>key1</code> and <code>key2</code>.</p>
+<p>The returns at the end should be a list with two elements first the text you would like to display from your filter and secondly an image-path pointing to a possible image generated by your tool. In case your tool does not generate images you just return an empty string as the second argument.</p>
+<p>Below follows an example for the demonstration of a filter implementation which supports the <a href="http://bloodgate.com/perl/graph/manual/">graph-easy</a> command line application. On a linux system you might simply install this application using your package manager for instance on my Fedora system I do this like this:</p>
+<pre><code>sudo dnf install perl-Graph-Easy</code></pre>
+<p>Here now the Tcl code with comments:</p>
+<div class="sourceCode" data-eval="false" id="cb5"><pre class="sourceCode tcl"><code class="sourceCode tcl"><span id="cb5-1"><a aria-hidden="true" href="#cb5-1" tabindex="-1"></a><span class="co">### file user/filter-geasy.tcl</span></span>
+<span id="cb5-2"><a aria-hidden="true" href="#cb5-2" tabindex="-1"></a><span class="kw">proc</span> filter-geasy <span class="kw">{</span>cont <span class="kw">dict}</span> <span class="kw">{</span></span>
+<span id="cb5-3"><a aria-hidden="true" href="#cb5-3" tabindex="-1"></a>    <span class="co"># count all code chunk filters</span></span>
+<span id="cb5-4"><a aria-hidden="true" href="#cb5-4" tabindex="-1"></a>    <span class="kw">global</span> n</span>
+<span id="cb5-5"><a aria-hidden="true" href="#cb5-5" tabindex="-1"></a>    <span class="kw">incr</span> n</span>
+<span id="cb5-6"><a aria-hidden="true" href="#cb5-6" tabindex="-1"></a>    <span class="co"># default values for the code chunks attributes</span></span>
+<span id="cb5-7"><a aria-hidden="true" href="#cb5-7" tabindex="-1"></a>    <span class="kw">set</span> def <span class="kw">[dict</span> <span class="ot">create</span> results <span class="ot">show</span> <span class="kw">eval</span> true scriptpath scripts \</span>
+<span id="cb5-8"><a aria-hidden="true" href="#cb5-8" tabindex="-1"></a>             app graph-easy <span class="kw">label</span> null as ascii ext svg<span class="kw">]</span></span>
+<span id="cb5-9"><a aria-hidden="true" href="#cb5-9" tabindex="-1"></a>    <span class="co"># overwrite them with the current code chunk attributes         </span></span>
+<span id="cb5-10"><a aria-hidden="true" href="#cb5-10" tabindex="-1"></a>    <span class="kw">set</span> <span class="kw">dict</span> <span class="kw">[dict</span> merge <span class="dt">$def</span> <span class="dt">$dict</span><span class="kw">]</span></span>
+<span id="cb5-11"><a aria-hidden="true" href="#cb5-11" tabindex="-1"></a>    <span class="co"># if eval is false return nothing</span></span>
+<span id="cb5-12"><a aria-hidden="true" href="#cb5-12" tabindex="-1"></a>    <span class="kw">if</span> <span class="kw">{</span>!<span class="kw">[dict</span> <span class="ot">get</span> <span class="dt">$dict</span> <span class="kw">eval]}</span> <span class="kw">{</span></span>
+<span id="cb5-13"><a aria-hidden="true" href="#cb5-13" tabindex="-1"></a>        <span class="kw">return</span> <span class="kw">[list</span> <span class="st">""</span> <span class="st">""</span><span class="kw">]</span></span>
+<span id="cb5-14"><a aria-hidden="true" href="#cb5-14" tabindex="-1"></a>    <span class="kw">}</span></span>
+<span id="cb5-15"><a aria-hidden="true" href="#cb5-15" tabindex="-1"></a>    <span class="co"># check if the application is installed at all</span></span>
+<span id="cb5-16"><a aria-hidden="true" href="#cb5-16" tabindex="-1"></a>    <span class="kw">if</span> <span class="kw">{[auto_execok</span> <span class="kw">[dict</span> <span class="ot">get</span> <span class="dt">$dict</span> app<span class="kw">]]</span> eq <span class="st">""</span><span class="kw">}</span> <span class="kw">{</span></span>
+<span id="cb5-17"><a aria-hidden="true" href="#cb5-17" tabindex="-1"></a>        <span class="kw">return</span> <span class="kw">[list</span> <span class="st">"Error: This filter requires the command line tool [dict get </span><span class="dt">$</span><span class="st">dict app] - please install it!"</span> <span class="st">""</span><span class="kw">]</span></span>
+<span id="cb5-18"><a aria-hidden="true" href="#cb5-18" tabindex="-1"></a>    <span class="kw">}</span></span>
+<span id="cb5-19"><a aria-hidden="true" href="#cb5-19" tabindex="-1"></a>    <span class="co"># intialize return text</span></span>
+<span id="cb5-20"><a aria-hidden="true" href="#cb5-20" tabindex="-1"></a>    <span class="kw">set</span> ret <span class="st">""</span></span>
+<span id="cb5-21"><a aria-hidden="true" href="#cb5-21" tabindex="-1"></a>    <span class="kw">set</span> owd <span class="kw">[pwd]</span></span>
+<span id="cb5-22"><a aria-hidden="true" href="#cb5-22" tabindex="-1"></a>    <span class="co"># create a filename for the outputs</span></span>
+<span id="cb5-23"><a aria-hidden="true" href="#cb5-23" tabindex="-1"></a>    <span class="kw">if</span> <span class="kw">{[dict</span> <span class="ot">get</span> <span class="dt">$dict</span> <span class="kw">label]</span> eq <span class="st">"null"</span><span class="kw">}</span> <span class="kw">{</span></span>
+<span id="cb5-24"><a aria-hidden="true" href="#cb5-24" tabindex="-1"></a>        <span class="kw">set</span> fname <span class="kw">[file</span> <span class="kw">join</span> <span class="dt">$owd</span> <span class="kw">[dict</span> <span class="ot">get</span> <span class="dt">$dict</span> scriptpath<span class="kw">]</span> geasy-<span class="dt">$n</span><span class="kw">]</span></span>
+<span id="cb5-25"><a aria-hidden="true" href="#cb5-25" tabindex="-1"></a>    <span class="kw">}</span> <span class="kw">else</span> <span class="kw">{</span></span>
+<span id="cb5-26"><a aria-hidden="true" href="#cb5-26" tabindex="-1"></a>        <span class="kw">set</span> fname <span class="kw">[file</span> <span class="kw">join</span> <span class="dt">$owd</span> <span class="kw">[dict</span> <span class="ot">get</span> <span class="dt">$dict</span> scriptpath<span class="kw">]</span> <span class="kw">[dict</span> <span class="ot">get</span> <span class="dt">$dict</span> <span class="kw">label]]</span></span>
+<span id="cb5-27"><a aria-hidden="true" href="#cb5-27" tabindex="-1"></a>    <span class="kw">}</span></span>
+<span id="cb5-28"><a aria-hidden="true" href="#cb5-28" tabindex="-1"></a>    <span class="kw">if</span> <span class="kw">{</span>!<span class="kw">[file</span> <span class="ot">exists</span> <span class="kw">[file</span> <span class="kw">join</span> <span class="dt">$owd</span> <span class="kw">[dict</span> <span class="ot">get</span> <span class="dt">$dict</span> scriptpath<span class="kw">]]]}</span> <span class="kw">{</span></span>
+<span id="cb5-29"><a aria-hidden="true" href="#cb5-29" tabindex="-1"></a>        <span class="kw">file</span> <span class="ot">mkdir</span> <span class="kw">[file</span> <span class="kw">join</span> <span class="dt">$owd</span> <span class="kw">[dict</span> <span class="ot">get</span> <span class="dt">$dict</span> scriptpath<span class="kw">]]</span></span>
+<span id="cb5-30"><a aria-hidden="true" href="#cb5-30" tabindex="-1"></a>    <span class="kw">}</span></span>
+<span id="cb5-31"><a aria-hidden="true" href="#cb5-31" tabindex="-1"></a>    <span class="co"># write down the code chunk text</span></span>
+<span id="cb5-32"><a aria-hidden="true" href="#cb5-32" tabindex="-1"></a>    <span class="kw">set</span> out <span class="kw">[open</span> <span class="dt">$fname</span>.txt w <span class="dv">0600</span><span class="kw">]</span></span>
+<span id="cb5-33"><a aria-hidden="true" href="#cb5-33" tabindex="-1"></a>    <span class="kw">puts</span> <span class="dt">$out</span> <span class="dt">$cont</span></span>
+<span id="cb5-34"><a aria-hidden="true" href="#cb5-34" tabindex="-1"></a>    <span class="kw">close</span> <span class="dt">$out</span></span>
+<span id="cb5-35"><a aria-hidden="true" href="#cb5-35" tabindex="-1"></a>    <span class="co"># run the tool</span></span>
+<span id="cb5-36"><a aria-hidden="true" href="#cb5-36" tabindex="-1"></a>    <span class="co"># </span><span class="al">TODO</span><span class="co">: error catching</span></span>
+<span id="cb5-37"><a aria-hidden="true" href="#cb5-37" tabindex="-1"></a>    <span class="kw">set</span> res <span class="kw">[exec</span><span class="ot"> -ignorestderr</span> <span class="kw">[dict</span> <span class="ot">get</span> <span class="dt">$dict</span> app<span class="kw">]</span> --as=<span class="kw">[dict</span> <span class="ot">get</span> <span class="dt">$dict</span> as<span class="kw">]</span> <span class="dt">$fname</span>.txt<span class="kw">]</span></span>
+<span id="cb5-38"><a aria-hidden="true" href="#cb5-38" tabindex="-1"></a>    <span class="co"># initialize the image variable</span></span>
+<span id="cb5-39"><a aria-hidden="true" href="#cb5-39" tabindex="-1"></a>    <span class="kw">set</span> img <span class="st">""</span></span>
+<span id="cb5-40"><a aria-hidden="true" href="#cb5-40" tabindex="-1"></a>    <span class="co"># do the user like to use the dot tool for image generation?</span></span>
+<span id="cb5-41"><a aria-hidden="true" href="#cb5-41" tabindex="-1"></a>    <span class="kw">if</span> <span class="kw">{[dict</span> <span class="ot">get</span> <span class="dt">$dict</span> as<span class="kw">]</span> eq <span class="st">"dot"</span><span class="kw">}</span> <span class="kw">{</span></span>
+<span id="cb5-42"><a aria-hidden="true" href="#cb5-42" tabindex="-1"></a>        <span class="kw">set</span> out <span class="kw">[open</span> <span class="dt">$fname</span>.dot w <span class="dv">0600</span><span class="kw">]</span> </span>
+<span id="cb5-43"><a aria-hidden="true" href="#cb5-43" tabindex="-1"></a>        <span class="kw">puts</span> <span class="dt">$out</span> <span class="dt">$res</span></span>
+<span id="cb5-44"><a aria-hidden="true" href="#cb5-44" tabindex="-1"></a>        <span class="kw">close</span> <span class="dt">$out</span></span>
+<span id="cb5-45"><a aria-hidden="true" href="#cb5-45" tabindex="-1"></a>        <span class="kw">if</span> <span class="kw">{[auto_execok</span> dot<span class="kw">]</span> eq <span class="st">""</span><span class="kw">}</span> <span class="kw">{</span></span>
+<span id="cb5-46"><a aria-hidden="true" href="#cb5-46" tabindex="-1"></a>             <span class="kw">return</span> <span class="kw">[list</span> <span class="st">"Error: Dot output requires the command line tool GraphViz dot application - please install GraphViz or add the application sto your PATH variable!"</span> <span class="st">""</span><span class="kw">]</span></span>
+<span id="cb5-47"><a aria-hidden="true" href="#cb5-47" tabindex="-1"></a>        <span class="kw">}</span>  </span>
+<span id="cb5-48"><a aria-hidden="true" href="#cb5-48" tabindex="-1"></a>        <span class="kw">set</span> ext <span class="kw">[dict</span> <span class="ot">get</span> <span class="dt">$dict</span> ext<span class="kw">]</span></span>
+<span id="cb5-49"><a aria-hidden="true" href="#cb5-49" tabindex="-1"></a>        <span class="kw">exec</span><span class="ot"> -ignorestderr</span> dot <span class="dt">$fname</span>.dot<span class="ot"> -T</span><span class="dt">$ext</span><span class="ot"> -o</span> <span class="dt">$fname</span>.<span class="dt">$ext</span></span>
+<span id="cb5-50"><a aria-hidden="true" href="#cb5-50" tabindex="-1"></a>        <span class="kw">set</span> img <span class="dt">$fname</span>.<span class="dt">$ext</span></span>
+<span id="cb5-51"><a aria-hidden="true" href="#cb5-51" tabindex="-1"></a>    <span class="kw">}</span></span>
+<span id="cb5-52"><a aria-hidden="true" href="#cb5-52" tabindex="-1"></a>    <span class="co"># check if results should be shown</span></span>
+<span id="cb5-53"><a aria-hidden="true" href="#cb5-53" tabindex="-1"></a>    <span class="kw">if</span> <span class="kw">{[dict</span> <span class="ot">get</span> <span class="dt">$dict</span> results<span class="kw">]</span> eq <span class="st">"show"</span><span class="kw">}</span> <span class="kw">{</span></span>
+<span id="cb5-54"><a aria-hidden="true" href="#cb5-54" tabindex="-1"></a>        <span class="kw">set</span> res <span class="dt">$res</span></span>
+<span id="cb5-55"><a aria-hidden="true" href="#cb5-55" tabindex="-1"></a>    <span class="kw">}</span> <span class="kw">else</span> <span class="kw">{</span></span>
+<span id="cb5-56"><a aria-hidden="true" href="#cb5-56" tabindex="-1"></a>        <span class="kw">set</span> res <span class="st">""</span></span>
+<span id="cb5-57"><a aria-hidden="true" href="#cb5-57" tabindex="-1"></a>    <span class="kw">}</span></span>
+<span id="cb5-58"><a aria-hidden="true" href="#cb5-58" tabindex="-1"></a>    <span class="co"># return text and image path</span></span>
+<span id="cb5-59"><a aria-hidden="true" href="#cb5-59" tabindex="-1"></a>    <span class="kw">return</span> <span class="kw">[list</span> <span class="dt">$res</span> <span class="dt">$img</span><span class="kw">]</span></span>
+<span id="cb5-60"><a aria-hidden="true" href="#cb5-60" tabindex="-1"></a><span class="kw">}</span></span></code></pre></div>
+<h2 id="see-also">See also:</h2>
+<ul>
+<li><a href="filter-geasy.html">filter-geasy</a> - the actual filter documentation for our example above</li>
+<li><a href="../README.html">pantcl Readme</a></li>
+<li><a href="../pantcl.html">pantcl manual</a></li>
+<li><a href="../pantcl-tutorial.html">pantcl Tutorial</a></li>
+</ul>
+</body>
+</html><!--Generated by HTMLArk 2023-04-17 08:13:20.686018. Original URL user/user-filter-out.html-->

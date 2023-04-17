@@ -13,10 +13,6 @@
 #' 
 #' ------
 #' 
-#' ```{.tcl eval=true results="asis" echo=false}
-#' include ../lib/tclfilters/header.md
-#' ```
-#' 
 #' ------
 #' 
 #' ## Name
@@ -33,6 +29,7 @@
 #' 
 #' Please note that this filter mainly exists mainly to demonstrate how to use an external pandoc
 #' filter written in the Tcl programming without adding it directly to the pantcl executable.
+#' For more documentation on how to implement your own filter see the [user-filter](user-filter.html).
 #' 
 #' ## Usage
 #' 
@@ -142,9 +139,10 @@
 #'
 #' ## See also:
 #' 
+#' * [user-filter](user-filter.html) - more information on how to create your own filter using Tcl
 #' * [pantcl Readme](../README.html)
 #' * [pantcl manual](../pantcl.html)
-#' * [pantcl Tutorial](../pantcl-tutorial.html) - information on your own filter implementation
+#' * [pantcl Tutorial](../pantcl-tutorial.html)
 #' 
 
 
