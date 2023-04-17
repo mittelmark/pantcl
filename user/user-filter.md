@@ -2,7 +2,7 @@
 title: Implementing Pandoc filters using the Tcl programming language
 shorttitle: user filters
 author:  Detlef Groth
-date: 2023-04-17 12:12
+date: 2023-04-17
 ---
 
 # Adding your own filters

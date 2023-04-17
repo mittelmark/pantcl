@@ -1,7 +1,7 @@
 #' ---
 #' title: "filter-geasy.tcl documentation"
 #' author: "Detlef Groth, Caputh-Schwielowsee, Germany"
-#' date: 2023-04-15
+#' date: 2023-04-17
 #' geasy:
 #'     app: graph-easy
 #'     eval: 1
@@ -11,9 +11,6 @@
 #' 
 # A simple pandoc filter for the [graph-easy](http://bloodgate.com/perl/graph/manual/)  application to demonstrate the use of user programmed filters.
 #' 
-#' ------
-#' 
-#' ------
 #' 
 #' ## Name
 #' 
@@ -63,12 +60,12 @@
 #' 
 #' The following options can be given via code chunks or in the YAML header.
 #' 
-#' > - app - the command line application to be called, usually `grap-easy`, default: graph-easy
-#'   - as  - the output format default, ascii, other options are boxart, dot, default: ascii
-#'   - echo - should the graph easy source code be shown, default: true|1
-#'   - eval - should the code in the code block be evaluated, default: false|0
-#'   - ext - the image filetype to be generated if output `as` is `dot`, either png, pdf, svg usually, default: svg
-#'   - results - should the output of the command line application been shown, should be show or hide, default: "show"
+#' > - _app_ - the command line application to be called, usually `graph-easy`, default: `graph-easy`
+#'   - _as_  - the output format default, ascii, other options are boxart, dot, default: ascii
+#'   - _echo_ - should the graph easy source code be shown, default: true|1
+#'   - _eval_ - should the code in the code block be evaluated, default: false|0
+#'   - _ext_ - the image filetype to be generated if output `as` is `dot`, either png, pdf, svg usually, default: svg
+#'   - _results_ - should the output of the command line application been shown, should be show or hide, default: "show"
 #' 
 #' To change the defaults the YAML header can be used. Here an example to change the 
 #' You should set eval to 1 as shown as well below, the term true
