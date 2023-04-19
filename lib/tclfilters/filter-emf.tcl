@@ -142,7 +142,13 @@ proc filter-emf {cont dict} {
     set out [open $fname.sh w 0600]
     puts $out "#!/usr/bin/bash\ntail --lines=+3 \$0 > temp.emf && [dict get $dict app] -n -p \"@temp.emf\" && exit"
     puts $out "; - emf - below follows the MicroEmacs code"
+    puts $out "define-macro test-emf"
     puts $out $cont
+    puts $out "!emacro"
+    puts $out "!force test-emf"
+    puts $out "!if &not \$status"
+    puts $out "    -1 ml-write \"Error in code chunk!\""
+    puts $out "!endif"
     puts $out "quick-exit"
     close $out
     # TODO: error catching
