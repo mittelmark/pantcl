@@ -362,12 +362,12 @@ proc ::pantcl::lineFilter {argv} {
             }
             if {[regexp {^>? ?\s{0,2}``` ?\{\.} $line]} {
                 set dchunk [dict create]    
-                set dchunk [dict merge $ddef $dchunk]                    
+                set dchunk [dict merge $ddef $dchunk]
                 set ind ""
                 if {[regexp {^> } $line]} {
                     set ind "> "
                 }
-                regexp {``` ?\{\.([a-zA-Z0-9]+)\s*(.*).*\}.*} $line -> filt options    
+                regexp {``` ?\{\.([a-zA-Z0-9]+)\s*(.*).*\}.*} $line -> filt options
                 if {[dict exists $yamldict $filt]} {
                     set dchunk [dict merge $dchunk [dict get $yamldict $filt]]
                 }
@@ -379,11 +379,9 @@ proc ::pantcl::lineFilter {argv} {
                 }
                 set flag true
                 set cont ""
-                
             } elseif {$flag && [regexp {^>? ?\s{0,2}```} $line]} {
                 set flag false
-                #puts $cont
-                if {[info procs filter-$filt] ne ""} {
+                if {[info command filter-$filt] ne ""} {
                     set res [filter-$filt $cont $dchunk]
                     if {[dict get $dchunk echo]} {
                         # TODO: indentation adding if was there"
@@ -416,16 +414,24 @@ proc ::pantcl::lineFilter {argv} {
                 if {!$pre} {
                     if {[regexp {`\.?[a-z]{2,4} .+`} $line]} {
                         set eval false
-                        set filt [regsub {.*`\.?([a-z]{2,4}) .+`.+} $line "\\1"]
+                        set filt [regsub {.*`\.?([a-z]{2,4}) .+`.*} $line "\\1"]
                         if {[dict exists $yamldict $filt eval]} {
                             if {[dict get $yamldict $filt eval]} {
                                 set eval true
                             } 
                         }
-                        if {[info procs filter-$filt] eq "filter-$filt" && $eval} {
+                        if {[info command filter-$filt] eq "filter-$filt" && $eval} {
                             set code [regsub {.*`\.?[a-z]{2,4} ([^`]+)`.+} $line "\\1"]
-                            set res [lindex [filter-$filt $code [dict create eval true results show echo false]] 0]
-                            set line [regsub {(.*)`\.?[a-z]{2,4} ([^`]+)`(.+)} $line "\\1$res\\3"]
+                            if {[dict exists $yamldict $filt]} {
+                                if {[dict exists $yamldict $filt]} {
+                                    set d [dict create {*}[dict get $yamldict $filt]] 
+                                    if {[dict exists $d eval] && [dict get $d eval]} {
+                                        set res [lindex [filter-$filt $code $d] 0]
+                                        set res [regsub {.+ } $res ""]
+                                        set line [regsub {(.*)`\.?[a-z]{2,4} ([^`]+)`(.+)} $line "\\1$res\\3"]
+                                    }
+                                }
+                            }
                         }
                     }
                 }
@@ -486,7 +492,7 @@ if {[llength $argv] > 1 && [file exists [lindex $argv 0]]} {
         package require mkdoc::mkdoc
         set pandoc false
     } elseif {[auto_execok pandoc] eq ""} {
-        puts "Error: Document conversion needs pandoc installed"
+        puts "Error: Document conversion needs pandoc installed.\nOr use the `--no-pandoc` option to convert documents from Markdown to HTMl without pandoc!"
         exit 0
     }
     if {[file extension [lindex $argv 1]] eq ".html" && [lsearch [lrange $argv 1 end] --css] == -1} {
@@ -934,12 +940,13 @@ package require rl_json
 #' * 2023-03-11 - version 0.9.11
 #'    * eval is now per default `false` for all filters
 #'    * support for Rst and LaTeX as input if pantcl is used as a filter
-#' * 2023-04-17 - version 0.9.12
+#' * 2023-05-18 - version 0.9.12
 #'    * adding filter-emf.tcl for MicroEmacs macro language
 #'    * adding external Tcl filter support via YAML declaration
 #'    * adding example user/filter-geasy.tcl as example for the latter
 #'    * standalone mode now with Unicode support 
 #'    * fix for standalone mode
+#'    * standlone check and working now as well for pipes and inline single backticks, tested with R
 #'    
 #' ## SEE ALSO
 #' 
