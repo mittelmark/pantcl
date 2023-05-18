@@ -269,7 +269,9 @@ proc piperead {pipe args} {
                 append ::fpipe::pipecode [regsub {^.*>>> } "$got" ""]
             } else {
                 # R and Octave
-                append ::fpipe::pipecode "$got\n"
+                if {$got ni [list "" "> "]} {
+                    append ::fpipe::pipecode "$got\n"
+                }
             }
             
         }
@@ -314,7 +316,6 @@ proc filter-pipe {cont dict} {
             set ::fpipe::rpipe [open "|R -q --interactive --vanilla  2>@1" r+]
             fconfigure $::fpipe::rpipe -buffering line -blocking false
             fileevent $::fpipe::rpipe readable [list piperead $::fpipe::rpipe]
-        
         }
         set wait [list]
         set term ">>>"
