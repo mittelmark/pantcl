@@ -1,6 +1,6 @@
 package require Tcl
 
-package provide tclfilters 0.5.0
+package provide tclfilters 0.6.0
 
 source [file join [file dirname [info script]] utils.tcl]
 source [file join [file dirname [info script]] filter-tcl.tcl]
@@ -9,6 +9,7 @@ source [file join [file dirname [info script]] filter-cmd.tcl]
 source [file join [file dirname [info script]] filter-dot.tcl]
 source [file join [file dirname [info script]] filter-emf.tcl]
 source [file join [file dirname [info script]] filter-eqn.tcl]
+source [file join [file dirname [info script]] filter-julia.tcl]
 source [file join [file dirname [info script]] filter-kroki.tcl]
 source [file join [file dirname [info script]] filter-mmd.tcl]
 source [file join [file dirname [info script]] filter-mtex.tcl]

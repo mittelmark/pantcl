@@ -4,6 +4,7 @@
 [filter-dot](../tclfilters/filter-dot.html) -
 [filter-emf](../tclfilters/filter-emf.html) -
 [filter-eqn](../tclfilters/filter-eqn.html) -
+[filter-julia](../tclfilters/filter-julia.html) -
 [filter-kroki](../tclfilters/filter-kroki.html) -
 [filter-mmd](../tclfilters/filter-mmd.html) -
 [filter-mtex](../tclfilters/filter-mtex.html) -

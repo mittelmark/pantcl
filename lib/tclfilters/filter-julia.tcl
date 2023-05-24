@@ -11,6 +11,7 @@
 #' ------
 #' 
 #' ```{.tcl eval=true results="asis" echo=false}
+#' set t [clock seconds]
 #' include header.md
 #' ```
 #' 
@@ -18,7 +19,7 @@
 #'
 #' ## Name
 #' 
-#' _filter-julia.tcl_ - Filter which can be used to execute Julia code within code chunks.
+#' _filter-julia.tcl_ - Filter which can be used to execute Julia code within code chunks (slow!). 
 #' 
 #' ## Usage
 #' 
@@ -30,7 +31,7 @@
 #' 
 #' The file `filter-julia.tcl` is not used directly but sourced automatically by the `pantcl.bin` file.
 #' If code blocks with the `.julia` marker are found, the contents in the code block is processed via the 
-#' julia interpreter, currently using pipes.
+#' julia interpreter, currently using pipes. Please note that Julia is slow at startup, plotting and pipe communication.
 #' 
 #' The following options can be given via code chunks or in the YAML header.
 #' 
@@ -50,7 +51,7 @@
 #'  ----
 #'  title: "filter-julia.tcl documentation"
 #'  author: "Detlef Groth, University of Potsdam, Germany"
-#'  date: 2022-01-12
+#'  date: 2023-05-24
 #'  julia:
 #'      eval: 1
 #'      wait: 1000
@@ -61,6 +62,22 @@
 #' 
 #' ### Julia example
 #' 
+#' ```
+#'      ```{.julia eval=true}  
+#'      x=1;
+#'      l = [1,2,3]
+#'
+#'      for i in l
+#'        println(i)
+#'      end
+#'
+#'      println(x+2);
+#'      x=2
+#'      ```
+#' ```
+#'
+#' Here the output:
+#'
 #' ```{.julia eval=true}  
 #' x=1;
 #' l = [1,2,3]
@@ -75,7 +92,7 @@
 #' 
 #' Now let's create an image try with PyPlot. Creating standard image plots with
 #' `using Plots` is much too slow!! Around 20 seconds!! Julia is probably a fast
-#' calculator, but startup and plotting is not ...
+#' calculator, but startup and plotting is not ... - chunk options `{.julia fig=true}`
 #'
 #' ```{.julia fig=true}
 #' x = range(0, 1, length=30)
@@ -83,11 +100,54 @@
 #' plot(x, y,linewidth=5,color="salmon")
 #' ```
 #'
+#' Alternatively you can use the cmd-filter - chunk options `{.cmd eval=true file=test.jl}`:
+#' 
+#' ```{.cmd eval=true file=test.jl}
+#' #!/usr/bin/env julia
+#' println("Hello Julia World!")
+#' ```
+#' 
+#' Here let's create a plot - chunk options `{.cmd eval=true file=test-plot.jl}`:
+#'
+#' ```{.cmd eval=true file=test-plot.jl}
+#' #!/usr/bin/env julia
+#' t1=time()
+#' using Plots
+#' x = range(0, 10, length=100)
+#' y = sin.(x)
+#' plot(x, y)
+#' savefig("test-plot.png")
+#' t2=time()
+#' println("running time: ",round(t2-t1))
+#' ```
+#'
+#' ![](test-plot.png)
+#'
+#' So startup and plotting in Julia is extremly slow.
+#'
+#' Let's compare this with R:
+#'
+#' ```{.cmd eval=true file=test-plot.R}
+#' #!/usr/bin/env Rscript
+#' t1=Sys.time()
+#' x=seq(0,10,0.1)
+#' y=sin(x)
+#' png("test-plot-R.png",width=900,height=600)
+#' plot(x,y,type="l", xlab="time", ylab="Sine wave",col="blue",lwd=2)
+#' grid()
+#' dev.off()
+#' t2=Sys.time()
+#' print(t2-t1)
+#' ```
+#'
+#' ![](test-plot-R.png)
+#'
+#' So R is much faster!
+#' 
 #' Debugging:
 #'
 #' ```{.tcl eval=true}
-#' puts 1
-#' puts [lsort [info commands *]]
+#' puts "time for document compilation: [expr {[clock seconds] - $t}]"
 #' ```
 #'
 #' ## TODO:

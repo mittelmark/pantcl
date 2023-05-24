@@ -1,7 +1,7 @@
 #' ---
 #' title: "filter-pipe.tcl documentation"
 #' author: "Detlef Groth, Caputh-Schwielowsee, Germany"
-#' date: 2022-01-12
+#' date: 2023-05-24
 #' pipe:
 #'     results: show
 #'     eval: 1
@@ -29,15 +29,15 @@
 #' pandoc input.md --filter pantcl.bin -s -o output.html
 #' ```
 #' 
-#' The file `filter-cmd.tcl` is not used directly but sourced automatically by the `pantcl.bin` file.
-#' If code blocks with the `.cmd` marker are found, the contents in the code block is processed via standard
-#' shell as command line application.
+#' The file `filter-pipe.tcl` is not used directly but sourced automatically by the `pantcl.bin` file.
+#' If code blocks with the `.pipe` marker are found, the contents in the code block is processed via
+#' a shell pipe either using the python3, the Rscript or the octave command line application.
 #' 
 #' The following options can be given via code chunks or in the YAML header.
 #' 
-#' > - eval - should the code in the code block be evaluated, default: eval
-#'   - echo - should the input code been shown, default: false
-#'   - pipe - the programming language to be used, either R or python, which is python3, default: python3
+#' > - eval - should the code in the code block be evaluated, default: false/0
+#'   - echo - should the input code been shown, default: true/1
+#'   - pipe - the programming language to be used, either R, python, which is python3 or octave, default: python3
 #'   - results - should the output of the command line application been shown, should be asis, show or hide, default: show
 #'   - wait - the timeout (ms) after every code evaluation to wait for the pipe to
 #'            read, try to decrease the time to get a speedup, increase of you

@@ -441,7 +441,7 @@
 #' 
 #' ```{.cmd file="mini4.ly" results="hide"}
 #' #!/usr/bin/bash
-#' exec tail +2 $0 | lilypond --out="${0%.ly}" --png - && exit
+#' perl -ne '$x++ > 1 and print' $0 | lilypond --out="${0%.ly}" --png - && exit
 #' % now follows the Lilypond code
 #' \version "2.22.0"
 #' #(set! paper-alist

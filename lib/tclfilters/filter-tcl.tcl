@@ -284,7 +284,6 @@ proc luniq {L} {
 
 set appdir [file dirname [info script]]
 if {[file exists  [file join $appdir .. lib]]} {
-    puts here
     lappend auto_path [file normalize [file join $appdir lib]]
 }
 
@@ -300,7 +299,7 @@ mdi eval {
         set chunk 0
     }
     rename puts puts.orig
-    package provide pantcl 0.9.0
+    package provide pantcl 0.9.12
     proc puts {args} {
         if {[lindex $args 0] eq "stdout"} {
             set args [lrange $args 1 end]
