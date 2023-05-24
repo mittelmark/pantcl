@@ -25,6 +25,7 @@ if {[llength $argv] > 0 && [lsearch -regex $argv -h] >= 0} {
     puts "       - ```{.dot}    GraphViz dot/neato code```"
     puts "       - ```{.emf}    MicroEmacs macro code```"    
     puts "       - ```{.eqn}    EQN equations```"    
+    puts "       - ```{.julia}  Julia code```"        
     puts "       - ```{.mmd}    Mermaid diagram code```"            
     puts "       - ```{.mtex}   LaTeX equations```"        
     puts "       - ```{.pic}    PIC diagram code```"        
@@ -573,6 +574,7 @@ package require rl_json
 #' * command line application filter {.cmd}: `filter-cmd.tcl` [filter/filter-abc.html](filter/filter-cmd.html)
 #' * Graphviz dot filter {.dot}: `filter-dot.tcl` [filter/filter-dot.html](filter/filter-dot.html)
 #' * EQN filter plugin for equations written in the EQN language {.eqn}: `filter-eqn` [filter/filter-eqn.html](filter/filter-eqn.html)
+#' * Julia filter plugin for Julia clode {.julia}: `filter-julia` [filter/filter-julia.html](filter/filter-julia.html)
 #' * Math TeX filter for single line equations {.mtex}: `filter-mtex.tcl` [filter/filter-mtex.html](filter/filter-mtex.html)
 #' * Mermaid filter for diagrams {.mmd}: `filter-mmd.tcl` [filter/filter-mmd.html](filter/filter-mmd.html)
 #' * Pikchr filter plugin for diagram creation {.pikchr}: `filter-pik.tcl` [filter/filter-pik.html](filter/filter-pik.html)
@@ -627,7 +629,7 @@ package require rl_json
 #' 
 #' The markers for the other filters are:
 #' 
-#' `{.abc}, `{.dot}`, `{.eqn}`, `{.mmd}`, `{.mtex}`, `{.pic}`,
+#' `{.abc}, `{.dot}`, `{.eqn}`, `{.julia}`, `{.mmd}`, `{.mtex}`, `{.pic}`,
 #' `{.pikchr}, `{.puml}`, `{.rplot}`,`{.sqlite}` and `{.tsvg}`. 
 #' 
 #' For details on how to use them have a look at the manual page links on top.
@@ -645,6 +647,7 @@ package require rl_json
 #' | .dot   | dot   | native | native | native | diagrams |
 #' | .emf   | jasspa microemacs | no | no | no | editor | 
 #' | .eqn   | eqn2graph | no | convert | no | math | 
+#' | .julia | julia  | native | native | native | statistics | 
 #' | .mmd   | mermaid-cli (mmdc) | native | native | native | diagrams |
 #' | .mtex  | latex  | dvisgm | dvipng | dvipdfm | math, diagrams, games |
 #' | .pic   | pic2graph | no | convert | no | diagrams |
@@ -947,6 +950,7 @@ package require rl_json
 #'    * standalone mode now with Unicode support 
 #'    * fix for standalone mode
 #'    * standlone check and working now as well for pipes and inline single backticks, tested with R
+#'    * filter for Julia code, Julia is slow at startup and plotting
 #'    
 #' ## SEE ALSO
 #' 

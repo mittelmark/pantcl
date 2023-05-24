@@ -105,6 +105,7 @@ Documentation: <a href="pantcl.html">Pantcl documentation</a> - <a href="pantcl-
 <li>command line application filter {.cmd}: <code>filter-cmd.tcl</code> <a href="filter/filter-cmd.html">filter/filter-abc.html</a></li>
 <li>Graphviz dot filter {.dot}: <code>filter-dot.tcl</code> <a href="filter/filter-dot.html">filter/filter-dot.html</a></li>
 <li>EQN filter plugin for equations written in the EQN language {.eqn}: <code>filter-eqn</code> <a href="filter/filter-eqn.html">filter/filter-eqn.html</a></li>
+<li>Julia filter plugin for Julia clode {.julia}: <code>filter-julia</code> <a href="filter/filter-julia.html">filter/filter-julia.html</a></li>
 <li>Math TeX filter for single line equations {.mtex}: <code>filter-mtex.tcl</code> <a href="filter/filter-mtex.html">filter/filter-mtex.html</a></li>
 <li>Mermaid filter for diagrams {.mmd}: <code>filter-mmd.tcl</code> <a href="filter/filter-mmd.html">filter/filter-mmd.html</a></li>
 <li>Pikchr filter plugin for diagram creation {.pikchr}: <code>filter-pik.tcl</code> <a href="filter/filter-pik.html">filter/filter-pik.html</a></li>
@@ -139,7 +140,7 @@ pantcl --gui [filename]</code></pre>
     Hello this is Tcl `tcl package provide Tcl`!</code></pre>
 <h2 id="filter-overview">Filter Overview</h2>
 <p>The markers for the other filters are:</p>
-<p><code class="sourceCode dot"><span class="ot">{</span><span class="co">.</span><span class="va">abc</span><span class="ot">}</span>,</code><code class="eqn">,</code><code class="sourceCode markdown">,</code><code class="mtex">,</code><code class="pic">,</code><code class="pikchr">,</code>, <code>{.puml}</code>, <code>{.rplot}</code>,<code>{.sqlite}</code> and <code>{.tsvg}</code>.</p>
+<p><code class="sourceCode dot"><span class="ot">{</span><span class="co">.</span><span class="va">abc</span><span class="ot">}</span>,</code><code class="eqn">,</code><code class="sourceCode julia"><span class="op">,</span></code><code class="sourceCode markdown">,</code><code class="mtex">,</code><code class="pic">,</code><code class="pikchr">,</code>, <code>{.puml}</code>, <code>{.rplot}</code>,<code>{.sqlite}</code> and <code>{.tsvg}</code>.</p>
 <p>For details on how to use them have a look at the manual page links on top.</p>
 <p>You can combine all filters in one document just by using the appropiate markers.</p>
 <p>Here an overview about the required tools to use a filter:</p>
@@ -197,6 +198,14 @@ pantcl --gui [filename]</code></pre>
 <td>math</td>
 </tr>
 <tr class="even">
+<td>.julia</td>
+<td>julia</td>
+<td>native</td>
+<td>native</td>
+<td>native</td>
+<td>statistics</td>
+</tr>
+<tr class="odd">
 <td>.mmd</td>
 <td>mermaid-cli (mmdc)</td>
 <td>native</td>
@@ -204,7 +213,7 @@ pantcl --gui [filename]</code></pre>
 <td>native</td>
 <td>diagrams</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>.mtex</td>
 <td>latex</td>
 <td>dvisgm</td>
@@ -212,7 +221,7 @@ pantcl --gui [filename]</code></pre>
 <td>dvipdfm</td>
 <td>math, diagrams, games</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>.pic</td>
 <td>pic2graph</td>
 <td>no</td>
@@ -220,7 +229,7 @@ pantcl --gui [filename]</code></pre>
 <td>no</td>
 <td>diagrams</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>.pik</td>
 <td>fossil</td>
 <td>native</td>
@@ -228,7 +237,7 @@ pantcl --gui [filename]</code></pre>
 <td>cairosvg</td>
 <td>diagrams</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>.pipe</td>
 <td>R / python / octave</td>
 <td>native</td>
@@ -236,7 +245,7 @@ pantcl --gui [filename]</code></pre>
 <td>native</td>
 <td>Statistics, Programming</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>.puml</td>
 <td>plantuml</td>
 <td>native</td>
@@ -244,7 +253,7 @@ pantcl --gui [filename]</code></pre>
 <td>native</td>
 <td>diagrams</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>.rplot</td>
 <td>R</td>
 <td>native</td>
@@ -252,7 +261,7 @@ pantcl --gui [filename]</code></pre>
 <td>native</td>
 <td>statistics, graphics</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>.tcrd</td>
 <td>tclsh</td>
 <td>no</td>
@@ -260,7 +269,7 @@ pantcl --gui [filename]</code></pre>
 <td>no</td>
 <td>music, songs with chords</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>.tdot</td>
 <td>tclsh/dot</td>
 <td>native</td>
@@ -268,7 +277,7 @@ pantcl --gui [filename]</code></pre>
 <td>native</td>
 <td>diagrams</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>.tsvg</td>
 <td>tclsh</td>
 <td>native</td>
@@ -514,13 +523,15 @@ pantcl --gui [filename]</code></pre>
 <li>eval is now per default <code>false</code> for all filters</li>
 <li>support for Rst and LaTeX as input if pantcl is used as a filter</li>
 </ul></li>
-<li>2023-04-17 - version 0.9.12
+<li>2023-05-18 - version 0.9.12
 <ul>
 <li>adding filter-emf.tcl for MicroEmacs macro language</li>
 <li>adding external Tcl filter support via YAML declaration</li>
 <li>adding example user/filter-geasy.tcl as example for the latter</li>
 <li>standalone mode now with Unicode support</li>
 <li>fix for standalone mode</li>
+<li>standlone check and working now as well for pipes and inline single backticks, tested with R</li>
+<li>filter for Julia code, Julia is slow at startup and plotting</li>
 </ul></li>
 </ul>
 <h2 id="see-also">SEE ALSO</h2>
@@ -541,4 +552,4 @@ pantcl --gui [filename]</code></pre>
 <p>The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.</p>
 <p>THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.</p>
 </body>
-</html><!--Generated by HTMLArk 2023-04-17 08:13:27.448996. Original URL pantcl.html-->
+</html><!--Generated by HTMLArk 2023-05-25 00:03:57.105097. Original URL pantcl.html-->
