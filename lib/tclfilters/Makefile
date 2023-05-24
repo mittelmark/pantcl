@@ -29,3 +29,7 @@ filter-docs: filter-abc.html \
 	htmlark temp.html -o `basename $< .tcl`.html
 	rm temp.html
 	
+julia:
+	tclsh ../../pantcl.tcl julia-example.md temp.html -s --css mini.css \
+		-M date="`date +"%b %d, %Y"`" --syntax-definition ../../xml/emf.xml
+
