@@ -30,7 +30,7 @@
 <hr/>
 <p></p>
 <center>
-<p><a href="../tclfilters/filter-abc.html">filter-abc</a> - <a href="../tclfilters/filter-cmd.html">filter-cmd</a> - <a href="../tclfilters/filter-dot.html">filter-dot</a> - <a href="../tclfilters/filter-emf.html">filter-emf</a> - <a href="../tclfilters/filter-eqn.html">filter-eqn</a> - <a href="../tclfilters/filter-kroki.html">filter-kroki</a> - <a href="../tclfilters/filter-mmd.html">filter-mmd</a> - <a href="../tclfilters/filter-mtex.html">filter-mtex</a> - <a href="../tclfilters/filter-pic.html">filter-pic/dpic</a> - <a href="../tclfilters/filter-pik.html">filter-pik</a> <br/> <a href="../tclfilters/filter-pipe.html">filter-pipe</a> - <a href="../tclfilters/filter-puml.html">filter-puml</a> - <a href="../tclfilters/filter-rplot.html">filter-rplot</a> - <a href="../tclfilters/filter-sqlite.html">filter-sqlite</a> - <a href="../tclfilters/filter-tcrd.html">filter-tcrd</a> - <a href="../tclfilters/filter-tcl.html">filter-tcl</a> - <a href="../tclfilters/filter-tdot.html">filter-tdot</a> - <a href="../tclfilters/filter-tsvg.html">filter-tsvg</a></p>
+<p><a href="../tclfilters/filter-abc.html">filter-abc</a> - <a href="../tclfilters/filter-cmd.html">filter-cmd</a> - <a href="../tclfilters/filter-dot.html">filter-dot</a> - <a href="../tclfilters/filter-emf.html">filter-emf</a> - <a href="../tclfilters/filter-eqn.html">filter-eqn</a> - <a href="../tclfilters/filter-julia.html">filter-julia</a> - <a href="../tclfilters/filter-kroki.html">filter-kroki</a> - <a href="../tclfilters/filter-mmd.html">filter-mmd</a> - <a href="../tclfilters/filter-mtex.html">filter-mtex</a> - <a href="../tclfilters/filter-pic.html">filter-pic/dpic</a> - <a href="../tclfilters/filter-pik.html">filter-pik</a> <br/> <a href="../tclfilters/filter-pipe.html">filter-pipe</a> - <a href="../tclfilters/filter-puml.html">filter-puml</a> - <a href="../tclfilters/filter-rplot.html">filter-rplot</a> - <a href="../tclfilters/filter-sqlite.html">filter-sqlite</a> - <a href="../tclfilters/filter-tcrd.html">filter-tcrd</a> - <a href="../tclfilters/filter-tcl.html">filter-tcl</a> - <a href="../tclfilters/filter-tdot.html">filter-tdot</a> - <a href="../tclfilters/filter-tsvg.html">filter-tsvg</a></p>
 Documentation: <a href="../../pantcl.html">Pantcl filter documentation</a> - <a href="../../pantcl-tutorial.html">Pantcl tutorial</a> - <a href="../../README.html">Pantcl Readme</a> - <a href="../fview/filter-view.html">Pantcl Gui</a>
 </center>
 <hr/>
@@ -39,13 +39,13 @@ Documentation: <a href="../../pantcl.html">Pantcl filter documentation</a> - <a 
 <h2 id="usage">Usage</h2>
 <p>The conversion of the Markdown documents via Pandoc should be done as follows:</p>
 <pre><code>pandoc input.md --filter pantcl.bin -s -o output.html</code></pre>
-<p>The file <code>filter-cmd.tcl</code> is not used directly but sourced automatically by the <code>pantcl.bin</code> file. If code blocks with the <code>.cmd</code> marker are found, the contents in the code block is processed via standard shell as command line application.</p>
+<p>The file <code>filter-pipe.tcl</code> is not used directly but sourced automatically by the <code>pantcl.bin</code> file. If code blocks with the <code>.pipe</code> marker are found, the contents in the code block is processed via a shell pipe either using the python3, the Rscript or the octave command line application.</p>
 <p>The following options can be given via code chunks or in the YAML header.</p>
 <blockquote>
 <ul>
-<li>eval - should the code in the code block be evaluated, default: eval</li>
-<li>echo - should the input code been shown, default: false</li>
-<li>pipe - the programming language to be used, either R or python, which is python3, default: python3</li>
+<li>eval - should the code in the code block be evaluated, default: false/0</li>
+<li>echo - should the input code been shown, default: true/1</li>
+<li>pipe - the programming language to be used, either R, python, which is python3 or octave, default: python3</li>
 <li>results - should the output of the command line application been shown, should be asis, show or hide, default: show</li>
 <li>wait - the timeout (ms) after every code evaluation to wait for the pipe to read, try to decrease the time to get a speedup, increase of you observe output at wrong places, default: 100</li>
 </ul>
@@ -255,8 +255,6 @@ disp(y);</code></pre>
 octave&gt; disp(x);
 octave&gt; y=2;
 octave&gt; disp(y);
-1
-2
 
 </code></pre>
 <p>Now let’s do a plot:</p>
@@ -268,6 +266,8 @@ tz = sin (r) ./ r;
 mesh (tx, ty, tz);
 saveas(aux, 'images/mesh-octave.png', 'png');</code></pre>
 <pre class="pipeout" data-pipe="octave"><code>octave&gt; aux=figure('visible','off');
+1
+2
 octave&gt; tx = ty = linspace (-8, 8, 41);
 octave&gt; [xx, yy] = meshgrid (tx, ty);
 octave&gt; r = sqrt (xx .^ 2 + yy .^ 2) + eps;
@@ -292,11 +292,6 @@ octave&gt; disp(z)
 disp(k)</code></pre>
 <pre class="pipeout" data-pipe="octave"><code>octave&gt; z
 octave&gt; disp(k)
-2
-z = 3
-3
-z = 3
-error: 'k' undefined near line 1, column 1
 
 </code></pre>
 <h2 id="todo">TODO:</h2>
@@ -314,4 +309,4 @@ error: 'k' undefined near line 1, column 1
 <li><a href="filter-rplot.html">Rplot filter</a></li>
 </ul>
 </body>
-</html><!--Generated by HTMLArk 2023-05-24 10:27:30.791516. Original URL temp.html-->
+</html><!--Generated by HTMLArk 2023-05-24 23:51:28.912092. Original URL temp.html-->
