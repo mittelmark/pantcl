@@ -488,14 +488,11 @@ tsvg text -x 135 -y 220 "Filter View World!"
 
 if {[llength $argv] > 1 && [file exists [lindex $argv 0]]} {
     set pandoc true
-    if {[lsearch $argv --no-pandoc] > 1} {
+    if {[lsearch $argv --no-pandoc] > 1 || [auto_execok pandoc] eq ""} {
         package require yaml
         package require mkdoc::mkdoc
         set pandoc false
-    } elseif {[auto_execok pandoc] eq ""} {
-        puts "Error: Document conversion needs pandoc installed.\nOr use the `--no-pandoc` option to convert documents from Markdown to HTMl without pandoc!"
-        exit 0
-    }
+    } 
     if {[file extension [lindex $argv 1]] eq ".html" && [lsearch [lrange $argv 1 end] --css] == -1} {
         if {![file exists pandoc-filter.css]} {
             set out [open pandoc-filter.css w 0600]
@@ -949,8 +946,9 @@ package require rl_json
 #'    * adding example user/filter-geasy.tcl as example for the latter
 #'    * standalone mode now with Unicode support 
 #'    * fix for standalone mode
-#'    * standlone check and working now as well for pipes and inline single backticks, tested with R
-#'    * filter for Julia code, Julia is slow at startup and plotting
+#'    * standalone check and working now as well for pipes and inline single backticks, tested with R
+#'    * filter for Julia code, however Julia is slow at startup and plotting
+#'    * support for pandoc single percent title, author, date at the beginning of documents
 #'    
 #' ## SEE ALSO
 #' 
