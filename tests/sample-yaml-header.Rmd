@@ -1,0 +1,100 @@
+---
+title: this is a title
+author: Max Musterman, Unviversity of Musterciy, Germany
+date: 2023-05-25
+pipe:
+    eval: 1
+---
+
+
+## Introduction
+
+Here an R-example:
+
+```{r eval=TRUE,wait=400}
+data(iris)
+print("Hello R World!")
+```
+
+Here some inline text. The iris dataset has `R nrow(iris)` plants.
+
+Here an Python-example:
+
+```{py eval=TRUE,terminal=FALSE}
+def test():
+    print("Python!")
+
+y=1
+test()    
+```
+
+Here a Python inline code example - y is: `py y`!
+
+## Plots
+
+```{r fig=TRUE results="hide"}
+png('tests/pie.png')
+par(mai=c(0.3,0.3,0.3,0.1))
+pie(4:8,col=rainbow(5))
+dev.off()
+```
+
+![](pie.png)
+
+```{py terminal=FALSE,results="hide",wait=1000}
+import matplotlib.pyplot as plt
+
+# die X-Werte:
+days = list(range(0, 22, 3))
+print(days)
+# die Y-Werte:
+celsius_values = [25.6, 24.1, 26.7, 28.3, 27.5, 30.5, 32.8, 33.1]
+
+plt.plot(days, celsius_values)
+plt.savefig("tests/pyplot.png")
+```
+
+![](pyplot.png)
+
+## Tables
+
+```{r results="asis",terminal=FALSE}
+df_2_MD <- function(your_df){
+  cn <- as.character(names(your_df))
+  headr <- paste0(c("", cn),  sep = "|", collapse='')
+  sepr <- paste0(c('|', rep(paste0(c(rep('-',3), "|"), collapse=''),length(cn))), collapse ='')
+  st <- "|"
+    for (i in 1:nrow(your_df)){
+      for(j in 1:ncol(your_df)){
+        if (j%%ncol(your_df) == 0) {
+          st <- paste0(st, as.character(your_df[i,j]), "|", "\n", "" , "|", collapse = '')
+        } else {
+        st <- paste0(st, as.character(your_df[i,j]), "|", collapse = '')
+        }
+      }
+    }
+  fin <- paste0(c(headr, sepr, substr(st,1,nchar(st)-1)), collapse="\n")
+  cat(fin)
+}  
+
+
+# run function
+short_iris <- iris[1:4,1:5]
+df_2_MD(short_iris)
+write.table(head(iris,10),file="sample.csv",sep=",")
+```
+
+Now an example with Python:
+
+```{py results="asis",terminal=FALSE}
+import pandas as pd
+file = 'sample.csv'
+df = pd.read_csv(file)
+print(df.to_markdown())
+```
+
+
+
+
+
+
