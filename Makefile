@@ -55,3 +55,7 @@ starkit: pantcl-app
 	cp pantcl.tcl pantcl-tapp/pantcl.vfs/main.tcl
 	cd pantcl-tapp && tclkit $(sdx) wrap pantcl.kit
 
+tests-docs:
+	echo "knitr::knit('tests/sample-pandoc-header.Rmd','tests/sample-pandoc-header.md')" | Rscript - 
+	pandoc tests/sample-pandoc-header.md -o tests/sample-pandoc-header.html -s --css mini.css 
+

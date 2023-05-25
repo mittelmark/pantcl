@@ -169,6 +169,9 @@ set css {
     code.r {
         color: #770000;
     }
+    pre.pipeout {
+        background: #ffefef;
+    }
     pre {
         white-space: pre;
         white-space: pre-wrap;
@@ -322,6 +325,14 @@ proc ::pantcl::lineFilter {argv} {
         set pre false
         while {[gets $infh line] >= 0} {
             incr n
+            # translate r-chunks into pipe chunks
+            if {[regexp {``` ?\{.*\}} $line]} {
+                set line [regsub {\{r(.*)\}} $line "{.pipe pipe=\"R\"\\1}"]
+                set line [regsub {\{py(.*)\}} $line "{.pipe pipe=python\\1}"]
+                set line [regsub -all {TRUE} $line true]
+                set line [regsub -all {FALSE} $line false]                
+                puts stderr $line
+            }
             # TODO: simple YAML parsing
             if {$n < 5 && !$yamlflag && [regexp {^---} $line]} {
                 set yamlflag true
