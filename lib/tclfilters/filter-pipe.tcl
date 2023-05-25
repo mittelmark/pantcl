@@ -358,8 +358,9 @@ proc filter-pipe {cont dict} {
     if {!([dict get $dict results] in [list show asis])} {
         set res ""
     } 
-    if {[dict get $dict results] eq "asis" && [string range [dict get $dict pipe] 0 0] eq "R"} {
+    if {[dict get $dict results] eq "asis" && ([string range [dict get $dict pipe] 0 0] eq "R" || [dict get $dict pipe] eq "python")} {
         set nres ""
+        set res [regsub -- {\|\|---:} $res "|\n|---:"]
         foreach line [split $res \n] {
             if {![regexp {^[+>]} $line]} {
                 append nres "$line\n"

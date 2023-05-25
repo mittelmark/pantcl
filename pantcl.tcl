@@ -328,10 +328,9 @@ proc ::pantcl::lineFilter {argv} {
             # translate r-chunks into pipe chunks
             if {[regexp {``` ?\{.*\}} $line]} {
                 set line [regsub {\{r(.*)\}} $line "{.pipe pipe=\"R\"\\1}"]
-                set line [regsub {\{py(.*)\}} $line "{.pipe pipe=python\\1}"]
+                set line [regsub {\{py(.*)\}} $line "{.pipe pipe=\"python\"\\1}"]                
                 set line [regsub -all {TRUE} $line true]
                 set line [regsub -all {FALSE} $line false]                
-                puts stderr $line
             }
             # TODO: simple YAML parsing
             if {$n < 5 && !$yamlflag && [regexp {^---} $line]} {
@@ -406,7 +405,8 @@ proc ::pantcl::lineFilter {argv} {
                             set r [regsub {\n$} [lindex $res 0] ""]
                             puts $out "\n$ind```${filt}out\n$r\n$ind```"
                         } elseif {[dict get $dchunk results] eq "asis"} {
-                            puts $out "\n[lindex $res 0]\n"
+                            set ores [regsub {^```} [lindex $res 0] {}]
+                            puts $out "\n$ores\n"
                         }
                     }
                     if {[lindex $res 1] ne ""} {
@@ -424,23 +424,34 @@ proc ::pantcl::lineFilter {argv} {
             } else {
                 # TODO: more than one inline code per line
                 if {!$pre} {
-                    if {[regexp {`\.?[a-z]{2,4} .+`} $line]} {
+                    if {[regexp {`\.?[A-Za-z]{1,4} .+`} $line]} {
                         set eval false
-                        set filt [regsub {.*`\.?([a-z]{2,4}) .+`.*} $line "\\1"]
+                        set pipe python
+                        set filt [regsub {.*`\.?([A-Za-z]{1,4}) .+`.*} $line "\\1"]
+                        if {$filt in [list "r" "R"]} {
+                            set filt pipe
+                            set pipe R
+                        }
+                        if {$filt in [list "py"]} {
+                            set filt pipe
+                            set pipe python
+                        }
                         if {[dict exists $yamldict $filt eval]} {
                             if {[dict get $yamldict $filt eval]} {
                                 set eval true
                             } 
                         }
                         if {[info command filter-$filt] eq "filter-$filt" && $eval} {
-                            set code [regsub {.*`\.?[a-z]{2,4} ([^`]+)`.+} $line "\\1"]
+                            set code [regsub {.*`\.?[A-Za-z]{1,4} ([^`]+)`.+} $line "\\1"]
                             if {[dict exists $yamldict $filt]} {
                                 if {[dict exists $yamldict $filt]} {
                                     set d [dict create {*}[dict get $yamldict $filt]] 
+                                    dict set d pipe $pipe terminal false
                                     if {[dict exists $d eval] && [dict get $d eval]} {
                                         set res [lindex [filter-$filt $code $d] 0]
-                                        set res [regsub {.+ } $res ""]
-                                        set line [regsub {(.*)`\.?[a-z]{2,4} ([^`]+)`(.+)} $line "\\1$res\\3"]
+                                        set res [regsub -all "\n" $res " "]
+                                        set res [regsub {.+ ([^\s]+) ?$} $res "\\1"]
+                                        set line [regsub {(.*)`\.?[A-Za-z]{1,4} ([^`]+)`(.+)} $line "\\1$res\\3"]
                                     }
                                 }
                             }

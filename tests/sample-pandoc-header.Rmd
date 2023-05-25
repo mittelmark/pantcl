@@ -4,11 +4,20 @@
 
 ## Introduction
 
-```{r eval=TRUE}
+Here an R-example:
+
+```{r eval=TRUE wait=400}
 print("Hello R World!")
 ```
 
-Introduction text.
+Here an Python-example:
+
+```{py eval=TRUE terminal=FALSE}
+def test():
+    print("Python!")
+
+test()    
+```
 
 ## Data and Statistical Analysis
 
