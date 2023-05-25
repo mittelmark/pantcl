@@ -444,6 +444,7 @@ proc ::pantcl::lineFilter {argv} {
     close $out
     if {$mode eq "html"} {
         mkdoc::mkdoc $outfile [regsub -- {-out.md} $outfile ".html"] {*}[lrange $argv 2 end]
+        file delete $outfile
     }
 }
 
