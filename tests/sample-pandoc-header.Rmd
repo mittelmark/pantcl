@@ -4,6 +4,10 @@
 
 ## Introduction
 
+```{r eval=TRUE}
+print("Hello R World!")
+```
+
 Introduction text.
 
 ## Data and Statistical Analysis
