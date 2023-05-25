@@ -11,7 +11,7 @@ if {[llength $argv] > 0 && ([lsearch -exact $argv -v] >= 0 || [lsearch -exact $a
     puts "[package present pantcl]"
     exit 0
 }   
-if {[llength $argv] > 0 && [lsearch -regex $argv -h] >= 0} {
+if {[llength $argv] > 0 && ([lsearch -regex $argv {-h$}] >= 0 || [lsearch -regex $argv {--help$}] >= 0)} {
     puts {Usage (filter):    pandoc [pandoc arguments] --filter $argv0 [pandoc arguments]
         
       This is the pandoc Tcl filter which should be run as filter for the pandoc document
