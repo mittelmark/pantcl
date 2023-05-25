@@ -58,4 +58,5 @@ starkit: pantcl-app
 tests-docs:
 	echo "knitr::knit('tests/sample-pandoc-header.Rmd','tests/sample-pandoc-header.md')" | Rscript - 
 	pandoc tests/sample-pandoc-header.md -o tests/sample-pandoc-header.html -s --css mini.css 
-
+	tclsh pantcl.tcl tests/sample-pandoc-header.Rmd tests/sample-pandoc-header-pantcl.html --no-pandoc
+	tclsh pantcl.tcl tests/sample-yaml-header.Rmd tests/sample-yaml-header.html --no-pandoc

@@ -382,6 +382,9 @@ proc ::pantcl::lineFilter {argv} {
                 if {[dict exists $yamldict $filt]} {
                     set dchunk [dict merge $dchunk [dict get $yamldict $filt]]
                 }
+                # enable as well options with comma instead of space:
+                # like results="show",wait=1
+                set options [regsub {,([^ ])} $options " \\1"]
                 foreach {op} [split $options " "] {
                     foreach {key val} [split $op "="] {
                         set val [regsub -all {"} $val ""] ;#"

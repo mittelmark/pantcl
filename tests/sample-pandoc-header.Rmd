@@ -6,13 +6,19 @@
 
 Here an R-example:
 
-```{r eval=TRUE wait=400}
+Setup for Python within knitr:
+
+```{r eval=TRUE}
+knitr::knit_engines$set(py = reticulate::eng_python)
+```
+
+```{r eval=TRUE,wait=400}
 print("Hello R World!")
 ```
 
 Here an Python-example:
 
-```{py eval=TRUE terminal=FALSE}
+```{python eval=TRUE,terminal=FALSE}
 def test():
     print("Python!")
 
