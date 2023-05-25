@@ -4,7 +4,7 @@ exec tclsh "$0" "$@"
 ##############################################################################
 #  Author        : Dr. Detlef Groth
 #  Created       : Fri Nov 15 10:20:22 2019
-#  Last Modified : <230417.0609>
+#  Last Modified : <230525.2010>
 #
 #  Description	 : Command line utility and package to extract Markdown documentation 
 #                  from programming code if embedded as after comment sequence #' 
@@ -404,6 +404,18 @@ proc mkdoc::mkdoc {filename outfile args} {
         set lnr 0
         foreach line [split $markdown "\n"] {
             incr lnr 
+            if {$lnr < 4 && [regexp {^%} $line]} {
+                # pandoc percent properties
+                # line 1 title, line 2 author, line 3 date
+                if {$lnr == 1} {
+                    set document(title) [regsub {^% +} $line ""]
+                } elseif {$lnr == 2} {
+                    set document(author) [regsub {^% +} $line ""]
+                } elseif {$lnr == 3} {
+                    set document(date) [regsub {^% +} $line ""]                    
+                }
+                continue
+            }
             # todo document pkgversion and pkgname
             #set line [regsub {__PKGVERSION__} $line [package provide mkdoc::mkdoc]]
             #set line [regsub -all {__PKGNAME__} $line mkdoc::mkdoc]
