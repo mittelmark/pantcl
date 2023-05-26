@@ -408,7 +408,7 @@ proc ::pantcl::lineFilter {argv} {
                             set r [regsub {\n$} [lindex $res 0] ""]
                             puts $out "\n$ind```${filt}out\n$r\n$ind```"
                         } elseif {[dict get $dchunk results] eq "asis"} {
-                            set ores [regsub {^```} [lindex $res 0] {}]
+                            set ores [regsub {^```} [lindex $res 0] "\n"]
                             puts $out "\n$ores\n"
                         }
                     }
@@ -569,9 +569,9 @@ if {[llength $argv] > 1 && [file exists [lindex $argv 0]]} {
 package require rl_json
 
 #' ---
-#' title: pantcl filter documentation - 0.9.10
+#' title: pantcl filter documentation - 0.9.12
 #' author: Detlef Groth, Schwielowsee, Germany
-#' date: 2023-03-11
+#' date: 2023-05-26
 #' tcl:
 #'    echo: "true"
 #'    results: show

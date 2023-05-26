@@ -21,6 +21,16 @@
 #' The code for the Tcl filter is in `pantcl.tcl` or in the standalone application `pantcl.bin`.
 #' It is to deeply involved into the main filter engine which drives the other Tcl and all other filters.
 #'
+#' ## CODE BLOCK FUNCTIONS
+#' 
+#' The following functions can be used within code blocks.
+#' 
+#' - _bibliography FILENAME_ - display a list of citations from a Bibtex file, please note that cite should be called first at least once
+#' - _bibstyle STYLE_ - set the citations style either abbrev (default) or number, usually done before bibliography is called
+#' - _cite KEY_ - add a citation using the given key, usually within inline codes
+#' - _include FILENAME_ - include the given filename in the output document, usually used with `results="asis"` as chunk option
+#' - _list2mdtab HEADER ENTRIES_ - creates a Markdown table for the given header and table cell entries
+#' 
 #' ## CODE BLOCKS
 #' 
 #' Here an example:
@@ -153,7 +163,7 @@
 #' ```{.tcl results="asis"}
 #' # variable md still exists from the 
 #' # previous code chunk
-#' set md "<center>\n$md</center>\n"
+#' set md "<center>\n\n$md\n\n</center>\n"
 #' set md
 #' ```
 #' 
@@ -163,9 +173,9 @@
 #' ```{.tcl results="asis"}
 #' # syntax: list2mdtab header rows
 #' # we need to flatten the row list
-#' set r <center>\n
+#' set r <center>\n\n
 #' append r [list2mdtab [lindex $l 0] [concat {*}[lrange $l 1 end]]]
-#' append r \n</center>\n
+#' append r \n\n</center>\n
 #' ```
 #' 
 
@@ -347,7 +357,7 @@ mdi eval {
         } elseif {[expr {int(fmod($nval,$ncol))}] != 0} {
             error "Error: list2table - number of values is not a multiple of columns!"
         }
-        set res "|" 
+        set res "\n|" 
         foreach h $header {
             append res " $h |"
         }   
@@ -403,7 +413,7 @@ mdi eval {
 proc filter-tcl {cont a} {
     set ret ""
     set b [dict create fig false width 400 height 400 include true \
-            label null eval false]
+            label null eval false results show]
     set a [dict merge $b $a]
     if {[dict get $a eval]} {
         mdi eval "set ::filter::res {}; incr ::filter::chunk"
@@ -428,9 +438,6 @@ proc filter-tcl {cont a} {
         set img ""
         if {[dict get $a results] eq "show" && $eres ne ""} {
             set eres [regsub {\{(.+)\}} $eres "\\1"]
-            #rl_json::json set cblock c 0 1 [rl_json::json array [list string tclout]]
-            #rl_json::json set cblock c 1 [rl_json::json string [regsub {\{(.+)\}} $eres "\\1"]]
-            #set ret ",[::rl_json::json extract $cblock]"
         } elseif {[dict get $a results] eq "asis" && $eres ne ""} { 
             set eres $eres
         } else {
