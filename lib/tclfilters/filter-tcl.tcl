@@ -252,6 +252,18 @@
 #' 
 #' The current time of document creation is : `tcl clock format [clock seconds]`.
 #' 
+#' ## CITATIONS
+#' 
+#' This filter as well supports basic reference management using Bibtex files.
+#' Citations should be embedded like this: `tcl cite Sievers2011` where _Sievers2011_ is a
+#' Bibtex key in your Bibtex file. Here is an other citation `tcl cite Yachdav2016`. And here is a PCA article from my self `tcl cite Groth2013`
+#' 
+#' The citations list can be then finally displayed like this:
+#' 
+#' ```{.tcl eval=true results="asis"}
+#' bibliography assets/literature.bib
+#' ```
+#'
 #' ## TODO:
 #' 
 #' - more flexible list2mdtab function
@@ -292,11 +304,14 @@ interp create mdi
 mdi eval "set auto_path \[list [luniq $auto_path]\]"
 
 mdi eval {
+    package require citer
     namespace eval filter { 
         variable res 
         variable chunk
+        variable cites
         set res ""
         set chunk 0
+        set cites [list]
     }
     rename puts puts.orig
     package provide pantcl 0.9.12
@@ -365,6 +380,19 @@ mdi eval {
             close $infh
             return $res
         }
+    }
+    proc cite {key} {
+        variable cites
+        lappend cites $key
+        return "\[$key\]"
+    }
+    proc bibliography {filename {format md}} {
+        variable cites
+        set res ""
+        foreach cite  $cites {
+            append res "* __\[$cite\]__ - [citer::getReference $filename $cite]\n"
+        }
+        return $res
     }
 }
 proc filter-tcl {cont a} {
