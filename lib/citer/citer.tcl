@@ -2,7 +2,7 @@
 #' ---
 #' title: Tcl application and package dealing with bibtex references.
 #' author: Detlef Groth, University of Potsdam, Germany
-#' date: <230526.1424>
+#' date: <230526.1527>
 #' ----
 ##############################################################################
 #
@@ -93,7 +93,7 @@ namespace eval citer {
         if {$reference ne ""} {
             dict set ref {*}$reference
             array set res [list]
-            foreach key [list author year title journal publisher volume pages] {
+            foreach key [list author year title journal publisher volume pages booktitle] {
                 if {[dict exists $ref $type $identifier $key]} {
                     set res($key) [dict get $ref $type $identifier $key]
                     if {$key eq "author"} {
@@ -107,6 +107,8 @@ namespace eval citer {
             }
             if {$type eq "article"} {
                 return "$res(author) ($res(year)).\n  $res(title).\n  $res(journal) $res(volume): $res(pages)."
+            } elseif {$type eq "incollection"} {
+                return "$res(author) ($res(year)).\n  $res(title).\n In $res(booktitle), $res(publisher). $res(volume): $res(pages)."
             } else {
                 return "$res(author) ($res(year)).\n  $res(title).\n  $res(publisher)."
             }
