@@ -254,9 +254,18 @@
 #' 
 #' ## CITATIONS
 #' 
+#' ```{.tcl eval=true}
+#' bibstyle numeric
+#' ```
+#' 
 #' This filter as well supports basic reference management using Bibtex files.
 #' Citations should be embedded like this: `tcl cite Sievers2011` where _Sievers2011_ is a
-#' Bibtex key in your Bibtex file. Here is an other citation `tcl cite Yachdav2016`. And here is a PCA article from my self `tcl cite Groth2013`
+#' Bibtex key in your Bibtex file. Here is an other citation `tcl cite Yachdav2016`.
+#' And here is a PCA article from my self `tcl cite Groth2013`.
+#'
+#' In case we cite the same paper again the numbers should not be updated.
+#' So let's cite Sivers2011 `tcl cite Sievers2011` again which should produce
+#' again a number 1 citation.
 #' 
 #' The citations list can be then finally displayed like this:
 #' 
@@ -381,18 +390,14 @@ mdi eval {
             return $res
         }
     }
+    proc bibstyle {{inline abbrev}} {
+        citer::style $inline APA
+    }
     proc cite {key} {
-        variable cites
-        lappend cites $key
-        return "\[$key\]"
+        return [citer::cite $key]
     }
     proc bibliography {filename {format md}} {
-        variable cites
-        set res ""
-        foreach cite  $cites {
-            append res "* __\[$cite\]__ - [citer::getReference $filename $cite]\n"
-        }
-        return $res
+        return [citer::bibliography $filename $format]
     }
 }
 proc filter-tcl {cont a} {
