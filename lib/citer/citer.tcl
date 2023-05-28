@@ -2,7 +2,9 @@
 #' ---
 #' title: Tcl application and package dealing with bibtex references.
 #' author: Detlef Groth, University of Potsdam, Germany
-#' date: <230526.1742>
+#' date: <230528.0814>
+#' tcl:
+#'     eval: 1
 #' ----
 ##############################################################################
 #
@@ -54,11 +56,12 @@ namespace eval citer {
     proc usage { } {
         puts "citer \[BIBTEXFILE\] ref1 ref2 ..."
     }
-    #' **citer::bibliography** filename ?format?
+    #' **citer::bibliography** *?filename format?*
     #' 
-    #' > Returns the citation list.
+    #' > Returns the citation list. If filename is not given the 
+    #'   default filename _references.bib_ is assumed
     #' 
-    proc bibliography {filename {format md}} {
+    proc bibliography {{filename references.bib} {format md}} {
         variable cites
         variable style
         set res ""
@@ -78,7 +81,7 @@ namespace eval citer {
         }
         return $res
     }
-    #' **citer::cite** keylist
+    #' **citer::cite** *keylist*
     #' 
     #' > Adds the given keys to the citation list.
     #' 
@@ -105,7 +108,7 @@ namespace eval citer {
         }
     }
         
-    #' **citer::getKeys** BIBTEXFILE
+    #' **citer::getKeys** *BIBTEXFILE*
     #' 
     #' > Returns all available keys for the given file.
     #' 
@@ -119,7 +122,7 @@ namespace eval citer {
         }
         return [lsort $ids]
     }
-    #' **citer::getReference** BIBTEXFILE KEYLIST
+    #' **citer::getReference** ?BIBTEXFILE KEYLIST?
     #' 
     #' > Returns formatted sequences for the given file and keys.
     #' 
@@ -169,6 +172,29 @@ namespace eval citer {
             return "Error: $identifier - reference not found!"
         }
     }
+    #' **citer::reset* inline biblio
+    #' 
+    #' > Clears the list of previously given references.
+    #'   Should be given only for debugging usually.
+    #' 
+    #' > Arguments: None
+    #' 
+    proc reset {} {
+        variable cites 
+        set cites [list]
+    }
+    #' **citer::style** *inline biblio*
+    #' 
+    #' > Sets the style for inline citations and for the bibliography at the end.
+    #' 
+    #' > Arguments: - _inline_ - either numeric or abbrev, default: abbrev
+    #'              - _biblio_ - the style of the literature list, currently only APA is supported
+    #' 
+    proc style {inline biblio} {
+        variable style
+        set style(inline) $inline
+        set style(biblio) $biblio
+    }
     #' **citer::style** inline biblio
     #' 
     #' > Sets the style for inline citations and for the bibliography at the end.
@@ -195,6 +221,56 @@ namespace eval citer {
         return $bibobj
     }
 }
+#' 
+#' ## EXAMPLES
+#' 
+#' Here an example with a few citations. The package should be usually used within
+#' Documents processed with the [pantcl](https://github.com/pantcl) document processor.
+#'
+#' ```{.tcl eval=true}
+#' bibstyle numeric
+#' ```
+#' 
+#' This filter as well supports basic reference management using Bibtex files.
+#' Citations should be embedded like this: `tcl cite Sievers2011` where _Sievers2011_ is a
+#' Bibtex key in your Bibtex file. Here is an other citation `tcl cite Yachdav2016`.
+#' And here is a PCA article from my self `tcl cite Groth2013`. 
+#' And here a cite command with two citations.
+#' The Wilcox comparison of two samples and the Spearman correlation are non-parametric methods `tcl cite Wilcoxon1945 Spearman1904`.
+#'
+#' In case we cite the same paper again the numbers should not be updated.
+#' So let's cite Sivers2011 `tcl cite Sievers2011` again which should produce
+#' again a number 1 citation.
+#' 
+#' The citations list can be then finally displayed like this:
+#' 
+#' ```{.tcl eval=true results="asis"}
+#' bibliography assets/literature.bib
+#' ```
+#' 
+#' There is currently only an other style available, 'abbrev':
+#' to use the style within the same document we have call the bibstyle command again.
+#' 
+#' #' ```{.tcl eval=true}
+#' bibstyle abbrev
+#' ```
+#' Let's now write just the same text again.
+#' This filter as well supports basic reference management using Bibtex files.
+#' Citations should be embedded like this: `tcl cite Sievers2011` where _Sievers2011_ is a
+#' Bibtex key in your Bibtex file. Here is an other citation `tcl cite Yachdav2016`.
+#' And here is a PCA article from my self `tcl cite Groth2013`.
+#'
+#' In case we cite the same paper again the numbers should not be updated.
+#' So let's cite Sivers2011 `tcl cite Sievers2011` again which should produce
+#' again a number 1 citation.
+#' 
+#' The citations list can be then finally displayed like this:
+#' 
+#' ```{.tcl eval=true results="asis"}
+#' bibliography assets/literature.bib
+#' ```
+
+#' 
 ## Cleanup Bibtex
 ## https://flamingtempura.github.io/bibtex-tidy/index.html?opt=%7B%22modify%22%3Atrue%2C%22curly%22%3Atrue%2C%22numeric%22%3Atrue%2C%22months%22%3Afalse%2C%22space%22%3A2%2C%22tab%22%3Atrue%2C%22align%22%3A13%2C%22duplicates%22%3A%5B%22key%22%5D%2C%22stripEnclosingBraces%22%3Afalse%2C%22dropAllCaps%22%3Afalse%2C%22escape%22%3Afalse%2C%22sortFields%22%3A%5B%22title%22%2C%22shorttitle%22%2C%22author%22%2C%22year%22%2C%22month%22%2C%22day%22%2C%22journal%22%2C%22booktitle%22%2C%22location%22%2C%22on%22%2C%22publisher%22%2C%22address%22%2C%22series%22%2C%22volume%22%2C%22number%22%2C%22pages%22%2C%22doi%22%2C%22isbn%22%2C%22issn%22%2C%22url%22%2C%22urldate%22%2C%22copyright%22%2C%22category%22%2C%22note%22%2C%22metadata%22%5D%2C%22stripComments%22%3Afalse%2C%22trailingCommas%22%3Afalse%2C%22encodeUrls%22%3Afalse%2C%22tidyComments%22%3Atrue%2C%22removeEmptyFields%22%3Afalse%2C%22removeDuplicateFields%22%3Afalse%2C%22lowercase%22%3Atrue%2C%22backup%22%3Atrue%7D
 set biblio {

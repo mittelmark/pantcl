@@ -276,13 +276,37 @@
 #' In case we cite the same paper again the numbers should not be updated.
 #' So let's cite Sivers2011 `tcl cite Sievers2011` again which should produce
 #' again a number 1 citation.
+#' And here a cite command with two citations.
+#' The Wilcox comparison of two samples and the Spearman correlation are non-parametric methods `tcl cite Wilcoxon1945 Spearman1904`.
 #' 
 #' The citations list can be then finally displayed like this:
 #' 
 #' ```{.tcl eval=true results="asis"}
 #' bibliography assets/literature.bib
 #' ```
+#' There is currently only an other style available, 'abbrev':
+#' to use the style within the same document we have call the bibstyle
+#' using 'abbrev' as argument.
+#' 
+#' ```{.tcl eval=true}
+#' bibstyle abbrev
+#' ```
+#' Let's now write just the same text again.
+#' This filter as well supports basic reference management using Bibtex files.
+#' Citations should be embedded like this: `tcl cite Sievers2011` where _Sievers2011_ is a
+#' Bibtex key in your Bibtex file. Here is an other citation `tcl cite Yachdav2016`.
+#' And here is a PCA article from my self `tcl cite Groth2013`.
 #'
+#' In case we cite the same paper again the numbers should not be updated.
+#' So let's cite Sivers2011 `tcl cite Sievers2011` again which should produce
+#' again a number 1 citation.
+#' 
+#' The citations list can be then finally displayed like this:
+#' 
+#' ```{.tcl eval=true results="asis"}
+#' bibliography assets/literature.bib
+#' ```
+
 #' ## TODO:
 #' 
 #' - more flexible list2mdtab function
@@ -403,8 +427,8 @@ mdi eval {
     proc bibstyle {{inline abbrev}} {
         citer::style $inline APA
     }
-    proc cite {key} {
-        return [citer::cite $key]
+    proc cite {args} {
+        return [citer::cite $args]
     }
     proc bibliography {filename {format md}} {
         return [citer::bibliography $filename $format]
