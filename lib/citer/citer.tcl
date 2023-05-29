@@ -2,7 +2,7 @@
 #' ---
 #' title: Tcl application and package dealing with bibtex references.
 #' author: Detlef Groth, University of Potsdam, Germany
-#' date: <230529.1043>
+#' date: <230529.1149>
 #' tcl:
 #'     eval: 1
 #' bibliography: assets/literature.bib
@@ -60,7 +60,12 @@ namespace eval citer {
     variable cites [list]
     variable bibliography ""
     variable format md
+    variable refstyle
     array set style [list inline abbrev biblio APA]
+    array set refstyle [list \
+                        article {{author} ({year}). {title}. {journal} {volume}: {pages}.} \
+                        incollection {{author} ({year}). {title}. In: {booktitle}, {publisher}. {volume}: {pages}.} \
+                        default {{author} ({year}). {title}. {publisher}.}] 
     proc usage { } {
         puts "citer \[BIBTEXFILE\] ref1 ref2 ..."
     }
@@ -163,6 +168,7 @@ namespace eval citer {
     #' > Returns formatted sequences for the given file and keys.
     #' 
     proc getReference {filename identifier} {
+        variable refstyle
         set bibobj [Bibdata $filename]
         set i 0
         set reference ""
@@ -198,15 +204,44 @@ namespace eval citer {
                 }
             }
             set res(pages) [regsub -- {--} $res(pages) "-"]
-            if {$type eq "article"} {
-                return "$res(author) ($res(year)).\n  $res(title).\n  $res(journal) $res(volume): $res(pages)."
-            } elseif {$type eq "incollection"} {
-                return "$res(author) ($res(year)).\n  $res(title).\n  In: $res(booktitle), $res(publisher). $res(volume): $res(pages)."
-            } else {
-                return "$res(author) ($res(year)).\n  $res(title).\n  $res(publisher)."
+            if {$type ni [list article incollection]} {
+                set type default
+            } 
+            set fmt $refstyle($type)
+            foreach key [array names res] {
+                set fmt [regsub "\{$key\}" $fmt $res($key)]
             }
+            set fmt [regsub -all {\.\.}  $fmt "."]
+            return $fmt
         } else {
             return "Error: $identifier - reference not found!"
+        }
+    }
+    #' **citer::refstyle** *-type1 formatsting ?-type2 formatstring?*
+    #' 
+    #' > Create the appropriate format strings for the different reference types
+    #'   like journal, book, inproceedings, default etc.
+    #' 
+    #' > Arguments: 
+    #' 
+    #' > - *-article FORMATSTRING*
+    #'   - *-book FORMATSTRING*
+    #' 
+    #' > Example:
+    #' 
+    #' > ```{.tcl eval=true}
+    #' citer::refstyle \
+    #'   -article "{author} ({year}). {title}. _{journal}_ {volume}: {pages}" \
+    #'   -incollection "{author} ({year}). {title}. In: _{booktitle}_, {publisher}. {volume}: {pages}." \
+    #'   -default "{author} ({year}). {title}. {publisher}." 
+    #' citer::getReference assets/literature.bib Groth2013
+    #' > ```
+    #' 
+    proc refstyle {args} {
+        variable refstyle
+        foreach {key val} $args {
+            set key [string range $key 1 end]
+            set refstyle($key) $val
         }
     }
     #' **citer::reset** inline biblio
@@ -397,7 +432,7 @@ if {[info exists argv0] && $argv0 eq [info script] && [regexp citer $argv0]} {
 #'
 #' ## TODO
 #' 
-#' - format strings like "`${author} (${year}). _${title}_. ${volume}:${number} ${pages}.`" for different categories, article, book, inprooceedings, etc
+#' - test format strings like "`{author} ({year}). {title}. {volume}:{number} {pages}.`" for different categories, article, book, inprooceedings, etc.
 #' 
 #' ## AUTHOR
 #' 
