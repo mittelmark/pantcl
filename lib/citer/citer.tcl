@@ -2,7 +2,7 @@
 #' ---
 #' title: Tcl application and package dealing with bibtex references.
 #' author: Detlef Groth, University of Potsdam, Germany
-#' date: <230529.1149>
+#' date: <230529.1250>
 #' tcl:
 #'     eval: 1
 #' bibliography: assets/literature.bib
@@ -65,6 +65,7 @@ namespace eval citer {
     array set refstyle [list \
                         article {{author} ({year}). {title}. {journal} {volume}: {pages}.} \
                         incollection {{author} ({year}). {title}. In: {booktitle}, {publisher}. {volume}: {pages}.} \
+                        misc {{author} ({year}). {title}. {url} {note}} \
                         default {{author} ({year}). {title}. {publisher}.}] 
     proc usage { } {
         puts "citer \[BIBTEXFILE\] ref1 ref2 ..."
@@ -191,7 +192,7 @@ namespace eval citer {
         if {$reference ne ""} {
             dict set ref {*}$reference
             array set res [list]
-            foreach key [list author year title journal publisher volume pages booktitle] {
+            foreach key [list author year title journal publisher volume pages booktitle note url] {
                 if {[dict exists $ref $type $identifier $key]} {
                     set res($key) [dict get $ref $type $identifier $key]
                     if {$key eq "author"} {
@@ -204,7 +205,7 @@ namespace eval citer {
                 }
             }
             set res(pages) [regsub -- {--} $res(pages) "-"]
-            if {$type ni [list article incollection]} {
+            if {$type ni [list article incollection misc]} {
                 set type default
             } 
             set fmt $refstyle($type)
@@ -291,15 +292,21 @@ namespace eval citer {
 #' citer::bibliography assets/literature.bib
 #' citer::cite Groth2013
 #' citer::cite Sievers2011
+#' citer::cite wiki:blast
+#' puts "####### Tcllist like ###########"
 #' foreach item [citer::bibliography tcl] {
 #'    puts "[lindex $item 0] ---- [lindex $item 1]"
+#' }
+#' puts "####### Markdown like ###########"
+#' foreach item [citer::bibliography] {
+#'    puts "* __[lindex $item 0]__ - [lindex $item 1]"
 #' }
 #' citer::reset ;# remove all keys from citation list
 #' ```
 #' Now an example with inline text:
 #' 
 #' Here an example with a few citations. The package should be usually used within
-#' Documents processed with the [pantcl](https://github.com/pantcl) document processor.
+#' Markdown documents processed with the [pantcl](https://github.com/pantcl) document processor.
 #'
 #' ```{.tcl eval=true}
 #' citer::style numeric APA
