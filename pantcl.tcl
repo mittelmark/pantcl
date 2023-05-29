@@ -460,7 +460,8 @@ proc ::pantcl::lineFilter {argv} {
                             if {[dict exists $yamldict $filt]} {
                                 if {[dict exists $yamldict $filt]} {
                                     set d [dict create {*}[dict get $yamldict $filt]] 
-                                    dict set d pipe $pipe terminal false
+                                    dict set d pipe $pipe
+                                    dict set d terminal false
                                     if {[dict exists $d eval] && [dict get $d eval]} {
                                         set res [lindex [filter-$filt $code $d] 0]
                                         set res [regsub -all "\n" $res " "]
