@@ -2,7 +2,7 @@
 #' ---
 #' title: Tcl application and package dealing with bibtex references.
 #' author: Detlef Groth, University of Potsdam, Germany
-#' date: <230529.1017>
+#' date: <230529.1043>
 #' tcl:
 #'     eval: 1
 #' bibliography: assets/literature.bib
@@ -79,7 +79,11 @@ namespace eval citer {
         if {[llength $args] == 0 && $bibliography eq ""} {
             set bibliography references.bib
         } elseif {[llength $args] > 0} {
-            set bibliography [lindex $args 0]
+            if {[file exists [lindex $args 0]]} {
+                set bibliography [lindex $args 0]
+            } else {
+                set format [lindex $args 0]
+            }
             if {[llength $args] > 1} {
                 set format [lindex $args 1]
             }
@@ -193,6 +197,7 @@ namespace eval citer {
                     set res($key) NA
                 }
             }
+            set res(pages) [regsub -- {--} $res(pages) "-"]
             if {$type eq "article"} {
                 return "$res(author) ($res(year)).\n  $res(title).\n  $res(journal) $res(volume): $res(pages)."
             } elseif {$type eq "incollection"} {
@@ -245,6 +250,19 @@ namespace eval citer {
 #' 
 #' ## EXAMPLES
 #' 
+#' First an example on how to use this package directly within Tcl applications.
+#' 
+#' ```{.tcl eval=true}
+#' citer::bibliography assets/literature.bib
+#' citer::cite Groth2013
+#' citer::cite Sievers2011
+#' foreach item [citer::bibliography tcl] {
+#'    puts "[lindex $item 0] ---- [lindex $item 1]"
+#' }
+#' citer::reset ;# remove all keys from citation list
+#' ```
+#' Now an example with inline text:
+#' 
 #' Here an example with a few citations. The package should be usually used within
 #' Documents processed with the [pantcl](https://github.com/pantcl) document processor.
 #'
@@ -257,7 +275,7 @@ namespace eval citer {
 #' ```
 #' This filter as well supports basic reference management using Bibtex files.
 #' Citations should be embedded like this: `tcl citer::cite Sievers2011` where 
-#' Sievers2011_ is a Bibtex key in your Bibtex file. Here is an other citation 
+#' _Sievers2011_ is a Bibtex key in your Bibtex file. Here is an other citation 
 #' `tcl cite Yachdav2016`. And here is a PCA article from my self `tcl cite Groth2013`. 
 #' And now a cite command with two citations.
 #' The Wilcox comparison of two samples and the Spearman correlation are 
@@ -274,7 +292,7 @@ namespace eval citer {
 #' 
 #' This filter as well supports basic reference management using Bibtex files.
 #' Citations should be embedded like this: `tcl citer::cite Sievers2011` where 
-#' Sievers2011_ is a Bibtex key in your Bibtex file. Here is an other citation 
+#' _Sievers2011_ is a Bibtex key in your Bibtex file. Here is an other citation 
 #' `tcl cite Yachdav2016`. And here is a PCA article from my self `tcl cite Groth2013`. 
 #' And now a cite command with two citations.
 #' The Wilcox comparison of two samples and the Spearman correlation are 
@@ -293,7 +311,8 @@ namespace eval citer {
 #' ```
 #' 
 #' There is currently only an other style available, 'abbrev':
-#' to use the style within the same document we have call the bibstyle command again.
+#' to use the style within the same document we have to call the bibstyle
+#' command again.
 #' 
 #' ```{.tcl eval=true}
 #' bibstyle abbrev

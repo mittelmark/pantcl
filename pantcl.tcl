@@ -325,20 +325,6 @@ proc ::pantcl::lineFilter {argv} {
         set pre false
         while {[gets $infh line] >= 0} {
             incr n
-            if {[regexp @ $line]} {
-                set line [regsub -all {\[@([-A-Z0-9a-z]+)\]} $line "`tcl cite \\1`"]
-                set line [regsub -all {\[@([-A-Z0-9a-z]+);([-A-Z0-9a-z]+)\]} $line "`tcl cite \\1 \\2`"]
-                set line [regsub -all {\[@([-A-Z0-9a-z]+)\s*;\s*([-A-Z0-9a-z]+)\s*;\s*([-A-Z0-9a-z]+) \]} $line "`tcl cite \\1 \\2 \\3`"]
-                puts $line
-            }
-            # translate r-chunks into pipe chunks
-            if {[regexp {``` ?\{.*\}} $line]} {
-                set line [regsub {\{r(.*)\}} $line "{.pipe pipe=\"R\"\\1}"]
-                set line [regsub {\{py(.*)\}} $line "{.pipe pipe=\"python\"\\1}"]                
-                set line [regsub -all {TRUE} $line true]
-                set line [regsub -all {FALSE} $line false]                
-            }
-            # TODO: simple YAML parsing
             if {$n < 5 && !$yamlflag && [regexp {^---} $line]} {
                 set yamlflag true
             } elseif {$yamlflag && [regexp {^---} $line]} {
@@ -374,6 +360,20 @@ proc ::pantcl::lineFilter {argv} {
                 }
                 append yamltext "$line\n"
             }
+            if {!$pre && [regexp @ $line]} {
+                set line [regsub -all {\[@([-A-Z0-9a-z]+)\]} $line "`tcl cite \\1`"]
+                set line [regsub -all {\[@([-A-Z0-9a-z]+);([-A-Z0-9a-z]+)\]} $line "`tcl cite \\1 \\2`"]
+                set line [regsub -all {\[@([-A-Z0-9a-z]+)\s*;\s*([-A-Z0-9a-z]+)\s*;\s*([-A-Z0-9a-z]+) \]} $line "`tcl cite \\1 \\2 \\3`"]
+            }
+            # translate r-chunks into pipe chunks
+            if {[regexp {``` ?\{.*\}} $line]} {
+                set line [regsub {\{r(.*)\}} $line "{.pipe pipe=\"R\"\\1}"]
+                set line [regsub {\{py(.*)\}} $line "{.pipe pipe=\"python\"\\1}"]                
+                set line [regsub -all {TRUE} $line true]
+                set line [regsub -all {FALSE} $line false]                
+            }
+            # TODO: simple YAML parsing
+
             if {[regexp {^>? ?\s{0,2}```} $line]} {
                 if {$pre} {
                     set pre false
