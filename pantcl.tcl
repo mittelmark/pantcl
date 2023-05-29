@@ -349,6 +349,10 @@ proc ::pantcl::lineFilter {argv} {
                         }
                     }
                 }
+                if {[dict exists $yamldict bibliography]} {
+                    package require citer
+                    citer::bibliography [dict get $yamldict bibliography]
+                }
             } elseif {$yamlflag} {
                 foreach key [list title author date] {
                     if {[regexp "^${key}:" $line]} {
@@ -517,6 +521,10 @@ if {[llength $argv] > 1 && [file exists [lindex $argv 0]]} {
     if {[lsearch $argv --no-pandoc] > 1 || [auto_execok pandoc] eq ""} {
         package require yaml
         package require mkdoc::mkdoc
+        set idx [lsearch $argv --no-pandoc] 
+        if {$idx > 0} {
+            set argv [lreplace $argv $idx $idx {}]
+        }
         set pandoc false
     } 
     if {[file extension [lindex $argv 1]] eq ".html" && [lsearch [lrange $argv 1 end] --css] == -1} {

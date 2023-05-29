@@ -2,9 +2,10 @@
 #' ---
 #' title: Tcl application and package dealing with bibtex references.
 #' author: Detlef Groth, University of Potsdam, Germany
-#' date: <230528.0814>
+#' date: <230529.0622>
 #' tcl:
 #'     eval: 1
+#' bibliography: assets/literature.bib
 #' ----
 ##############################################################################
 #
@@ -52,6 +53,8 @@ package provide citer 0.1
 namespace eval citer {
     variable style 
     variable cites [list]
+    variable bibliography ""
+    variable format md
     array set style [list inline abbrev biblio APA]
     proc usage { } {
         puts "citer \[BIBTEXFILE\] ref1 ref2 ..."
@@ -59,23 +62,47 @@ namespace eval citer {
     #' **citer::bibliography** *?filename format?*
     #' 
     #' > Returns the citation list. If filename is not given the 
-    #'   default filename _references.bib_ is assumed
+    #'   default filename _references.bib_ is assumed, if the function
+    #'   bibliography is called before any cite functions are called simply
+    #'   the default bibliography file is configured.
     #' 
-    proc bibliography {{filename references.bib} {format md}} {
+    proc bibliography {args} {
         variable cites
         variable style
+        variable bibliography
+        variable format 
+        if {[llength $args] == 0 && $bibliography eq ""} {
+            set bibliography references.bib
+        } elseif {[llength $args] > 0} {
+            set bibliography [lindex $args 0]
+            if {[llength $args] > 1} {
+                set format [lindex $args 1]
+            }
+        }
+        if {[llength $cites] == 0} {
+            return
+        }
+        set 
         set res ""
         set i 1
         if {$style(biblio) eq "APA"} {
             if {$style(inline) eq "abbrev"} {
                 set cs [lsort $cites]
                 foreach cite $cs {
-                    append res "* __\[$cite\]__ - [getReference $filename $cite]\n"
+                    if {$format eq "md"} {
+                        append res "* __\[$cite\]__ - [getReference $filename $cite]\n"
+                    } else {
+                        lappend res [list $cite [getReference $filename $cite]]
+                    }
                 }
             } else {
                 set i 0
                 foreach cite $cites {
-                    append res "* __\[[incr i]\]__ - [getReference $filename $cite]\n"
+                    if {$format eq "md"} {
+                        append res "* __\[[incr i]\]__ - [getReference $filename $cite]\n"
+                    } else {
+                        lappend res [list $cite [getReference $filename $cite]]
+                    }
                 }
             }
         }
@@ -172,7 +199,7 @@ namespace eval citer {
             return "Error: $identifier - reference not found!"
         }
     }
-    #' **citer::reset* inline biblio
+    #' **citer::reset** inline biblio
     #' 
     #' > Clears the list of previously given references.
     #'   Should be given only for debugging usually.
@@ -188,12 +215,13 @@ namespace eval citer {
     #' > Sets the style for inline citations and for the bibliography at the end.
     #' 
     #' > Arguments: - _inline_ - either numeric or abbrev, default: abbrev
-    #'              - _biblio_ - the style of the literature list, currently only APA is supported
+    #'              - _biblio_ - the style of the literature list, currently only APA is supported, which is the default
     #' 
-    proc style {inline biblio} {
+    proc style {inline {biblio APA}} {
         variable style
         set style(inline) $inline
         set style(biblio) $biblio
+        return ""
     }
     #' **citer::style** inline biblio
     #' 
@@ -228,11 +256,11 @@ namespace eval citer {
 #' Documents processed with the [pantcl](https://github.com/pantcl) document processor.
 #'
 #' ```{.tcl eval=true}
-#' bibstyle numeric
+#' citer::style numeric APA
 #' ```
 #' 
 #' This filter as well supports basic reference management using Bibtex files.
-#' Citations should be embedded like this: `tcl cite Sievers2011` where _Sievers2011_ is a
+#' Citations should be embedded like this: `tcl citer::cite Sievers2011` where _Sievers2011_ is a
 #' Bibtex key in your Bibtex file. Here is an other citation `tcl cite Yachdav2016`.
 #' And here is a PCA article from my self `tcl cite Groth2013`. 
 #' And here a cite command with two citations.
@@ -251,9 +279,10 @@ namespace eval citer {
 #' There is currently only an other style available, 'abbrev':
 #' to use the style within the same document we have call the bibstyle command again.
 #' 
-#' #' ```{.tcl eval=true}
+#' ```{.tcl eval=true}
 #' bibstyle abbrev
 #' ```
+#' 
 #' Let's now write just the same text again.
 #' This filter as well supports basic reference management using Bibtex files.
 #' Citations should be embedded like this: `tcl cite Sievers2011` where _Sievers2011_ is a
