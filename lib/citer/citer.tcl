@@ -2,7 +2,7 @@
 #' ---
 #' title: Tcl application and package dealing with bibtex references.
 #' author: Detlef Groth, University of Potsdam, Germany
-#' date: <230529.0952>
+#' date: <230529.1017>
 #' tcl:
 #'     eval: 1
 #' bibliography: assets/literature.bib
@@ -252,17 +252,39 @@ namespace eval citer {
 #' citer::style numeric APA
 #' ```
 #' 
+#' Here some example input:
+#' 
+#' ```
 #' This filter as well supports basic reference management using Bibtex files.
-#' Citations should be embedded like this: `tcl citer::cite Sievers2011` where _Sievers2011_ is a
-#' Bibtex key in your Bibtex file. Here is an other citation `tcl cite Yachdav2016`.
-#' And here is a PCA article from my self `tcl cite Groth2013`. 
-#' And here a cite command with two citations.
-#' The Wilcox comparison of two samples and the Spearman correlation are non-parametric methods `tcl cite Wilcoxon1945 Spearman1904`.
+#' Citations should be embedded like this: `tcl citer::cite Sievers2011` where 
+#' Sievers2011_ is a Bibtex key in your Bibtex file. Here is an other citation 
+#' `tcl cite Yachdav2016`. And here is a PCA article from my self `tcl cite Groth2013`. 
+#' And now a cite command with two citations.
+#' The Wilcox comparison of two samples and the Spearman correlation are 
+#' non-parametric methods `tcl cite Wilcoxon1945 Spearman1904`.
 #'
 #' In case we cite the same paper again the numbers should not be updated.
 #' So let's cite Sivers2011 `tcl cite Sievers2011` again which should produce
-#' again a number 1 citation. Instead of citer the approach embedding references using the at sign should work as well.
-#' Here is an example for Sievers et. al [@Sievers2011].
+#' again a number 1 citation. Instead of citer the approach embedding references
+#' using the at sign should work as well. Here is an example for 
+#' Sievers et. al [@Sievers2011].
+#' ```
+#' 
+#' And here the output:
+#' 
+#' This filter as well supports basic reference management using Bibtex files.
+#' Citations should be embedded like this: `tcl citer::cite Sievers2011` where 
+#' Sievers2011_ is a Bibtex key in your Bibtex file. Here is an other citation 
+#' `tcl cite Yachdav2016`. And here is a PCA article from my self `tcl cite Groth2013`. 
+#' And now a cite command with two citations.
+#' The Wilcox comparison of two samples and the Spearman correlation are 
+#' non-parametric methods `tcl cite Wilcoxon1945 Spearman1904`.
+#'
+#' In case we cite the same paper again the numbers should not be updated.
+#' So let's cite Sivers2011 `tcl cite Sievers2011` again which should produce
+#' again a number 1 citation. Instead of citer the approach embedding references
+#' using the at sign should work as well. Here is an example for 
+#' Sievers et. al [@Sievers2011].
 #' 
 #' The citations list can be then finally displayed like this:
 #' 
@@ -367,7 +389,7 @@ if {[info exists argv0] && $argv0 eq [info script] && [regexp citer $argv0]} {
 #' ```
 #' MIT License
 #' 
-#' Copyright (c) 2021 Dr. Detlef Groth, Caputh-Schwielowsee, Germany
+#' Copyright (c) 2023 Detlef Groth, Caputh-Schwielowsee, Germany
 #' 
 #' Permission is hereby granted, free of charge, to any person obtaining a copy
 #' of this software and associated documentation files (the "Software"), to deal
