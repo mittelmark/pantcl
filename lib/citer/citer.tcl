@@ -2,7 +2,7 @@
 #' ---
 #' title: Tcl application and package dealing with bibtex references.
 #' author: Detlef Groth, University of Potsdam, Germany
-#' date: <230529.0622>
+#' date: <230529.0952>
 #' tcl:
 #'     eval: 1
 #' bibliography: assets/literature.bib
@@ -40,7 +40,12 @@
 #' 
 #' ```
 #' package require citer
+#' citer::bibliography ?BIBTEXFILE?
+#' citer::cite KEYLIST
+#' citer::getKeys ?BIBTEXFILE?
 #' citer::getReference BIBTEXFILE KEY1 ?KEY2 ...?
+#' citer::reset
+#' citer::style INLINE BIBLIO
 #' ```
 #' 
 #' ## METHODS
@@ -82,7 +87,7 @@ namespace eval citer {
         if {[llength $cites] == 0} {
             return
         }
-        set 
+        set filename $bibliography
         set res ""
         set i 1
         if {$style(biblio) eq "APA"} {
@@ -191,7 +196,7 @@ namespace eval citer {
             if {$type eq "article"} {
                 return "$res(author) ($res(year)).\n  $res(title).\n  $res(journal) $res(volume): $res(pages)."
             } elseif {$type eq "incollection"} {
-                return "$res(author) ($res(year)).\n  $res(title).\n In $res(booktitle), $res(publisher). $res(volume): $res(pages)."
+                return "$res(author) ($res(year)).\n  $res(title).\n  In: $res(booktitle), $res(publisher). $res(volume): $res(pages)."
             } else {
                 return "$res(author) ($res(year)).\n  $res(title).\n  $res(publisher)."
             }
@@ -222,18 +227,6 @@ namespace eval citer {
         set style(inline) $inline
         set style(biblio) $biblio
         return ""
-    }
-    #' **citer::style** inline biblio
-    #' 
-    #' > Sets the style for inline citations and for the bibliography at the end.
-    #' 
-    #' > Arguments: - _inline_ - either numeric or abbrev, default: abbrev
-    #'              - _biblio_ - the style of the literature list, currently only APA is supported
-    #' 
-    proc style {inline biblio} {
-        variable style
-        set style(inline) $inline
-        set style(biblio) $biblio
     }
     # private functions
     proc Bibdata {filename} {
@@ -268,7 +261,8 @@ namespace eval citer {
 #'
 #' In case we cite the same paper again the numbers should not be updated.
 #' So let's cite Sivers2011 `tcl cite Sievers2011` again which should produce
-#' again a number 1 citation.
+#' again a number 1 citation. Instead of citer the approach embedding references using the at sign should work as well.
+#' Here is an example for Sievers et. al [@Sievers2011].
 #' 
 #' The citations list can be then finally displayed like this:
 #' 
@@ -359,4 +353,38 @@ if {[info exists argv0] && $argv0 eq [info script] && [regexp citer $argv0]} {
         citer::usage
     }   
 }
-
+#'
+#' ## TODO
+#' 
+#' - format strings like "`${author} (${year}). _${title}_. ${volume}:${number} ${pages}.`" for different categories, article, book, inprooceedings, etc
+#' 
+#' ## AUTHOR
+#' 
+#' Detlef Groth, Caputh-Schwielowsee, Germany, detlef(_at_)dgroth(_dot_).de
+#' 
+#' ## LICENSE
+#' 
+#' ```
+#' MIT License
+#' 
+#' Copyright (c) 2021 Dr. Detlef Groth, Caputh-Schwielowsee, Germany
+#' 
+#' Permission is hereby granted, free of charge, to any person obtaining a copy
+#' of this software and associated documentation files (the "Software"), to deal
+#' in the Software without restriction, including without limitation the rights
+#' to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+#' copies of the Software, and to permit persons to whom the Software is
+#' furnished to do so, subject to the following conditions:
+#' 
+#' The above copyright notice and this permission notice shall be included in all
+#' copies or substantial portions of the Software.
+#' 
+#' THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+#' IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+#' FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+#' AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+#' LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+#' OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+#' SOFTWARE.
+#' ```
+#' 

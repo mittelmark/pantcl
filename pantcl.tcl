@@ -325,6 +325,12 @@ proc ::pantcl::lineFilter {argv} {
         set pre false
         while {[gets $infh line] >= 0} {
             incr n
+            if {[regexp @ $line]} {
+                set line [regsub -all {\[@([-A-Z0-9a-z]+)\]} $line "`tcl cite \\1`"]
+                set line [regsub -all {\[@([-A-Z0-9a-z]+);([-A-Z0-9a-z]+)\]} $line "`tcl cite \\1 \\2`"]
+                set line [regsub -all {\[@([-A-Z0-9a-z]+)\s*;\s*([-A-Z0-9a-z]+)\s*;\s*([-A-Z0-9a-z]+) \]} $line "`tcl cite \\1 \\2 \\3`"]
+                puts $line
+            }
             # translate r-chunks into pipe chunks
             if {[regexp {``` ?\{.*\}} $line]} {
                 set line [regsub {\{r(.*)\}} $line "{.pipe pipe=\"R\"\\1}"]
