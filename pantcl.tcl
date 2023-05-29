@@ -437,10 +437,11 @@ proc ::pantcl::lineFilter {argv} {
             } else {
                 # TODO: more than one inline code per line
                 if {!$pre} {
-                    if {[regexp {`\.?[A-Za-z]{1,4} .+`} $line]} {
+                    while {[regexp {`\.?[A-Za-z]{1,4} .+`} $line]} {
+                        set cont false
                         set eval false
                         set pipe python
-                        set filt [regsub {.*`\.?([A-Za-z]{1,4}) .+`.*} $line "\\1"]
+                        set filt [regsub {.*?`\.?([A-Za-z]{1,4}) [^`]+`.*$} $line "\\1"]
                         if {$filt in [list "r" "R"]} {
                             set filt pipe
                             set pipe R
@@ -455,7 +456,7 @@ proc ::pantcl::lineFilter {argv} {
                             } 
                         }
                         if {[info command filter-$filt] eq "filter-$filt" && $eval} {
-                            set code [regsub {.*`\.?[A-Za-z]{1,4} ([^`]+)`.+} $line "\\1"]
+                            set code [regsub {.*?`\.?[A-Za-z]{1,4} ([^`]+)`.*$} $line "\\1"]
                             if {[dict exists $yamldict $filt]} {
                                 if {[dict exists $yamldict $filt]} {
                                     set d [dict create {*}[dict get $yamldict $filt]] 
@@ -464,10 +465,14 @@ proc ::pantcl::lineFilter {argv} {
                                         set res [lindex [filter-$filt $code $d] 0]
                                         set res [regsub -all "\n" $res " "]
                                         set res [regsub {.+ ([^\s]+) ?$} $res "\\1"]
-                                        set line [regsub {(.*)`\.?[A-Za-z]{1,4} ([^`]+)`(.+)} $line "\\1$res\\3"]
+                                        set line [regsub {(.*?)`\.?[A-Za-z]{1,4} ([^`]+)`(.+)} $line "\\1$res\\3"]
+                                        set cont true
                                     }
                                 }
                             }
+                        }
+                        if {!$cont} {
+                            break
                         }
                     }
                 }
