@@ -184,8 +184,9 @@
 #' knitr::kable(head(mtcars[, 1:4]))
 #' ```
 #' 
-#' The filter itself provides a litte R function to convert data frames
-#' or matrices into Markdown tables. Here an example:
+#' The filter itself provides a litte R function, without the need
+#' to install an additional library,`df2md`, to convert data frames
+#' or matrices into Markdown tables. Here an example for its usage:
 #' 
 #' ```{.pipe pipe="R" results="asis"}
 #' data(mtcars)
@@ -210,7 +211,7 @@
 #' get the number of cars in the dataset. Using code like this:
 #' 
 #' ```
-#'      The mtchars dataset has `r nrow(mtcars)` cars!
+#'     The mtchars dataset has `r nrow(mtcars)` cars!
 #' ```
 #' 
 #' The mtchars dataset has `r nrow(mtcars)` cars!
@@ -344,7 +345,7 @@ proc ::fpipe::filter-pipe-R-df2md {} {
             st <- "|"
             for (i in 1:nrow(df)){
                 if (rownames) {
-                    st <- paste0(st, as.character(rn[i]), "|", collapse='')
+                    st <- paste0(st, "**",as.character(rn[i]), "**|", collapse='')
                 }
                 for(j in 1:ncol(df)){
                     if (j%%ncol(df) == 0) {
