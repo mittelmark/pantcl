@@ -198,7 +198,8 @@
 #' df2md(head(mtcars[, 1:4],n=4),rownames=FALSE,caption="**Table 1:** mtcars data")
 #' ```
 #' 
-#' For matrices or data frames without rownames just the line numbers will be displayed:
+#' For matrices or data frames without row names or column names just the line
+#' and columnnumbers will be displayed:
 #' 
 #' ```{.pipe pipe="R" results="asis"}
 #' M=matrix(round(rnorm(100,mean=10),2),ncol=5)
@@ -206,8 +207,13 @@
 #' ```
 #' 
 #' There is as well the possibility to display inline R code. So for instance we can use the nrow function to 
-#' get the number of cars in the dataset.
-#' The mtchars dataset has `R nrow(mtcars)` cars!
+#' get the number of cars in the dataset. Using code like this:
+#' 
+#' ```
+#'      The mtchars dataset has `r nrow(mtcars)` cars!
+#' ```
+#' 
+#' The mtchars dataset has `r nrow(mtcars)` cars!
 #' 
 #' Let's now simulate an R error:
 #' 
