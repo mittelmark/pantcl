@@ -5,7 +5,7 @@
 <meta content="pandoc" name="generator"/>
 <meta content="width=device-width, initial-scale=1.0, user-scalable=yes" name="viewport"/>
 <meta content="Detlef Groth, Caputh-Schwielowsee, Germany" name="author"/>
-<meta content="2023-05-26" name="dcterms.date"/>
+<meta content="2023-05-30" name="dcterms.date"/>
 <title>filter-pipe.tcl documentation</title>
 <style>
     code{white-space: pre-wrap;}
@@ -25,7 +25,7 @@
 <header id="title-block-header">
 <h1 class="title">filter-pipe.tcl documentation</h1>
 <p class="author">Detlef Groth, Caputh-Schwielowsee, Germany</p>
-<p class="date">May 26, 2023</p>
+<p class="date">May 30, 2023</p>
 </header>
 <hr/>
 <p></p>
@@ -156,7 +156,48 @@ boxplot(iris$Sepal.Length ~ iris$Species,col=2:4)
 dev.off()
 print(2)
 1</code></pre>
-<pre class="pipeout" data-pipe="R" data-results="show"><code>&gt; source("~/R/dlibs/chords.R")
+<pre class="pipeout" data-pipe="R" data-results="show"><code>&gt;         df2md &lt;- function(df,caption='',rownames=TRUE) {
++             cn &lt;- as.character(colnames(df))
++             if (is.null(cn[1])) {
++                 cn=as.character(1:ncol(df))
++             }
++             rn &lt;- rownames(df)
++             if (is.null(rn[1])) {
++                 rn=as.character(1:nrow(df))
++             }
++             if (rownames) {
++                 headr &lt;- paste0(c("","", cn),  sep = "|", collapse='')
++                 sepr &lt;- paste0(c('|', rep(paste0(c(rep('-',3), "|"), 
++                                                  collapse=''),length(cn)+1)), collapse ='')
++             } else {
++                 headr &lt;- paste0(c("", cn),  sep = "|", collapse='')
++                 sepr &lt;- paste0(c('|', rep(paste0(c(rep('-',3), "|"), 
++                                                  collapse=''),length(cn))), collapse ='')
++                 
++             }
++             st &lt;- "|"
++             for (i in 1:nrow(df)){
++                 if (rownames) {
++                     st &lt;- paste0(st, as.character(rn[i]), "|", collapse='')
++                 }
++                 for(j in 1:ncol(df)){
++                     if (j%%ncol(df) == 0) {
++                         st &lt;- paste0(st, as.character(df[i,j]), "|", 
++                                      "\n", "" , "|", collapse = '')
++                     } else {
++                         st &lt;- paste0(st, as.character(df[i,j]), "|", 
++                                      collapse = '')
++                     }
++                 }
++             }
++             fin &lt;- paste0(c(headr, sepr, substr(st,1,nchar(st)-1)), collapse="\n")
++             if (caption!='') {
++                 fin=paste0(fin,'\n',caption,'\n')
++             }
++             cat(fin)
++         }
+&gt;     
+&gt; source("~/R/dlibs/chords.R")
 &gt; data(iris)
 &gt; png("images/testr.png")
 &gt; boxplot(iris$Sepal.Length ~ iris$Species,col=2:4)
@@ -227,6 +268,156 @@ knitr::kable(head(mtcars[, 1:4]))</code></pre>
 </tr>
 </tbody>
 </table>
+<p>The filter itself provides a litte R function to convert data frames or matrices into Markdown tables. Here an example:</p>
+<pre class="pipe" data-pipe="R" data-results="asis"><code>data(mtcars)
+df2md(head(mtcars[, 1:4],n=4))</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th></th>
+<th>mpg</th>
+<th>cyl</th>
+<th>disp</th>
+<th>hp</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Mazda RX4</td>
+<td>21</td>
+<td>6</td>
+<td>160</td>
+<td>110</td>
+</tr>
+<tr class="even">
+<td>Mazda RX4 Wag</td>
+<td>21</td>
+<td>6</td>
+<td>160</td>
+<td>110</td>
+</tr>
+<tr class="odd">
+<td>Datsun 710</td>
+<td>22.8</td>
+<td>4</td>
+<td>108</td>
+<td>93</td>
+</tr>
+<tr class="even">
+<td>Hornet 4 Drive</td>
+<td>21.4</td>
+<td>6</td>
+<td>258</td>
+<td>110</td>
+</tr>
+</tbody>
+</table>
+<p>You can as well hide the rownames or give a caption like this.</p>
+<pre class="pipe" data-pipe="R" data-results="asis"><code>df2md(head(mtcars[, 1:4],n=4),rownames=FALSE,caption="**Table 1:** mtcars data")</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th>mpg</th>
+<th>cyl</th>
+<th>disp</th>
+<th>hp</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>21</td>
+<td>6</td>
+<td>160</td>
+<td>110</td>
+</tr>
+<tr class="even">
+<td>21</td>
+<td>6</td>
+<td>160</td>
+<td>110</td>
+</tr>
+<tr class="odd">
+<td>22.8</td>
+<td>4</td>
+<td>108</td>
+<td>93</td>
+</tr>
+<tr class="even">
+<td>21.4</td>
+<td>6</td>
+<td>258</td>
+<td>110</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Table 1:</strong> mtcars data</p>
+<p>For matrices or data frames without rownames just the line numbers will be displayed:</p>
+<pre class="pipe" data-pipe="R" data-results="asis"><code>M=matrix(round(rnorm(100,mean=10),3),ncol=5)
+colnames(M)=LETTERS[1:5]
+df2md(head(M,n=6),caption="**Table 2:** Matrix example")</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th></th>
+<th>A</th>
+<th>B</th>
+<th>C</th>
+<th>D</th>
+<th>E</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td>8.762</td>
+<td>10.327</td>
+<td>8.539</td>
+<td>10.342</td>
+<td>8.77</td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td>9.763</td>
+<td>10.45</td>
+<td>8.362</td>
+<td>9.953</td>
+<td>9.172</td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td>9.984</td>
+<td>11.19</td>
+<td>10.988</td>
+<td>9.573</td>
+<td>10.141</td>
+</tr>
+<tr class="even">
+<td>4</td>
+<td>10.488</td>
+<td>10.759</td>
+<td>11.124</td>
+<td>9.894</td>
+<td>9.915</td>
+</tr>
+<tr class="odd">
+<td>5</td>
+<td>11.032</td>
+<td>8.835</td>
+<td>10.262</td>
+<td>9.634</td>
+<td>10.718</td>
+</tr>
+<tr class="even">
+<td>6</td>
+<td>9.184</td>
+<td>10.206</td>
+<td>9.115</td>
+<td>8.628</td>
+<td>8.907</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Table 2:</strong> Matrix example</p>
 <p>There is as well the possibility to display inline R code. So for instance we can use the nrow function to get the number of cars in the dataset. The mtchars dataset has  32
  cars!</p>
 <p>Let’s now simulate an R error:</p>
@@ -237,8 +428,8 @@ print(y)
 2+3</code></pre>
 <pre class="pipeout" data-pipe="R"><code>&gt; x=3+2
 &gt; print(ls())
-[1] "%&gt;%"        "%ni%"       "iris"       "mtcars"     "pca.biplot"
-[6] "sbi"        "x"         
+[1] "%&gt;%"        "%ni%"       "df2md"      "iris"       "M"         
+[6] "mtcars"     "pca.biplot" "sbi"        "x"         
 &gt; x
 [1] 5
 &gt; print(y)
@@ -253,8 +444,8 @@ y=2;
 disp(y);</code></pre>
 <pre class="pipeout" data-pipe="oc"><code>octave&gt; x=1;
 octave&gt; disp(x);
-octave&gt; y=2;
 1
+octave&gt; y=2;
 octave&gt; disp(y);
 2
 
@@ -284,16 +475,16 @@ octave&gt;
 <pre class="pipe" data-pipe="octave"><code>z=x+y
 disp(z)</code></pre>
 <pre class="pipeout" data-pipe="octave"><code>octave&gt; z=x+y
+2
+z = 3
 octave&gt; disp(z)
+3
 
 </code></pre>
 <p>Let’s now do an Octave error:</p>
 <pre class="pipe" data-pipe="octave"><code>z
 disp(k)</code></pre>
 <pre class="pipeout" data-pipe="octave"><code>octave&gt; z
-2
-z = 3
-3
 z = 3
 octave&gt; disp(k)
 error: 'k' undefined near line 1, column 1
@@ -314,4 +505,4 @@ error: 'k' undefined near line 1, column 1
 <li><a href="filter-rplot.html">Rplot filter</a></li>
 </ul>
 </body>
-</html><!--Generated by HTMLArk 2023-05-26 18:52:29.614397. Original URL temp.html-->
+</html><!--Generated by HTMLArk 2023-05-30 08:02:21.823778. Original URL temp.html-->

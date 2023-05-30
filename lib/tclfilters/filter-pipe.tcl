@@ -184,6 +184,28 @@
 #' knitr::kable(head(mtcars[, 1:4]))
 #' ```
 #' 
+#' The filter itself provides a litte R function to convert data frames
+#' or matrices into Markdown tables. Here an example:
+#' 
+#' ```{.pipe pipe="R" results="asis"}
+#' data(mtcars)
+#' df2md(head(mtcars[, 1:4],n=4))
+#' ```
+#' 
+#' You can as well hide the rownames or give a caption like this.
+#' 
+#' ```{.pipe pipe="R" results="asis"}
+#' df2md(head(mtcars[, 1:4],n=4),rownames=FALSE,caption="**Table 1:** mtcars data")
+#' ```
+#' 
+#' For matrices or data frames without rownames just the line numbers will be displayed:
+#' 
+#' ```{.pipe pipe="R" results="asis"}
+#' M=matrix(round(rnorm(100,mean=10),3),ncol=5)
+#' colnames(M)=LETTERS[1:5]
+#' df2md(head(M,n=6),caption="**Table 2:** Matrix example")
+#' ```
+#' 
 #' There is as well the possibility to display inline R code. So for instance we can use the nrow function to 
 #' get the number of cars in the dataset.
 #' The mtchars dataset has `R nrow(mtcars)` cars!
@@ -286,6 +308,51 @@ proc piperead {pipe args} {
 # * cleanup pipes if blocking true
 # * trace add execution exit enter YourCleanupProc
 
+proc ::fpipe::filter-pipe-R-df2md {} {
+    puts $::fpipe::rpipe {
+        df2md <- function(df,caption='',rownames=TRUE) {
+            cn <- as.character(colnames(df))
+            if (is.null(cn[1])) {
+                cn=as.character(1:ncol(df))
+            }
+            rn <- rownames(df)
+            if (is.null(rn[1])) {
+                rn=as.character(1:nrow(df))
+            }
+            if (rownames) {
+                headr <- paste0(c("","", cn),  sep = "|", collapse='')
+                sepr <- paste0(c('|', rep(paste0(c(rep('-',3), "|"), 
+                                                 collapse=''),length(cn)+1)), collapse ='')
+            } else {
+                headr <- paste0(c("", cn),  sep = "|", collapse='')
+                sepr <- paste0(c('|', rep(paste0(c(rep('-',3), "|"), 
+                                                 collapse=''),length(cn))), collapse ='')
+                
+            }
+            st <- "|"
+            for (i in 1:nrow(df)){
+                if (rownames) {
+                    st <- paste0(st, as.character(rn[i]), "|", collapse='')
+                }
+                for(j in 1:ncol(df)){
+                    if (j%%ncol(df) == 0) {
+                        st <- paste0(st, as.character(df[i,j]), "|", 
+                                     "\n", "" , "|", collapse = '')
+                    } else {
+                        st <- paste0(st, as.character(df[i,j]), "|", 
+                                     collapse = '')
+                    }
+                }
+            }
+            fin <- paste0(c(headr, sepr, substr(st,1,nchar(st)-1)), collapse="\n")
+            if (caption!='') {
+                fin=paste0(fin,'\n',caption,'\n')
+            }
+            cat(fin)
+        }
+    }
+    flush $::fpipe::rpipe
+}
 proc filter-pipe {cont dict} {
     incr ::fpipe::n
     set ::fpipe::pipecode ""
@@ -316,6 +383,8 @@ proc filter-pipe {cont dict} {
             set ::fpipe::rpipe [open "|R -q --interactive --vanilla  2>@1" r+]
             fconfigure $::fpipe::rpipe -buffering line -blocking false
             fileevent $::fpipe::rpipe readable [list piperead $::fpipe::rpipe]
+            ::fpipe::filter-pipe-R-df2md
+            
         }
         set wait [list]
         set term ">>>"
