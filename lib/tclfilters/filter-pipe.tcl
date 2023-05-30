@@ -201,8 +201,7 @@
 #' For matrices or data frames without rownames just the line numbers will be displayed:
 #' 
 #' ```{.pipe pipe="R" results="asis"}
-#' M=matrix(round(rnorm(100,mean=10),3),ncol=5)
-#' colnames(M)=LETTERS[1:5]
+#' M=matrix(round(rnorm(100,mean=10),2),ncol=5)
 #' df2md(head(M,n=6),caption="**Table 2:** Matrix example")
 #' ```
 #' 
@@ -318,7 +317,7 @@ proc piperead {pipe args} {
 proc ::fpipe::filter-pipe-R-df2md {} {
     puts $::fpipe::rpipe {### SHOW OFF
         df2md <- function(df,caption='',rownames=TRUE) {
-            cn <- as.character(colnames(df))
+            cn <- colnames(df)
             if (is.null(cn[1])) {
                 cn=as.character(1:ncol(df))
             }
