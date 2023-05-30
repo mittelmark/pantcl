@@ -279,6 +279,7 @@ namespace eval ::fpipe {
     variable pypipe ""
     variable rpipe ""
     variable opipe ""
+    variable show true
     #set n 0
     #set pipecode ""
 }
@@ -291,8 +292,14 @@ proc piperead {pipe args} {
                 append ::fpipe::pipecode [regsub {^.*>>> } "$got" ""]
             } else {
                 # R and Octave
-                if {$got ni [list "" "> "]} {
+                if {[regexp "### SHOW OFF" $got]} {
+                    set ::fpipe::show false
+                } 
+                if {$::fpipe::show && $got ni [list "" "> "]} {
                     append ::fpipe::pipecode "$got\n"
+                }
+                if {[regexp "### SHOW ON" $got]} {
+                    set ::fpipe::show true
                 }
             }
             
@@ -309,7 +316,7 @@ proc piperead {pipe args} {
 # * trace add execution exit enter YourCleanupProc
 
 proc ::fpipe::filter-pipe-R-df2md {} {
-    puts $::fpipe::rpipe {
+    puts $::fpipe::rpipe {### SHOW OFF
         df2md <- function(df,caption='',rownames=TRUE) {
             cn <- as.character(colnames(df))
             if (is.null(cn[1])) {
@@ -350,7 +357,7 @@ proc ::fpipe::filter-pipe-R-df2md {} {
             }
             cat(fin)
         }
-    }
+        ### SHOW ON}
     flush $::fpipe::rpipe
 }
 proc filter-pipe {cont dict} {
