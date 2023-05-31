@@ -393,7 +393,12 @@ proc filter-pipe {cont dict} {
         }
         #  
         if {$::fpipe::rpipe eq "" && [string range [dict get $dict pipe] 0 0] eq "R"} {
-            set ::fpipe::rpipe [open "|R -q --interactive --vanilla  2>@1" r+]
+            if {[auto_execok Rterm] != ""} {
+                # Windows, MSYS
+                set ::fpipe::rpipe [open "|Rterm -q --vanilla 2>@1" r+]
+            } else {
+                set ::fpipe::rpipe [open "|R -q --vanilla --interactive 2>@1" r+]
+            }
             fconfigure $::fpipe::rpipe -buffering line -blocking false
             fileevent $::fpipe::rpipe readable [list piperead $::fpipe::rpipe]
             ::fpipe::filter-pipe-R-df2md
