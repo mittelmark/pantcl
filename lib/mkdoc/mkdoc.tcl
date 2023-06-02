@@ -4,7 +4,7 @@ exec tclsh "$0" "$@"
 ##############################################################################
 #  Author        : Dr. Detlef Groth
 #  Created       : Fri Nov 15 10:20:22 2019
-#  Last Modified : <230526.1840>
+#  Last Modified : <230602.0737>
 #
 #  Description	 : Command line utility and package to extract Markdown documentation 
 #                  from programming code if embedded as after comment sequence #' 
@@ -303,6 +303,10 @@ proc ::mkdoc::getPackageInformation {filename} {
     return [list name "" version "" basename $basename]
 }
 proc mkdoc::mkdoc {filename outfile args} {
+    global quiet
+    if {![info exists ::quiet]} {
+        set quiet false
+    }
     variable mkdocfile
     variable htmltemplate
     variable mdheader
@@ -531,7 +535,9 @@ proc mkdoc::mkdoc {filename outfile args} {
             puts $out $html
             puts $out "</body>\n</html>"
             close $out
-            puts "Success: file $outfile was written!"
+            if {!$quiet} {
+                puts "Success: file $outfile was written!"
+            }
         } elseif {$mode eq "pandoc"} {
             set out [open $outfile w 0644]
             puts $out $YAML

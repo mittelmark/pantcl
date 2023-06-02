@@ -49,10 +49,10 @@ if {[llength $argv] > 0 && ([lsearch -regex $argv {-h$}] >= 0 || [lsearch -regex
 
         Arguments:
     }
-    puts "         $argv0 --help               - display this help page"
-    puts "         $argv0 --version            - display the version"
+    puts "         $argv0 --help                     - display this help page"
+    puts "         $argv0 --version                  - display the version"
     puts "         $argv0 infile outfile --no-pandoc - use the standalone converter"
-    puts "         $argv0 infile --tangle .tcl - extract all code from .tcl chunks"
+    puts "         $argv0 infile outfile --tangle .tcl - extract all code from .tcl chunks"
     puts "\nUsage (GUI): $argv0 --gui \[infile]\n"
     puts "        Supported infiles: abc, dot, eqn, mmd, mtex, pic, pik, puml, rplot, tdot, tsvg\n"
     puts "Examples:\n"
@@ -72,42 +72,6 @@ if {[llength $argv] > 0 && ([lsearch -regex $argv {-h$}] >= 0 || [lsearch -regex
     exit 0
 }
 
-if {[llength $argv] > 1 && [lsearch -regex $argv -tangle] > -1} {
-    if {[file exists [lindex $argv 0]]} {
-        set filename [lindex $argv 0]
-        if {[llength $argv] == 3} {
-            set mode [lindex $argv 2]
-        } else {
-            set mode .tcl
-        }
-        if [catch {open $filename r} infh] {
-            puts stderr "Cannot open $filename: $infh"
-            exit
-        } else {
-            set flag false
-            while {[gets $infh line] >= 0} {
-                if {[regexp "^\[> \]\{0,2\}``` {0,2}\{$mode" $line]} {
-                    set l [regsub {.+```} $line ""]
-                    puts stdout "# $l"
-                    set flag true
-                } elseif {$flag && [regexp "^\[> \]\{0,2\}```" $line]} {
-                    set flag false
-                } elseif {[regexp "^\s*#' \[> \]\{0,2\}``` {0,2}\{$mode" $line]} {
-                    set l [regsub {.+```} $line ""]
-                    puts stdout "# $l"
-                    set flag true
-                } elseif {$flag && [regexp "^\s*#' \[> \]\{0,2\}```" $line]} {
-                    set flag false
-                } elseif {$flag} {
-                    set line [regsub {^\s*#' } $line ""]
-                    puts stdout $line
-                }
-            }
-            close $infh
-        }
-    }
-    return
-}
 
 set css {
     html {
@@ -119,7 +83,7 @@ set css {
         line-height: 1.2;
         padding: 1em;
         margin: auto;
-        max-width:  900px;
+        max-width:  1100px;
     }
     h1, h2, h3, h4, h5, h6 {
         color: #111;
@@ -272,7 +236,62 @@ proc ::pantcl::debug {jsonData} {
     puts [::rl_json::json keys $jsonData]
 }
 
+proc ::pantcl::tangle {args} {
+    set outfile [lindex $args 0]
+    set idx 0
+    set infile ""
+    set outfile ""
+    set type ""
+    foreach arg $args {
+        if {[lindex $args $idx] eq "--tangle"} {
+            # nop
+        } elseif {$infile eq ""} {
+            set infile [lindex $args $idx]
+        } elseif {$outfile eq ""} {
+            set outfile [lindex $args $idx]
+        } elseif {$type eq ""} {
+            set type [lindex $args $idx]
+        }
+        incr idx
+    }
+    if {$type eq ""} {
+        set type [string range [string tolower [file extension $outfile]] 1 end]
+    } else {
+        set type [regsub --  {^\.} $type ""]
+    }
+    if {$outfile ni [list stdout -]} {
+        set out [open $outfile w 0600]
+    } else {
+        set out stdout
+    } 
+    if [catch {open $infile r} infh] {
+        return -code error "Cannot open $infile: $infh"
+    } else {
+        set flag false
+        while {[gets $infh line] >= 0} {
+            set line [regsub {^\s*#' } $line ""]
+            if {[regexp "^\[> \]{0,2}```\{\.?$type\[^a-zA-Z\]" $line]} {
+                set flag true
+                continue
+            } elseif {$flag && [regexp {^[> ]{0,2}```} $line]} {
+                set flag false
+                continue
+            } elseif {$flag} {
+                puts $out $line
+            }
+        }
+        close $infh
+        if {$outfile ni [list stdout -]} {
+            close $out
+        }
+    }
+
+}
+
+set lineFilter false
 proc ::pantcl::lineFilter {argv} {
+    global lineFilter 
+    set lineFilter true
     if {[info exists ::env(FILTEREVAL)]} {
         set evalvar  $::env(FILTEREVAL)
     } else {
@@ -284,16 +303,14 @@ proc ::pantcl::lineFilter {argv} {
     set mode md
     set yamldict [dict create]
     if {![regexp {.+\.[a-zA-Z]*md$} $outfile] && ![regexp -nocase {.+\.html} $outfile]} {
-        puts "Error: currently only conversion from Markdown to Markdown or to HTML is possible!"
-        exit 0
+        error "Error: currently only conversion from Markdown to Markdown or to HTML is possible!"
     }
     if {[regexp -nocase {.+\.html} $outfile]} {
         set mode html
         set outfile [regsub {\.html} $outfile "-out.md"]
     }
     if {![file exists $infile]} {
-        puts  "Error: $infile does not exists"
-        exit 0
+        error  "Error: $infile does not exists"
     }
     if {[lsearch $argv "--metadata-file"] > -1} {
         set idx [lsearch $argv "--metadata-file"]
@@ -309,8 +326,7 @@ proc ::pantcl::lineFilter {argv} {
         }
     }
     if [catch {open $infile r} infh] {
-        puts stderr "Cannot open $infile: $infh"
-        exit
+        error "Cannot open $infile: $infh"
     } else {
         set out [open $outfile w 0600]
         set i 0
@@ -361,9 +377,14 @@ proc ::pantcl::lineFilter {argv} {
                 append yamltext "$line\n"
             }
             if {!$pre && [regexp @ $line]} {
-                set line [regsub -all {\[@([-A-Z0-9a-z]+)\]} $line "`tcl cite \\1`"]
-                set line [regsub -all {\[@([-A-Z0-9a-z]+);([-A-Z0-9a-z]+)\]} $line "`tcl cite \\1 \\2`"]
-                set line [regsub -all {\[@([-A-Z0-9a-z]+)\s*;\s*([-A-Z0-9a-z]+)\s*;\s*([-A-Z0-9a-z]+) \]} $line "`tcl cite \\1 \\2 \\3`"]
+                if {[regexp {\[@references ([^ ]+)\]} $line -> bibfile]} {
+                    set line [lindex [filter-tcl "bibliography $bibfile\n" {eval true results asis}] 0]
+                } else {
+                    set line [regsub {\[@references ([^ ]+)\]} $line "tcl bibliography \\1"]
+                    set line [regsub -all {\[@([-A-Z0-9a-z]+)\]} $line "`tcl cite \\1`"]
+                    set line [regsub -all {\[@([-A-Z0-9a-z]+);([-A-Z0-9a-z]+)\]} $line "`tcl cite \\1 \\2`"]
+                    set line [regsub -all {\[@([-A-Z0-9a-z]+)\s*;\s*([-A-Z0-9a-z]+)\s*;\s*([-A-Z0-9a-z]+) \]} $line "`tcl cite \\1 \\2 \\3`"]
+                }
             }
             # translate r-chunks into pipe chunks
             if {[regexp {``` ?\{.*\}} $line]} {
@@ -371,6 +392,7 @@ proc ::pantcl::lineFilter {argv} {
                 set line [regsub {\{py(.*)\}} $line "{.pipe pipe=\"python\"\\1}"]                
                 set line [regsub -all {TRUE} $line true]
                 set line [regsub -all {FALSE} $line false]                
+                set line [regsub -all {,} $line " "]
             }
             # TODO: simple YAML parsing
 
@@ -528,8 +550,12 @@ tsvg text -x 135 -y 220 "Filter View World!"
 # Standalone processing 
 # calling pandoc eventually itself
 
-if {[llength $argv] > 1 && [file exists [lindex $argv 0]]} {
+if {[info exists argv] && [llength $argv] > 1 && [file exists [lindex $argv 0]]} {
     set pandoc true
+    if {[lsearch $argv --tangle] >= 0} {
+        pantcl::tangle {*}$argv
+        return
+    }
     if {[lsearch $argv --no-pandoc] > 1 || [auto_execok pandoc] eq ""} {
         package require yaml
         package require mkdoc::mkdoc
@@ -582,11 +608,10 @@ if {[llength $argv] > 1 && [file exists [lindex $argv 0]]} {
         }  else {
             pantcl::lineFilter $argv
         }
-        puts "converting [lindex $argv 0] to [lindex $argv 1] done"
+        #puts "converting [lindex $argv 0] to [lindex $argv 1] done"
     }
     exit 0
 }
-package require rl_json
 
 #' ---
 #' title: pantcl filter documentation - 0.9.12
@@ -986,15 +1011,16 @@ package require rl_json
 #' * 2023-03-11 - version 0.9.11
 #'    * eval is now per default `false` for all filters
 #'    * support for Rst and LaTeX as input if pantcl is used as a filter
-#' * 2023-05-18 - version 0.9.12
+#' * 2023-0X-XX - version 0.9.12
 #'    * adding filter-emf.tcl for MicroEmacs macro language
 #'    * adding external Tcl filter support via YAML declaration
 #'    * adding example user/filter-geasy.tcl as example for the latter
 #'    * standalone mode now with Unicode support 
 #'    * fix for standalone mode
 #'    * standalone check and working now as well for pipes and inline single backticks, tested with R
-#'    * filter for Julia code, however Julia is slow at startup and plotting
+#'    * filter for Julia code, however Julia is slow at startup and even slower at plotting
 #'    * support for pandoc single percent title, author, date at the beginning of documents
+#'    * extending support for tangle for non Tcl code chunks
 #'    
 #' ## SEE ALSO
 #' 
@@ -1035,13 +1061,6 @@ package require rl_json
 #' 
 ## proc filter-NAME function in a file filter/filter-NAME.tcl
 
-## Global variables
-
-set n 0
-set jsonData {}
-while {[gets stdin line] > 0} {
-   append jsonData $line
-}
 # parse Meta data
 #puts stderr $jsonData
 #exit
@@ -1187,6 +1206,8 @@ proc codeBlock {} {
 }
 # the main method parsing the json data
 proc main {jsonData} {
+    package require rl_json
+    
     if {[info exists ::env(FILTEREVAL)]} {
         set evalvar $::env(FILTEREVAL)
     } else {
@@ -1327,6 +1348,22 @@ proc incrHeader {jsonData} {
     return $jsonData
 }
 
-# give the modified document back to Pandoc again:
-puts -nonewline [main $jsonData] 
+## Global variables
 
+proc ::pantcl::pipe { } {
+    global n
+    global lineFilter 
+    global jsonData
+    if {!$lineFilter} {
+        set n 0
+        set jsonData {}
+        while {[gets stdin line] > 0} {
+            append jsonData $line
+        }
+        
+        # give the modified document back to Pandoc again:
+        puts -nonewline [main $jsonData]
+    }
+}
+
+pantcl::pipe

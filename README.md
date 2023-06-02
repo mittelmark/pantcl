@@ -74,9 +74,9 @@ tool. On Ubuntu systems you can install Tcl using your package managers like
 this: `sudo apt install Tcl`. If you have a `tclsh` executable in your `PATH`
 you then download the latest build from the Github page here: 
 
-[https://github.com/mittelmark/pantcl/suites/11514896149/artifacts/595403044](https://github.com/mittelmark/pantcl/suites/11514896149/artifacts/595403044)
+[https://github.com/mittelmark/pantcl/files/11603113/pantcl.bin.gz](https://github.com/mittelmark/pantcl/files/11603113/pantcl.bin.gz)
 
-Unpack the Zip-Archive and make the file pantcl.bin executable using chmod. You can as rename
+Unpack the Gzip file and make the file pantcl.bin executable using chmod. You can as rename
 it for instance to just `pantcl`. Then move it to a folder within belonging to your `PATH` variable. For instance "~./bin" or "~/.local/bin".
 
 Before you continue check if you executable is working by writing in the
@@ -84,7 +84,7 @@ terminal something like this:
 
 ```
 $ pantcl --version
-0.9.11
+0.9.12
 $ pandoc --version
 pandoc 2.14.2
 ...
