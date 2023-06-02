@@ -511,8 +511,8 @@ proc ::pantcl::lineFilter {argv} {
     }
 }
 
-# Gui mode
-if {[llength $argv] > 0 && [lsearch $argv --gui] > -1} {
+set runGui false
+proc ::pantcl::runGui {argv} {
     package require fview
     fview::gui
     set file false
@@ -545,7 +545,11 @@ tsvg text -x 135 -y 220 "Filter View World!"
         fview::fileSave $ftemp
         file delete $ftemp
     }
-    return
+}
+# Gui mode
+if {[llength $argv] > 0 && [lsearch $argv --gui] > -1} {
+    ::pantcl::runGui $argv
+    set runGui true
 }
 # Standalone processing 
 # calling pandoc eventually itself
@@ -1353,8 +1357,9 @@ proc incrHeader {jsonData} {
 proc ::pantcl::pipe { } {
     global n
     global lineFilter 
+    global runGui
     global jsonData
-    if {!$lineFilter} {
+    if {!$lineFilter && !$runGui} {
         set n 0
         set jsonData {}
         while {[gets stdin line] > 0} {

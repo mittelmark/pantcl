@@ -8,7 +8,7 @@
 #  Author        : $Author$
 #  Created By    : Dr. Detlef Groth
 #  Created       : Tue Jan 17 05:48:00 2017
-#  Last Modified : <220205.0853>
+#  Last Modified : <230602.2203>
 #
 #  Description	 : Snit type as a base class to build Tk applications
 #
