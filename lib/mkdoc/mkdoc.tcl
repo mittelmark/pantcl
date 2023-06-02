@@ -4,7 +4,7 @@ exec tclsh "$0" "$@"
 ##############################################################################
 #  Author        : Dr. Detlef Groth
 #  Created       : Fri Nov 15 10:20:22 2019
-#  Last Modified : <230602.0737>
+#  Last Modified : <230602.2042>
 #
 #  Description	 : Command line utility and package to extract Markdown documentation 
 #                  from programming code if embedded as after comment sequence #' 
@@ -132,7 +132,6 @@ namespace eval mkdoc {
 <head>
   <meta charset="utf-8" />
   <meta name="generator" content="mkdoc" />
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: ; script-src 'self' 'nonce-d717cfb5d902616b7024920ae20346a8494f7832145c90e0' ; style-src 'self' 'unsafe-inline'" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="title" content="$document(title)">
   <meta name="author" content="$document(author)">
