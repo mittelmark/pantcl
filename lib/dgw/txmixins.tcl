@@ -3,7 +3,7 @@
 #
 #  Created By    : Dr. Detlef Groth
 #  Created       : Thu Aug 12 12:00:00 2021
-#  Last Modified : <230603.1038>
+#  Last Modified : <230603.1119>
 #
 #  Description	
 #
@@ -1093,12 +1093,21 @@ snit::widgetadaptor dgw::txhighlight {
 #' The following public method is available:
 #' 
 #' > - *menu* - show the popup menu, usually the right mouse click, but the user can create additional popup keys.
-#' 
+#'   - *getEditMenu* returns the popup edit menu widget path, useful for reusing the popio
+#'     
 #' Example:
 #' 
 #' > ```
 #' # demo: txpopup
 #' dgw::txpopup [tk::text .txt -undo true]
+#' menu .mbar
+#' . configure -menu .mbar
+#' menu .mbar.fl -tearoff 0
+#' .mbar add cascade -menu .mbar.fl -label File  -underline 0
+#' .mbar.fl add separator
+#' .mbar.fl add command -label Exit -command exit -underline 1
+#' # adding popup menu to main edit menu which is as well in sync
+#' .mbar add cascade -menu [.txt getEditMenu] -label Edit -underline 0
 #' .txt insert end "\nHint\n\nPress right mouse click\n and see the"
 #' .txt insert end "popup menu with context dependent active or inactive entries!\n\n"
 #' foreach col [list A B C] { 
@@ -1492,6 +1501,8 @@ if {[info exists argv0] && $argv0 eq [info script] && [regexp {txmixins} $argv0]
 #' * 2022-02 - version 0.3.0
 #'     * txtabspace - insert 4 spaces instead of tabs stops (F2 for tabs)
 #'     * txfontsize - increase fontsize for instance with Ctrl+Plus, decrease with Ctrl-Minus
+#' * 2023 - version 0.X.X
+#'     * adding possibility to add popup menu in main menubar
 #'
 #' ## <a name='todo'>TODO</a>
 #' 
