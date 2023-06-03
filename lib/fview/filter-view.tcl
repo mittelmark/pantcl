@@ -29,7 +29,7 @@
 ##############################################################################
 #  Created By    : Detlef Groth
 #  Created       : Fri Feb 4 05:49:13 2022
-#  Last Modified : <230112.0725>
+#  Last Modified : <230603.0521>
 #
 #  Description	 : Graphical user interface to display
 #                 results from graphical tools created based with simple text.
@@ -79,11 +79,12 @@ namespace eval fview {
 }
 proc ::fview::gui {} {
     variable filetypes
-    ::dgw::basegui app -style clam -title "DGFilterView, 2022"
-    app addStatusBar
+    variable app
+    set app [::dgw::basegui %AUTO% -style clam -title "DGFilterView, 2022"]
+    $app addStatusBar
     set info "\nValid and installed filters are:\n  - abc, dot, eqn, mmd,\n  - mtex, pic, pik, puml,\n  - rplot, tdot, tsvg\n"
-    app setAppname DGFilterView [package provide fview] "Detlef Groth" 2022 $info
-    set fmenu [app getMenu "File"]
+    $app setAppname DGFilterView [package provide fview] "Detlef Groth" 2022 $info
+    set fmenu [$app getMenu "File"]
     $fmenu insert 0 command -label New -underline 0 -command ::fview::fileNew    
     $fmenu insert 1 command -label "Open ..." -underline 0 -command ::fview::fileOpen
     $fmenu insert 2 separator 
@@ -97,7 +98,7 @@ proc ::fview::gui {} {
     ttk::style layout WFrame [ttk::style layout TFrame]    
     ttk::style configure WLabel -background white
     ttk::style configure WFrame -background white    
-    set f [app getFrame]
+    set f [$app getFrame]
     set pwd [ttk::panedwindow $f.tframe -orient horizontal]
     set tf [ttk::frame $pwd.fr]
     set t [tk::text $tf.text -wrap none -undo true]
@@ -111,7 +112,7 @@ proc ::fview::gui {} {
         {dot comment ^\s*(@|#|%|//).+}
         {dot keyword {(digraph|node)}}
         {dot string {"[^"]+"}}} ;#"
-    app autoscroll $t
+    $app autoscroll $t
     $t insert end "digraph G {\n   A -> B ;\n}"
     $t configure -mode dot
     set f0 [ttk::frame $pwd.f0 -width 300 -height 100 -style WFrame]
@@ -132,7 +133,7 @@ proc ::fview::gui {} {
         {dot keyword {(digraph|node)}}
         {dot string {['"][^'"]+['"]}}} ;#"
     $t configure -mode dot
-    app autoscroll $t
+    $app autoscroll $t
     set f0 [ttk::frame $pwd2.f0 -width 100 -height 300 -style WFrame]
     set img [ttk::label $pwd2.f0.img -width 10 -text "Output" -style WLabel]
     place $img -relx 0.5 -rely 0.5 -anchor center
@@ -147,10 +148,11 @@ proc ::fview::gui {} {
     set ::fview::text $tf.text
     set ::fview::text2 $tf2.text    
     set ::fview::filename ""
-    app status "Press Control-Shift H or V to change layout!" 100
+    $app status "Press Control-Shift H or V to change layout!" 100
 }
 
 proc ::fview::fileNew {} {
+    variable app
     set win $::fview::text
     if {[$win edit modified]} {
         set answer [tk_messageBox -title "File modified!" -message "Do you want to save changes?" -type yesnocancel -icon question]
@@ -163,20 +165,20 @@ proc ::fview::fileNew {} {
     } 
     $win delete 1.0 end       
     set ::fview::filename "*new*"
-    app configure -title "DGFilterView, 2022 - *new*"
+    $app configure -title "DGFilterView, 2022 - *new*"
 }
 proc ::fview::fileOpen {{filename ""}} {
+    variable app
     set types $::fview:::filetypes
     if {$filename eq ""} {
         set filename [tk_getOpenFile -filetypes $types]
     }
     if {$filename ne ""} {
         set ::fview::filename $filename
-        app configure -title "DGFilterView, 2022 - [file tail $filename]"
+        $app configure -title "DGFilterView, 2022 - [file tail $filename]"
         $::fview::text delete 1.0 end
         if [catch {open $filename r} infh] {
-            puts stderr "Cannot open $filename: $infh"
-            exit
+            error "Cannot open $filename: $infh"
         } else {
             while {[gets $infh line] >= 0} {
                 $::fview::text insert end "$line\n"
@@ -221,6 +223,7 @@ proc ::fview::extractChunk {} {
     
 }
 proc ::fview::fileSave {{savefile ""} } {
+    variable app
     if {$::fview::filename in [list "" "*new*"]} {
         ::fview::fileSaveAs
     } else {
@@ -267,7 +270,7 @@ proc ::fview::fileSave {{savefile ""} } {
                     set msg "Error:"
                     puts $::errorInfo
                     append msg [regsub {.+?:.+?:} [lindex [split $::errorInfo \n] 0] ""]
-                    app status $msg
+                    $app status $msg
                     $::fview::text configure -background salmon
                     $::fview::text2 configure -background salmon
                     update
@@ -276,7 +279,7 @@ proc ::fview::fileSave {{savefile ""} } {
                     $::fview::text2 configure -background white
                     
             } else {
-                app status [lindex $res 0]
+                $app status [lindex $res 0]
                 if {[lindex $res 1] ne ""} {
                     image create photo ::fview::img -file [lindex $res 1]
                     $::fview::lab1 configure -image ::fview::img

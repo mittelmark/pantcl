@@ -8,7 +8,7 @@
 #  Author        : $Author$
 #  Created By    : Dr. Detlef Groth
 #  Created       : Tue Jan 17 05:48:00 2017
-#  Last Modified : <230602.2203>
+#  Last Modified : <230603.0527>
 #
 #  Description	 : Snit type as a base class to build Tk applications
 #
@@ -821,7 +821,11 @@ snit::type ::dgw::basegui {
         if {$ask} {
             set answer [tk_messageBox -title "Question!" -message "Really quit application ?" -type yesno -icon question]
             if { $answer } {
-                exit 0
+                if {[info exists ::runninginR] && $::runninginR} {
+                    wm withdraw .
+                } else {
+                    exit 0
+                }
             } 
         }
 
