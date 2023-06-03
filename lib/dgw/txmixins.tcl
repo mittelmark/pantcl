@@ -3,7 +3,7 @@
 #
 #  Created By    : Dr. Detlef Groth
 #  Created       : Thu Aug 12 12:00:00 2021
-#  Last Modified : <220205.1439>
+#  Last Modified : <230603.1038>
 #
 #  Description	
 #
@@ -1119,52 +1119,71 @@ snit::widgetadaptor dgw::txpopup {
     option -toolcommand ""
     constructor {args} {
         installhull $win
-        $self configurelist $args
-        bind $win <Button-3>   [mymethod Menu]
+        $self configurelist $args 
+        $self configure -exportselection false
+        bind $win <Button-3>   [mymethod Menu true]
         bind $win <Control-y>   [mymethod TextRedo]
-
+        bind $win <<Selection>> [mymethod Selectionconf]
+        $self Menu 
     }
-    method Menu {} {
-        catch {destroy .editormenu}
-        menu .editormenu -tearoff 0
-        set state disabled
+    method Selectionconf { } {
+        set sel [$win tag ranges sel]
+        set selstate active
+        if {$sel eq ""} {
+            set selstate disabled
+        }
+        .editormenu entryconfigure 3 -state $selstate
+        .editormenu entryconfigure 4 -state $selstate
+        .editormenu entryconfigure 6 -state $selstate            
+    }
+    method Menuconf { }  {
+        set undostate disabled
+        set redostate disabled
         if {[$win cget -undo]} {
             if {[$win edit canundo]} {
-                set state active
+                set undostate active
             }
-            .editormenu add command -label "Undo" -underline 0 -state $state \
-                  -command [list $self TextUndo] -accelerator Ctrl+z 
-            set state disabled
             if {[$win edit canredo]} {
-                set state active
+                set redostate active
             }
-            
-            .editormenu add command -label "Redo" -underline 0 -state $state \
+        }
+        .editormenu entryconfigure 0 -state $undostate
+        .editormenu entryconfigure 1 -state $redostate
+    }
+    method getEditMenu { } {
+        return .editormenu
+    }
+    method Menu {{post false}} {
+        if {![winfo exists .editormenu]} {
+            #catch {destroy .editormenu}
+            menu .editormenu -tearoff 0
+            .editormenu add command -label "Undo" -underline 0 -state disabled \
+                  -command [list $self TextUndo] -accelerator Ctrl+z 
+            .editormenu add command -label "Redo" -underline 0 -state disabled \
                   -command [list $self TextRedo] -accelerator Ctrl+y
             .editormenu add separator
-        }
-        set sel [$win tag ranges sel]
-        set state active
-        if {$sel eq ""} {
-            set state disabled
-        }
-        .editormenu add command -label "Cut" -underline 2 -state $state \
-              -command [list tk_textCut $win] -accelerator Ctrl+x
+            .editormenu add command -label "Cut" -underline 2 -state disabled \
+                  -command [list tk_textCut $win] -accelerator Ctrl+x
         
-        .editormenu add command -label "Copy" -underline 0 -state $state \
-              -command [list tk_textCopy $win] -accelerator Ctrl+c
-        .editormenu add command -label "Paste" -underline 0 \
-              -command [list tk_textPaste $win] -accelerator Ctrl+v
-        .editormenu add command -label "Delete" -underline 2 -state $state \
-              -command [list $self DeleteText $win] -accelerator Del
-        .editormenu add separator
-        .editormenu add command -label "Select All" -underline 7 \
-              -command [list $win tag add sel 1.0 end] -accelerator Ctrl+/
-        if {$options(-toolcommand) ne ""} {
+            .editormenu add command -label "Copy" -underline 0 -state disabled \
+                  -command [list tk_textCopy $win] -accelerator Ctrl+c
+            .editormenu add command -label "Paste" -underline 0 \
+                  -command [list tk_textPaste $win] -accelerator Ctrl+v
+            .editormenu add command -label "Delete" -underline 2 -state disabled \
+                  -command [list $self DeleteText $win] -accelerator Del
             .editormenu add separator
-            $self AddTool ;#[list -toolcommand $options(-toolcommand) -accelerator $options(-accelerator) -label $options(-toollabel)]
-        }
-        tk_popup .editormenu [winfo pointerx .] [winfo pointery .]
+            .editormenu add command -label "Select All" -underline 7 \
+                  -command [list $win tag add sel 1.0 end] -accelerator Ctrl+/
+            if {$options(-toolcommand) ne ""} {
+                .editormenu add separator
+                $self AddTool ;#[list -toolcommand $options(-toolcommand) -accelerator $options(-accelerator) -label $options(-toollabel)]
+            }
+            bind .editormenu <Map> [mymethod Menuconf]
+
+        } 
+        if {$post} {
+            tk_popup .editormenu [winfo pointerx .] [winfo pointery .]
+        } 
     }
     method TextRedo { } {
         catch {

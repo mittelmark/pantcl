@@ -8,7 +8,7 @@
 #  Author        : $Author$
 #  Created By    : Dr. Detlef Groth
 #  Created       : Tue Jan 17 05:48:00 2017
-#  Last Modified : <230603.0527>
+#  Last Modified : <230603.1104>
 #
 #  Description	 : Snit type as a base class to build Tk applications
 #
@@ -1088,15 +1088,25 @@ snit::type ::dgw::basegui {
     #'   in the application menubar. 
     #'   This function allows adding more menu points in inheriting applications or at a later point to the application.
     #'   At creation time or therafter additional configuration options can be given such as *-underline 0* for instance. Here an example for inserting new menu points  
+    #'   If the menuName argument is *main* the main menubar widget is returned
     #'
     #' > ```
     #' ::dgw::basegui app -style clam
     #' set fmenu [app getMenu "File"]
     #' $fmenu insert 0 command -label Open -underline 0 -command { puts Opening }
+    #' set mbar [app getMenu main]
+    #' set popup_menu [menu .popup]
+    #' $popup_menu add command -label "Cut" -command {puts "Cut"}
+    #' $popup_menu add command -label "Copy" -command {puts "Copy"}
+    #' $popup_menu add command -label "Paste" -command {puts "Paste"} 
+    #' $mbar insert 2 cascade -label Edit -underline 0 -menu $popup_menu
     #' > ```
     #'  
 
     method getMenu {name args} {
+        if {$name eq "main"} {
+            return .mbar
+        }
         set wpath [string tolower [regsub -all { } $name ""]]
         if {$top eq "."} {
             set t ""

@@ -29,7 +29,7 @@
 ##############################################################################
 #  Created By    : Detlef Groth
 #  Created       : Fri Feb 4 05:49:13 2022
-#  Last Modified : <230603.0521>
+#  Last Modified : <230603.1041>
 #
 #  Description	 : Graphical user interface to display
 #                 results from graphical tools created based with simple text.
@@ -92,6 +92,7 @@ proc ::fview::gui {} {
     $fmenu insert 4 command -label "Save as ..." -underline 1 -command ::fview::fileSaveAs
     bind all <Control-o> fview::fileOpen
     bind all <Control-s> fview::fileSave
+    #set emenu [$app getMenu "Edit"]    
     bind all <Control-V> fview::paneVertical
     bind all <Control-H> fview::paneHorizontal
     ttk::style layout WLabel [ttk::style layout TLabel]
@@ -101,9 +102,11 @@ proc ::fview::gui {} {
     set f [$app getFrame]
     set pwd [ttk::panedwindow $f.tframe -orient horizontal]
     set tf [ttk::frame $pwd.fr]
-    set t [tk::text $tf.text -wrap none -undo true]
+    set t [tk::text $tf.text -wrap word -undo true]
     dgw::txmixin $t dgw::txhighlight
     dgw::txmixin $t dgw::txpopup
+    [$app getMenu main] insert 2 cascade -label "Edit" -menu [$t getEditMenu] -underline 0
+
     dgw::txmixin $t dgw::txfontsize
     dgw::txmixin $t dgw::txtabspace
     $t configure -borderwidth 10 -relief flat 
