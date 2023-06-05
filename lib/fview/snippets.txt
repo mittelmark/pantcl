@@ -1,0 +1,38 @@
+snippet Markdown Main md:
+    ---
+    title: %cursor% (Your title)
+    author: Your Name
+    date: 2023-01-01
+    ---
+
+    ## Introduction
+
+snippet Markdown dot md:
+    ```{.dot eval=TRUE}
+    digraph g {
+        %cursor%
+        A -> B ;
+    } 
+    ```
+
+snippet Markdown neato md:
+    ```{.dot eval=TRUE}
+    digraph g {
+        %cursor%
+        A -> B ;
+    } 
+    ```
+
+snippet Graphviz Dot dot:
+    %cursor%
+    digraph g {
+        A -> B ;
+    } 
+
+
+snippet Graphviz Neato dot:
+    %cursor%
+    graph g {
+        A -- B ;
+    }
+

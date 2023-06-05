@@ -29,7 +29,7 @@
 ##############################################################################
 #  Created By    : Detlef Groth
 #  Created       : Fri Feb 4 05:49:13 2022
-#  Last Modified : <230603.1041>
+#  Last Modified : <230605.0847>
 #
 #  Description	 : Graphical user interface to display
 #                 results from graphical tools created based with simple text.
@@ -74,13 +74,13 @@ namespace eval fview {
         {{Markdown Files}  {.md .Tmd .Rmd}       }                                        
         {{All Files}        *            }
     }
-
+    variable snippetfile [file join [file dirname [info script]] snippets.txt]
 
 }
 proc ::fview::gui {} {
     variable filetypes
     variable app
-    set app [::dgw::basegui %AUTO% -style clam -title "DGFilterView, 2022"]
+    set app [::dgw::basegui %AUTO% -style clam -title "DGFilterView, 2023"]
     $app addStatusBar
     set info "\nValid and installed filters are:\n  - abc, dot, eqn, mmd,\n  - mtex, pic, pik, puml,\n  - rplot, tdot, tsvg\n"
     $app setAppname DGFilterView [package provide fview] "Detlef Groth" 2022 $info
@@ -151,9 +151,42 @@ proc ::fview::gui {} {
     set ::fview::text $tf.text
     set ::fview::text2 $tf2.text    
     set ::fview::filename ""
+    if {false} {
+        set tmenu [$app getMenu Templates -underline 0]
+        set ext [file extension $::fview::filename]
+        # TODO dynamic templates based on file extension
+        set md active ;#disabled
+        #if {[regexp {md$} $ext]} {
+        #    set md active
+        #}
+        $tmenu add command -label "Markdown document" -underline 0 -command [list ::fview::templateInsert md] -state $md   
+        
+        set dot active ;#disabled 
+        #if {[auto_execok dot] ne "" && $ext eq "dot"} {
+        #    set dot active
+        #}
+        $tmenu add command -label "Dot graph" -underline 0 -command [list ::fview::templateInsert dot] -state $dot
+        $tmenu add command -label "Neato graph" -underline 0 -command [list ::fview::templateInsert neato] -state $dot
+    }  else {
+        ::fview::menuTemplates
+    }
+    
     $app status "Press Control-Shift H or V to change layout!" 100
 }
 
+proc ::fview::templateInsert {type} {
+    set ext [file extension $::fview::filename]
+    set win $::fview::text
+    if {$ext in [list "" ".dot"] && $type == "dot"} {
+        $win insert [$win index insert] "digraph g {\n  A --> B ; \n}\n"
+    }
+    if {[regexp {md$} $ext] && $type == "dot"} {
+        $win insert [$win index insert] "```{.dot eval=true}\ndigraph g {\n  A --> B ; \n}\n```\n"
+    }
+    if {$type eq "md" && ([regexp {md$} $ext] || $ext eq "")} {
+        $win insert [$win index insert] "---\ntitle: your title\nauthor: your name\ndate: 2023-01-01\n---\n## Introduction\n"
+    }
+}
 proc ::fview::fileNew {} {
     variable app
     set win $::fview::text
@@ -302,6 +335,77 @@ proc ::fview::paneHorizontal {} {
     set ::fview::current txt1
     pack $::fview::pwd1 -side top -fill both -expand yes
 }
+proc ::fview::getSnippet {mnu smnu} {
+    variable snippetfile
+    set filename $snippetfile
+    if {$::fview::current eq "txt2"} {
+        set text $::fview::text2
+    } else {
+        set text $::fview::text
+    }
+    if [catch {open $filename r} infh] {
+        error "Cannot open $filename: $infh"
+    } else {
+        set flag  false
+        set txt ""
+        set cursor false
+        while {[gets $infh line] >= 0} {
+            if {[regexp "^snippet +$mnu +$smnu +" $line]} {
+                set flag true
+            } elseif {$flag && [regexp {^snippet} $line]} {
+                break
+            } elseif {$flag} {
+                if {[regexp {%cursor%} $line]}  {
+                    set cursor  true
+                }
+                append txt [regsub {^    } "$line\n" ""]
+            }
+        }
+    }
+    if {$txt ne ""} {
+        set pos [$text index insert]
+        $text insert $pos $txt
+        if {$cursor} {
+            set startPos [$text search -nocase -exact "%cursor%" $pos end]
+            if {$startPos ne ""} {
+                # Remove the "%cursor%" text
+                set endPos "$startPos + [string length "%cursor%"] chars"
+                $text delete $startPos $endPos
+                after idle [$text mark set insert $startPos]
+                #after 3000 [list tk::TextSetCursor $text $startPos]
+                focus -force $text
+            }
+        } 
+        set pos [$text index insert]
+    }
+}
+proc ::fview::menuTemplates {{filename ""}} {
+    variable app
+    variable snippetfile
+    set menu [$app getMenu Templates -underline 0]
+    if {$filename eq ""} {
+        set filename $snippetfile
+    } else {
+        set snippetfile $filename
+    }
+    if [catch {open $filename r} infh] {
+        error "Cannot open $filename: $infh"
+    } else {
+        array set cascades [list]
+        while {[gets $infh line] >= 0} {
+            # Process line
+            if {[regexp {^snippet +([A-Za-z0-9]+) +([A-Za-z0-9]+) +([a-z]+):} $line -> mnu smnu ftype]}  {
+                if {![info exists cascades($mnu)]} {
+                    set cascades($mnu) [string tolower ${menu}.$mnu]
+                    menu $cascades($mnu) -tearoff false
+                    $menu add cascade  -label $mnu -underline 0 -menu $cascades($mnu)
+                } 
+                $cascades($mnu) add command -label $smnu -command [list ::fview::getSnippet $mnu $smnu] 
+            }
+        }
+        close $infh
+    }
+}
 if {[info exists argv0] && $argv0 eq [info script]} {
     #puts "Usage: filter-view.tcl \[filename\]"
     fview::gui
@@ -311,6 +415,9 @@ if {[info exists argv0] && $argv0 eq [info script]} {
 
     }
 }
+
+set ::fview::templates "
+"
 
 #' ## DESCRIPTION
 #' 
