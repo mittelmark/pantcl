@@ -1,6 +1,6 @@
 snippet Markdown Main md:
     ---
-    title: %cursor% (Your title)
+    title: %cursor%
     author: Your Name
     date: 2023-01-01
     ---
@@ -23,6 +23,11 @@ snippet Markdown neato md:
     } 
     ```
 
+snippet Markdown rplot md:
+    ```{.rplot eval=TRUE}
+    %cursor%
+    ```
+
 snippet Graphviz Dot dot:
     %cursor%
     digraph g {
@@ -35,4 +40,8 @@ snippet Graphviz Neato dot:
     graph g {
         A -- B ;
     }
+
+snippet Rplot Simple r:
+    %cursor%
+    plot(1)
 

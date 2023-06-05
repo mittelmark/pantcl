@@ -29,7 +29,7 @@
 ##############################################################################
 #  Created By    : Detlef Groth
 #  Created       : Fri Feb 4 05:49:13 2022
-#  Last Modified : <230605.0847>
+#  Last Modified : <230605.1613>
 #
 #  Description	 : Graphical user interface to display
 #                 results from graphical tools created based with simple text.
@@ -151,26 +151,7 @@ proc ::fview::gui {} {
     set ::fview::text $tf.text
     set ::fview::text2 $tf2.text    
     set ::fview::filename ""
-    if {false} {
-        set tmenu [$app getMenu Templates -underline 0]
-        set ext [file extension $::fview::filename]
-        # TODO dynamic templates based on file extension
-        set md active ;#disabled
-        #if {[regexp {md$} $ext]} {
-        #    set md active
-        #}
-        $tmenu add command -label "Markdown document" -underline 0 -command [list ::fview::templateInsert md] -state $md   
-        
-        set dot active ;#disabled 
-        #if {[auto_execok dot] ne "" && $ext eq "dot"} {
-        #    set dot active
-        #}
-        $tmenu add command -label "Dot graph" -underline 0 -command [list ::fview::templateInsert dot] -state $dot
-        $tmenu add command -label "Neato graph" -underline 0 -command [list ::fview::templateInsert neato] -state $dot
-    }  else {
-        ::fview::menuTemplates
-    }
-    
+    ::fview::menuTemplates
     $app status "Press Control-Shift H or V to change layout!" 100
 }
 
@@ -383,6 +364,13 @@ proc ::fview::menuTemplates {{filename ""}} {
     variable app
     variable snippetfile
     set menu [$app getMenu Templates -underline 0]
+    if {[llength [winfo children $menu]] > 0} {
+        foreach child [winfo children $menu] {
+            destroy $child
+        }
+        $menu delete 0 [expr {[llength [winfo children $menu]]+3}]
+        
+    }
     if {$filename eq ""} {
         set filename $snippetfile
     } else {
@@ -394,7 +382,7 @@ proc ::fview::menuTemplates {{filename ""}} {
         array set cascades [list]
         while {[gets $infh line] >= 0} {
             # Process line
-            if {[regexp {^snippet +([A-Za-z0-9]+) +([A-Za-z0-9]+) +([a-z]+):} $line -> mnu smnu ftype]}  {
+            if {[regexp {^snippet +([A-Za-z0-9]+) +([A-Za-z0-9]+) +([A-Za-z]+):} $line -> mnu smnu ftype]}  {
                 if {![info exists cascades($mnu)]} {
                     set cascades($mnu) [string tolower ${menu}.$mnu]
                     menu $cascades($mnu) -tearoff false
@@ -405,6 +393,8 @@ proc ::fview::menuTemplates {{filename ""}} {
         }
         close $infh
     }
+    $menu add command -label "Refresh templates" -underline 0 -command [list ::fview::menuTemplates $snippetfile]
+    
 }
 if {[info exists argv0] && $argv0 eq [info script]} {
     #puts "Usage: filter-view.tcl \[filename\]"
