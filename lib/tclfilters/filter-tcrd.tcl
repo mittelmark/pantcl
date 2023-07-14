@@ -1,7 +1,7 @@
 #' ---
 #' title: "filter-tcrd.tcl documentation"
 #' author: "Detlef Groth, Caputh-Schwielowsee, Germany"
-#' date: 2023-03-08
+#' date: 2023-07-14
 #' tcrd:
 #'     results: show
 #'     eval: 1 
@@ -35,6 +35,7 @@
 #' The following options can be given via code chunks options or as defaults in the YAML header.
 #' 
 #' > - eval - should the code in the code block be evaluated, default: false (0)
+#'   - inline - are chords embedded inline within the text like this `Text [C]with [Am]chord!`, default: true (1)
 #'   - label - the code chunk label used as well for the image name, default: null
 #'   - results - should the output, the song text be show(n) or hid(d)e(n), default: show
 #'   - transpose - how many steps up or down to transpose, can be negative or positive, 0 means no transpose default: 0
@@ -136,6 +137,26 @@
 #' Obviously in a song book you do not want to show the source code, you can
 #' hide the source for the output by applying the chunk option `echo=false`.
 #' 
+#' Sometimes the chords are displayed above the text already,
+#' you then might like to transpose the given chords.
+#' You can do this by specifying the chunk option `inline=false` and
+#' give again the number of desired halfstep like below with `transpose=2`:
+#' 
+#' ```{.tcrd transpose=2 inline=false}
+#' C           G
+#' Dat du mien Leevsten b¸st
+#' Am          G  
+#' dat du wohl weeﬂ
+#' F                C          Am
+#' Kumm bi de Nacht kumm bi de Nacht
+#' G7         C 
+#' segg wo du heeﬂt
+#' F                C          Am
+#' Kumm bi de Nacht kumm bi de Nacht
+#' G7         C 
+#' segg wo du heeﬂt
+#' ```
+#' 
 #' ## See also:
 #' 
 #' * [Pantcl Readme](../../README.html)
@@ -143,6 +164,10 @@
 #' * [https://ozbcoz.com/Songs/index.php](https://ozbcoz.com/Songs/index.php) again just copy and paste
 #' * [https://www.mauimadison.com/songs.html](https://www.mauimadison.com/songs.html)
 #' * [ABC music notation filter](filter-abc.html)
+#' 
+#' ## CHANGES
+#' 
+#' - 2023-07-14 adding non-inline chord transpose
 #' 
 #' ## TODO:
 #' 
@@ -244,17 +269,46 @@ namespace eval tcrd {
         }
         return $nsong
     }
+    proc songtranspose {song transpose} {
+        set nsong  ""
+        foreach line [split $song "\n"] {
+            if {[regexp { [a-z]{2}} $line] || [regexp {[,?!]} $line]} {
+                append nsong "$line\n"
+            } else {
+                set nline ""
+                foreach chrd [split $line " "] {
+                    if {[regexp {^[A-G][#b]?} $chrd letter]} {
+                        set tchrd [transpose $letter $transpose]
+                        set nblock $tchrd
+                        append nblock [string range $chrd [string length $letter] end]
+                        append nline $nblock 
+                    } else {
+                        # whitespace probably
+                        append nline " "
+                    }
+                }
+                append nsong "$nline\n"
+            }
+        }
+        return $nsong
+    }
 }
 proc filter-tcrd {cont dict} {
     global n
     incr n
-    set def [dict create results show eval true include true label null transpose 0]
+    set def [dict create results show eval true include true label null transpose 0 inline true]
     set dict [dict merge $def $dict]
     if {![dict get $dict eval]} {
         return [list "" ""]
     }
     if {[catch {
-         set res [tcrd::chords $cont [dict get $dict transpose]] 
+         if {[dict get $dict inline]} {
+             set res [tcrd::chords $cont [dict get $dict transpose]] 
+         } elseif {[dict get $dict transpose] == 0}  {
+             set res $cont
+         } else {
+             set res [tcrd::songtranspose $cont [dict get $dict transpose]] 
+         }
      }]} {
          set res "Error: [regsub {\n +invoked.+} $::errorInfo {}]"
      }
