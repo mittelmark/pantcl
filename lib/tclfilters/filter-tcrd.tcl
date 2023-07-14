@@ -189,7 +189,7 @@ namespace eval tcrd {
         # check for chord
         set note [string map [list A# Bb C# Db D# Eb F# Gb G# Ab] $note]
         set tp [regsub {^[A-G]b?} $note ""]
-        set note [regsub {^([A-G]b?).+} $note "\\1"]
+        set note [regsub {^([A-G]b?).*} $note "\\1"]
         set notes [list Ab A Bb B C Db D Eb E F Gb G]
         set idx [lsearch $notes $note]
         if {$idx == -1} {
@@ -275,16 +275,37 @@ namespace eval tcrd {
             if {[regexp { [a-z]{2}} $line] || [regexp {[,?!]} $line]} {
                 append nsong "$line\n"
             } else {
-                set nline ""
-                foreach chrd [split $line " "] {
+                set ochords [split $line " "]
+                set nchords [list]
+                foreach chrd  $ochords {
                     if {[regexp {^[A-G][#b]?} $chrd letter]} {
                         set tchrd [transpose $letter $transpose]
-                        set nblock $tchrd
-                        append nblock [string range $chrd [string length $letter] end]
-                        append nline $nblock 
+                        lappend nchords "$tchrd[string range $chrd [string length $letter] end]"
                     } else {
                         # whitespace probably
-                        append nline " "
+                        lappend nchords " "
+                    }
+                }
+                set lag 0
+                set nline ""
+                for {set i 0} {$i < [llength $ochords]} {incr i 1} {
+                    set o [lindex $ochords $i]
+                    if {$o eq ""} {
+                        if {$lag > 0}  {
+                            append nline ""
+                            incr lag -1
+                        } else {
+                            append nline " "
+                        }
+                        continue
+                    }
+                    set n [lindex $nchords $i]
+                    set lag [expr {[string length $n] - [string length $o]}] 
+                    if {$lag < 0} {
+                        append nline "$n  "
+                        set lag 0
+                    } else {
+                        append nline "$n "
                     }
                 }
                 append nsong "$nline\n"
