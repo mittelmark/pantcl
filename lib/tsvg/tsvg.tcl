@@ -2,7 +2,7 @@
 ##############################################################################
 #  Created By    : Dr. Detlef Groth
 #  Created       : Sat Aug 28 09:52:16 2021
-#  Last Modified : <211201.1509>
+#  Last Modified : <230715.1703>
 #
 #  Description	 : Minimal tcl package to write SVG code and write it to 
 #                  a file.
@@ -18,6 +18,8 @@
 #                - 2021-08-28 - Version 0.1
 #                - 2021-08-30 - Version 0.2.0 automatic figures, error shown in document
 #                - 2021-12-01 - Version 0.3.0 adding export to png and pdf using cairosvg 
+#                - 2023-07-15 - Version 0.3.1 fix for height of images 
+#                                             making viewbox optional  
 #	
 ##############################################################################
 #
@@ -96,9 +98,9 @@
 #' > Writes the current svg code into the given filename with the 
 #'   given width and height settings. 
 #' 
-#' __tsvg inline__ 
+#' __tsvg inline__ ?viewbox?
 #' 
-#' > Returns the SVG code as inline SVG with a viewBox code which can be directly embedded within HTML pages. So the xml header is here missing.
+#' > Returns the SVG code as inline SVG with or without the svg viewBox code which can be directly embedded within HTML pages. So the xml header is here missing.
 #' 
 #' __tsvg write__ _filename_
 #' 
@@ -296,7 +298,7 @@
 #' 
 
 
-package provide tsvg 0.3.0
+package provide tsvg 0.3.1
 
 # minimal OOP
 proc thingy name {
@@ -406,11 +408,17 @@ namespace eval tsvg {
 }
 
 # SVG code which can be embedded directly into web pages
-tsvg proc inline {} {
+tsvg proc inline {{viewbox true}} {
     set self [self]
-    set ret "<svg viewBox=\"0 0 [$self set width] [$self set height]\" width=\"[$self set width]\" height=\"[$self set width]\" xmlns=\"http://www.w3.org/2000/svg\">\n"
+    if {$viewbox} {
+        set ret "<svg viewBox=\"0 0 [$self set width] [$self set height]\" width=\"[$self set width]\" height=\"[$self set height]\" xmlns=\"http://www.w3.org/2000/svg\">\n"
+    } else {
+        set ret ""
+    }
     append ret [$self set code]
-    append ret "\n</svg>"
+    if {$viewbox} {
+        append ret "\n</svg>"
+    }
     return $ret
 }
 

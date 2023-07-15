@@ -35,6 +35,8 @@
 #' The following options can be given via code chunks options or as defaults in the YAML header.
 #' 
 #' > - eval - should the code in the code block be evaluated, default: false (0)
+#'   - chord - are hte code chunk contain chord commands like `C 0003` to display chord charts for fretted instruments, default: false
+#'   - imagepath - if chord diagrams are generated the path for the stored images in svg format, default: images
 #'   - inline - are chords embedded inline within the text like this `Text [C]with [Am]chord!`, default: true (1)
 #'   - label - the code chunk label used as well for the image name, default: null
 #'   - results - should the output, the song text be show(n) or hid(d)e(n), default: show
@@ -157,6 +159,32 @@
 #' segg wo du heeﬂt
 #' ```
 #' 
+#' ## Chord diagrams
+#' 
+#' Here an example for a chord diagram for some Ukulele chords, chunk options are `{.tcrd chord=true}`:
+#' 
+#' ```{.tcrd chord=true echo=true}
+#' C  0003
+#' Dm 2210
+#' Em 0321
+#' F  2010
+#' G  0232
+#' Am 2000
+#' ```
+#' 
+#' And here some Guitar chords:
+#' 
+#' ```{.tcrd chord=true}
+#' G   320003
+#' Am  x02210
+#' Bm  x24432
+#' C   x32010
+#' D   xx0232
+#' Em  022000
+#' ```
+#' 
+#' To hide the input code you would use `{.tcrd chord=true echo=false}` as a code chunk option.
+#' 
 #' ## See also:
 #' 
 #' * [Pantcl Readme](../../README.html)
@@ -168,6 +196,7 @@
 #' ## CHANGES
 #' 
 #' - 2023-07-14 adding non-inline chord transpose
+#' - 2023-07-15 adding chord display for fretted instruments
 #' 
 #' ## TODO:
 #' 
@@ -214,6 +243,7 @@ namespace eval tcrd {
             }
             if {[regexp {^\s*\[[A-H][a-z0-9]*\]\s+-\s+\[[A-H][a-z0-9]*\].+} $line]} {
                 set line [regsub -all {[\[\]]} $line ""]
+                
                 foreach crd [split $line " "] {
                     if {[regexp {^[A-G]} $crd]} {
                         append nsong [transpose $crd $transpose]
@@ -272,7 +302,7 @@ namespace eval tcrd {
     proc songtranspose {song transpose} {
         set nsong  ""
         foreach line [split $song "\n"] {
-            if {[regexp { [a-z]{2}} $line] || [regexp {[,?!]} $line]} {
+            if {[regexp { [a-z]{2}} $line] || [regexp {[,?!]} $line] || [regexp {[a-zA-Z][a-z]{4,}} $line]} {
                 append nsong "$line\n"
             } else {
                 set ochords [split $line " "]
@@ -313,17 +343,87 @@ namespace eval tcrd {
         }
         return $nsong
     }
+    proc svgchords {name cstring {outfile ""}} {
+        tsvg set code ""
+        tsvg set width 100
+        tsvg set height 255
+        set ystart 50
+        tsvg text x 50 y 30 style "font: bold 24px sans-serif;" text-anchor middle $name 
+        tsvg line x1 10 y1 $ystart x2 92 y2 $ystart stroke-width 5 stroke black
+        set inc [expr {80/([string length $cstring]-1)}]
+        for { set x 0 } { $x < [string length $cstring] } { incr x } {
+            tsvg line x1 [expr {11+($x*$inc)}] y1 $ystart x2 [expr {10+($x*$inc)}] y2 251 stroke-width 2 stroke black
+        }
+        if {[string length $cstring] > 4} {
+            set r 8
+        } else {
+            set r 9
+        } 
+        set mx 5
+        for { set x 0 } { $x < $mx } { incr x } {    
+            tsvg line x1 10 y1 [expr {$ystart+40+($x*40)}] x2 90 y2 [expr {$ystart+40+($x*40)}] stroke-width 2 stroke black
+            for {set y 0} { $y < [string length $cstring] } { incr y } {
+                if {[string range $cstring $y $y] == $x} {
+                    if {$x > 0} {
+                        tsvg circle cx [expr {10+1+($y*$inc)}] cy [expr {$ystart-20+($x*40)}] r $r stroke maroon fill maroon
+                    }
+                }
+                if {$x == 0 && [string range $cstring $y $y] == "x"} {
+                    tsvg text x [expr {10+1+($y*$inc)}] y 42 style "font: 20px sans-serif;" text-anchor middle x
+                }
+                
+            }
+        }
+        if {$outfile ne ""} {
+            tsvg write $outfile
+        } else {
+            return [tsvg inline false]
+        }
+    }
 }
 proc filter-tcrd {cont dict} {
     global n
     incr n
-    set def [dict create results show eval true include true label null transpose 0 inline true]
+    set def [dict create results show eval true include true label null transpose 0 inline true \
+             chord false chordname "" imagepath images fig false]
     set dict [dict merge $def $dict]
     if {![dict get $dict eval]} {
         return [list "" ""]
     }
+    if {[dict get $dict chord]} {
+        dict set dict fig true
+    }
+        
+    set owd [pwd] 
+    if {[dict get $dict label] eq "null"} {
+        set fname [file join $owd [dict get $dict imagepath] chord-$n].svg
+    } else {
+        set fname [file join $owd [dict get $dict imagepath] [dict get $dict label]].svg
+    }
+
     if {[catch {
-         if {[dict get $dict inline]} {
+         if {[dict get $dict chord]} {
+             set svgall ""
+             set x 0
+             foreach line [split $cont "\n"] {
+                 set line [string trim $line]
+                 set line [regsub -all { +}  $line " "]
+                 foreach {key frets} [split $line " "] {
+                     append svgall "<g transform=\"translate([expr {$x*120}], 0)\">\n"
+                     append svgall [tcrd::svgchords $key $frets]
+                     append svgall "\n</g>\n"
+                 }
+                 incr x
+
+             }
+             set out [open $fname w 0600]
+             puts $out "<?xml version=\"1.0\" encoding=\"utf-8\" standalone=\"yes\"?>"
+             puts $out "   <svg version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" height=\"255\" width=\"[expr {120*$x}]\">"
+             puts $out $svgall
+             puts $out "</svg>"
+             close $out
+             set res $cont
+         } elseif {[dict get $dict inline]} {
              set res [tcrd::chords $cont [dict get $dict transpose]] 
          } elseif {[dict get $dict transpose] == 0}  {
              set res $cont
@@ -337,7 +437,12 @@ proc filter-tcrd {cont dict} {
     if {[dict get $dict results] eq "hide"} {
         set res ""
     }
-    return [list $res ""]
+    if {![dict get $dict fig]} {
+        set fname ""
+    } else {
+        set res ""
+    }
+    return [list $res $fname]
 }
 
 
