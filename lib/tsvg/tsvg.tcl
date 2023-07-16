@@ -2,9 +2,9 @@
 ##############################################################################
 #  Created By    : Dr. Detlef Groth
 #  Created       : Sat Aug 28 09:52:16 2021
-#  Last Modified : <230715.1703>
+#  Last Modified : <230716.0657>
 #
-#  Description	 : Minimal tcl package to write SVG code and write it to 
+#  Description	 : Minimal Tcl package to write SVG code and write it to 
 #                  a file.
 #
 #  Notes         : TODO - start and end flags to open and close a tag (done)
@@ -18,18 +18,29 @@
 #                - 2021-08-28 - Version 0.1
 #                - 2021-08-30 - Version 0.2.0 automatic figures, error shown in document
 #                - 2021-12-01 - Version 0.3.0 adding export to png and pdf using cairosvg 
-#                - 2023-07-15 - Version 0.3.1 fix for height of images 
-#                                             making viewbox optional  
+#                - 2023-07-15 - Version 0.3.1 
+#                                  - fix for height of images 
+#                                  - making viewbox optional  
+#                                  - adding combineSVG Method    
 #	
 ##############################################################################
 #
-#  Copyright (c) 2021 Dr. Detlef Groth.
+#  Copyright (c) 2021-2023 Detlef Groth, Germany
 # 
 #  License: MIT 
 # 
 ##############################################################################
 
-
+#' ---
+#' title: tsvg package 0.3.1
+#' author: Detlef Groth, Germany
+#' date: 2023-07-16
+#' tsvg:
+#'     eval: 1
+#' tcl:
+#'     eval: 1
+#' ---
+#' 
 #' ## NAME 
 #' 
 #' _tsvg_ - Thingy SVG writer - package to create svg image files with a syntax close to Tcl and to SVG.
@@ -89,6 +100,10 @@
 #' 
 #' > just an `interp alias` for `namespace current`
 #' 
+#' __tsvg combine__ _inputFiles outputFile_
+#' 
+#' > Combines several SVG files side by side, usually the should have the same height. See the demo which combines two simple "Hello World!" files
+#'
 #' __tsvg demo__ 
 #' 
 #' > Writes the "Hello World!" string into a file hello-world.svg in the current directory.
@@ -98,16 +113,20 @@
 #' > Writes the current svg code into the given filename with the 
 #'   given width and height settings. 
 #' 
-#' __tsvg inline__ ?viewbox?
+#' __tsvg inline__ _?viewbox?_
 #' 
 #' > Returns the SVG code as inline SVG with or without the svg viewBox code which can be directly embedded within HTML pages. So the xml header is here missing.
+#' 
+#' __tsvg readSvgDimension__ _filename_
+#' 
+#' > Returns the SVG dimensions for width and heigth given as an key-value list
 #' 
 #' __tsvg write__ _filename_
 #' 
 #' > Writes the current svg code into the given filename with the current width and height settings. 
 #'   Supported file extensions are *.svg* or if the tool *cairosvg* is installed as well *.png* and *.pdf*.
 #' 
-#' __tsvg tag__ tagname _args_
+#' __tsvg tag__ _tagname_ _args_
 #' 
 #' > Creates the given tagname and adds all remaining arguments as attibutes if they come 
 #'   in pairs. If the numer of arguments is odd, the last argument will be placed within 
@@ -130,22 +149,32 @@
 #' The typical Hello World example:
 #'
 #' ```{.tsvg label=hello-world}
+#' tsvg set width 100
+#' tsvg set height 100
 #' tsvg circle cx 50 cy 50 r 45 stroke black stroke-width 2 fill salmon
 #' tsvg text x 29 y 45 Hello
 #' tsvg text x 27 y 65 World!
-#' tsvg write hello-world.svg
+#' tsvg write images/hello-world.svg
 #' ```
 #' 
 #' The typical Hello World example but this time with hyphens to easier indicate the arguments:
 #'
 #' ```{.tsvg label=hello-world2}
 #' tsvg set code "" ;# clear 
-#' tsvg circle -cx 50 -cy 50 -r 45 -stroke black -stroke-width 2 -fill green
+#' tsvg circle -cx 50 -cy 50 -r 45 -stroke black -stroke-width 2 -fill skyblue
 #' tsvg text -x 29 -y 45 Hello
-#' tsvg text -x 27 -y 65 World!
-#' tsvg write hello-world2.svg
+#' tsvg text -x 25 -y 65 World2!
+#' tsvg write images/hello-world2.svg
 #' ```
 #' 
+#' Since version 0.3.1 there is as well a method `tsvg combine` wich can be used to combine two ore more SVG files side by side.
+#' 
+#' ```{.tsvg label=combined fig=false results=hide}
+#' tsvg combine [list images/hello-world.svg images/hello-world2.svg] combined.svg
+#' ```
+#' 
+#' ![](combined.svg)
+#'
 #' ### Pdf and Png writing
 #' 
 #' Since version 0.3.0 writing of PNG and PDF files is as well possible if the command line tool *cairosvg* is installed. You can install this tool either using your package manager, or if yo do not have administrator rights as ordinary user using the Python package installer like this:
@@ -158,6 +187,7 @@
 #' As this is an HTML document let's create a PNG file and display it thereafter, we add a red circle before:
 #' 
 #' ```{.tsvg label=test results=hide fig=true ext=png}
+#' tsvg set code "" ;# clear 
 #' tsvg circle -cx 50 -cy 50 -r 42 -stroke red -stroke-width 7 -fill none
 #' tsvg write hello-world2.png
 #' ```
@@ -190,10 +220,10 @@
 #'
 #' ```{.tsvg label=group-circles}
 #' tsvg set code ""
-#' tsvg set width 100
-#' tsvg set height 100
+#' tsvg set width 150
+#' tsvg set height 150
 #' tsvg g_start fill="white" stroke="green" stroke-width="5"
-#' tsvg circle cx="40" cy="40" r="25"
+#' tsvg circle cx="40" cy="40" r="35"
 #' tsvg circle cx="60" cy="60" r="25"
 #' tsvg g_end
 #' tsvg write group-circles.svg
@@ -204,13 +234,26 @@
 #' The _tsvg_ object as well offers a _inline_ method which returns SVG code ready to be embed directly within HTML pages.
 #' 
 #' ```{.tsvg results=show fig=false}
-#' tsvg circle cx="70" cy="70" r="25" stroke="blue" fill="white" stroke-width="5"
+#' tsvg circle cx="70" cy="70" r="15" stroke="blue" fill="white" stroke-width="5"
 #' tsvg write inline.svg
 #' tsvg inline
 #' ```
 #' 
 #' ![](inline.svg)
 #'
+#' 
+#' ### Information about SVG files
+#' 
+#' Since version 0.3.1 there is as well a command - getSvgDimensions` to get the width and height 
+#' of an SVG file.
+#' 
+#' ```{.tcl results=hide echo=false}
+#' source tsvg.tcl
+#' ```
+#' 
+#' ```{.tcl}
+#' puts [tsvg getSvgDimensions inline.svg]
+#' ```
 #' 
 #' ### Extending the tsvg command
 #' 
@@ -260,6 +303,7 @@
 #' * 2021-08-28 Version 0.1 with docu uploaded to GitHub
 #' * 2021-08-31 Version 0.2 fix for the header line
 #' * 2021-12-01 Version 0.3.0 adding write option for PNG and PDF files using cairosvg 
+#' * 2023-07-15 Version 0.3.1 fixing height issue, adding combine files method
 #'     
 #' ## SEE ALSO
 #' 
@@ -268,14 +312,14 @@
 #' 
 #' ## AUTHOR
 #' 
-#' Dr. Detlef Groth, Caputh-Schwielowsee, Germany, detlef(_at_)dgroth(_dot_).de
+#' Detlef Groth, Caputh-Schwielowsee, Germany, detlef(_at_)dgroth(_dot_).de
 #' 
 #' ## LICENSE
 #' 
 #' ```
 #' MIT License
 #' 
-#' Copyright (c) 2021 Dr. Detlef Groth, Caputh-Schwielowsee, Germany
+#' Copyright (c) 2021-2023 Detlef Groth, Caputh-Schwielowsee, Germany
 #' 
 #' Permission is hereby granted, free of charge, to any person obtaining a copy
 #' of this software and associated documentation files (the "Software"), to deal
@@ -469,6 +513,57 @@ tsvg proc figure {filename width height args} {
     return $filename.svg
 }
 
+tsvg proc combine {inputFiles outputFile} {
+    set self [self]
+    set combinedSvgCode "<?xml version=\"1.0\" encoding=\"utf-8\" standalone=\"yes\"?>\n"
+    append combinedSvgCode "<svg xmlns=\"http://www.w3.org/2000/svg\">\n"
+    set xTranslate 0
+    puts here
+    foreach inputFile $inputFiles {
+        set svgCode [$self ReadSvgFile $inputFile]
+        array set svgDimensions [$self getSvgDimensions $inputFile]
+        set combinedSvgCode "${combinedSvgCode}\n<g transform=\"translate(${xTranslate}, 0)\">\n${svgCode}\n</g>\n"
+
+        set xTranslate [expr {$xTranslate + $svgDimensions(width)}]
+    }
+
+    set combinedSvgCode "${combinedSvgCode}\n</svg>"
+    
+    set file [open $outputFile w]
+    puts -nonewline $file $combinedSvgCode
+    close $file
+}
+
+tsvg proc ReadSvgFile {filename} {
+    if {![file exists $filename]} {
+        error "Error: File '$filename' does not exists!"
+    }
+    set file [open $filename r]
+    set content ""
+    while {[gets $file line] >= 0} {
+        if {![regexp {(<\?xml|</?svg)} $line]} {
+            append content "$line\n"
+        }
+        
+    }
+    close $file
+    return $content
+}
+
+tsvg proc getSvgDimensions {filename} {
+    if {![file exists $filename]} {
+        error "Error: File '$filename' does not exists!"
+    }
+
+    set file [open $filename r]
+    set content [read $file]
+    close $file
+    set width [lindex [regexp -inline { width="(\d+)"} $content]  end]
+    set height [lindex [regexp -inline { height="(\d+)"} $content] end]
+    return [list width $width height $height]
+}
+
+
 # just a short demo 
 tsvg proc demo {} {
     set self [self]
@@ -478,6 +573,14 @@ tsvg proc demo {} {
     #$self figure 
     $self write hello-world.svg
     puts "Writing file hello-world.svg done!"
+    $self set code ""
+    $self circle cx 50 cy 50 r 45 stroke black stroke-width 2 fill skyblue
+    $self text x 29 y 45 Hello
+    $self text x 23 y 65 World2!
+    #$self figure 
+    $self write hello-world2.svg
+    puts "Writing file hello-world2.svg done!"
+    $self combine [list hello-world.svg hello-world2.svg] combined.svg
     $self set code ""
     $self set width 200 
     $self set height 250 
