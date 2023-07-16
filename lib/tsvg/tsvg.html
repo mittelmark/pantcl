@@ -156,7 +156,7 @@ tsvg text x="27" y="65" World!</code></pre>
 <blockquote>
 <p>just an <code>interp alias</code> for <code>namespace current</code></p>
 </blockquote>
-<p><strong>tsvg combine</strong> <em>inputFiles outputFile</em></p>
+<p><strong>tsvg combine</strong> <em>inputFiles ?outputFile?</em></p>
 <blockquote>
 <p>Combines several SVG files side by side, usually the should have the same height. See the demo which combines two simple “Hello World!” files</p>
 </blockquote>
@@ -214,8 +214,9 @@ tsvg text -x 25 -y 65 World2!
 tsvg write images/hello-world2.svg</code></pre>
 <p><img src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiIHN0YW5kYWxvbmU9InllcyI/PgogICAgPHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgaGVpZ2h0PSIxMDAiIHdpZHRoPSIxMDAiPgoKPGNpcmNsZSBjeD0iNTAiIGN5PSI1MCIgcj0iNDUiIHN0cm9rZT0iYmxhY2siIHN0cm9rZS13aWR0aD0iMiIgZmlsbD0ic2t5Ymx1ZSIgLz4KCjx0ZXh0IHg9IjI5IiB5PSI0NSI+CkhlbGxvCjwvdGV4dD4KCjx0ZXh0IHg9IjI1IiB5PSI2NSI+CldvcmxkMiEKPC90ZXh0PgoKPC9zdmc+Cg=="/><!--URL:/home/groth/workspace/pantcl/lib/tsvg/images/hello-world2.svg--></p>
 <p>Since version 0.3.1 there is as well a method <code>tsvg combine</code> wich can be used to combine two ore more SVG files side by side.</p>
-<pre class="tsvg" data-fig="false" data-results="hide" label="combined"><code>tsvg combine [list images/hello-world.svg images/hello-world2.svg] combined.svg</code></pre>
-<p><img src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiIHN0YW5kYWxvbmU9InllcyI/Pgo8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+Cgo8ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSgwLCAwKSI+Cgo8Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSI0NSIgc3Ryb2tlPSJibGFjayIgc3Ryb2tlLXdpZHRoPSIyIiBmaWxsPSJzYWxtb24iIC8+Cgo8dGV4dCB4PSIyOSIgeT0iNDUiPgpIZWxsbwo8L3RleHQ+Cgo8dGV4dCB4PSIyNyIgeT0iNjUiPgpXb3JsZCEKPC90ZXh0PgoKCjwvZz4KCjxnIHRyYW5zZm9ybT0idHJhbnNsYXRlKDEwMCwgMCkiPgoKPGNpcmNsZSBjeD0iNTAiIGN5PSI1MCIgcj0iNDUiIHN0cm9rZT0iYmxhY2siIHN0cm9rZS13aWR0aD0iMiIgZmlsbD0ic2t5Ymx1ZSIgLz4KCjx0ZXh0IHg9IjI5IiB5PSI0NSI+CkhlbGxvCjwvdGV4dD4KCjx0ZXh0IHg9IjIzIiB5PSI2NSI+CldvcmxkMiEKPC90ZXh0PgoKCjwvZz4KCjwvc3ZnPg=="/><!--URL:combined.svg--></p>
+<p></p>
+<pre class="tsvg" data-results="asis" label="combined"><code>tsvg combine [list images/hello-world.svg images/hello-world2.svg]</code></pre>
+<p><img src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiIHN0YW5kYWxvbmU9InllcyI/PgogICAgPHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgaGVpZ2h0PSIxMDAiIHdpZHRoPSIyMDAiPgo8ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSgwLCAwKSI+Cgo8Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSI0NSIgc3Ryb2tlPSJibGFjayIgc3Ryb2tlLXdpZHRoPSIyIiBmaWxsPSJzYWxtb24iIC8+Cgo8dGV4dCB4PSIyOSIgeT0iNDUiPgpIZWxsbwo8L3RleHQ+Cgo8dGV4dCB4PSIyNyIgeT0iNjUiPgpXb3JsZCEKPC90ZXh0PgoKCjwvZz4KPGcgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoMTAwLCAwKSI+Cgo8Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSI0NSIgc3Ryb2tlPSJibGFjayIgc3Ryb2tlLXdpZHRoPSIyIiBmaWxsPSJza3libHVlIiAvPgoKPHRleHQgeD0iMjkiIHk9IjQ1Ij4KSGVsbG8KPC90ZXh0PgoKPHRleHQgeD0iMjUiIHk9IjY1Ij4KV29ybGQyIQo8L3RleHQ+CgoKPC9nPgoKPC9zdmc+Cg=="/><!--URL:/home/groth/workspace/pantcl/lib/tsvg/images/combined.svg--></p>
 <h3 id="pdf-and-png-writing">Pdf and Png writing</h3>
 <p>Since version 0.3.0 writing of PNG and PDF files is as well possible if the command line tool <em>cairosvg</em> is installed. You can install this tool either using your package manager, or if yo do not have administrator rights as ordinary user using the Python package installer like this:</p>
 <pre><code>pip3 install cairosvg --user </code></pre>
@@ -223,7 +224,7 @@ tsvg write images/hello-world2.svg</code></pre>
 <pre class="tsvg" data-ext="png" data-fig="true" data-results="hide" label="test"><code>tsvg set code "" ;# clear 
 tsvg circle -cx 50 -cy 50 -r 42 -stroke red -stroke-width 7 -fill none
 tsvg write hello-world2.png</code></pre>
-<p><img src="data:image/png;base64,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"/><!--URL:/home/groth/workspace/pantcl/lib/tsvg/images/test.png--></p>
+<p><img src="data:image/png;base64,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"/><!--URL:/home/groth/workspace/pantcl/lib/tsvg/images/test.png--></p>
 <p>For inclusion of images into LaTeX documents I would recommend using the PDF output format.</p>
 <p>To continue with an other image you have first to clean up the previous image:</p>
 <pre class="tsvg" label="basic-shapes"><code>tsvg set code "" ;# clear 
@@ -269,7 +270,6 @@ tsvg inline</code></pre>
 <p><img src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiIHN0YW5kYWxvbmU9InllcyI/PgogICAgPHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgaGVpZ2h0PSIxNTAiIHdpZHRoPSIxNTAiPgoKPGcgZmlsbD0id2hpdGUiIHN0cm9rZT0iZ3JlZW4iIHN0cm9rZS13aWR0aD0iNSI+CjxjaXJjbGUgY3g9IjQwIiBjeT0iNDAiIHI9IjM1IiAvPgoKPGNpcmNsZSBjeD0iNjAiIGN5PSI2MCIgcj0iMjUiIC8+CjwvZz4KPGNpcmNsZSBjeD0iNzAiIGN5PSI3MCIgcj0iMTUiIHN0cm9rZT0iYmx1ZSIgZmlsbD0id2hpdGUiIHN0cm9rZS13aWR0aD0iNSIgLz4KCjwvc3ZnPgo="/><!--URL:inline.svg--></p>
 <h3 id="information-about-svg-files">Information about SVG files</h3>
 <p>Since version 0.3.1 there is as well a command - getSvgDimensions` to get the width and height of an SVG file.</p>
-<p></p>
 <div class="sourceCode" id="cb12"><pre class="sourceCode tcl"><code class="sourceCode tcl"><span id="cb12-1"><a aria-hidden="true" href="#cb12-1" tabindex="-1"></a><span class="kw">puts</span> <span class="kw">[</span>tsvg getSvgDimensions inline.svg<span class="kw">]</span></span></code></pre></div>
 <pre class="tclout"><code>width 150 height 150
 </code></pre>
@@ -305,7 +305,7 @@ tsvg logo_tsvg logo.svg</code></pre>
 <li>2021-08-28 Version 0.1 with docu uploaded to GitHub</li>
 <li>2021-08-31 Version 0.2 fix for the header line</li>
 <li>2021-12-01 Version 0.3.0 adding write option for PNG and PDF files using cairosvg</li>
-<li>2023-07-15 Version 0.3.1 fixing height issue, adding combineSVG</li>
+<li>2023-07-15 Version 0.3.1 fixing height issue, adding combine files method, own repo, License now BSD</li>
 </ul>
 <h2 id="see-also">SEE ALSO</h2>
 <ul>
@@ -315,26 +315,33 @@ tsvg logo_tsvg logo.svg</code></pre>
 <h2 id="author">AUTHOR</h2>
 <p>Detlef Groth, Caputh-Schwielowsee, Germany, detlef(<em>at</em>)dgroth(<em>dot</em>).de</p>
 <h2 id="license">LICENSE</h2>
-<pre><code>MIT License
+<pre><code>BSD 3-Clause License
 
-Copyright (c) 2021-2023 Detlef Groth, Caputh-Schwielowsee, Germany
+Copyright (c) 2023, D Groth
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+1. Redistributions of source code must retain the above copyright notice, this
+list of conditions and the following disclaimer.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.</code></pre>
+2. Redistributions in binary form must reproduce the above copyright notice,
+this list of conditions and the following disclaimer in the documentation
+and/or other materials provided with the distribution.
+
+3. Neither the name of the copyright holder nor the names of its
+contributors may be used to endorse or promote products derived from
+this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+         SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.</code></pre>
 </body>
-</html><!--Generated by HTMLArk 2023-07-16 06:56:38.587212. Original URL tsvg-temp.html-->
+</html><!--Generated by HTMLArk 2023-07-16 09:19:42.292145. Original URL tsvg-temp.html-->

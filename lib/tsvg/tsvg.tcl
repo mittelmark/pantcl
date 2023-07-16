@@ -2,7 +2,7 @@
 ##############################################################################
 #  Created By    : Dr. Detlef Groth
 #  Created       : Sat Aug 28 09:52:16 2021
-#  Last Modified : <230716.0657>
+#  Last Modified : <230716.0919>
 #
 #  Description	 : Minimal Tcl package to write SVG code and write it to 
 #                  a file.
@@ -100,7 +100,7 @@
 #' 
 #' > just an `interp alias` for `namespace current`
 #' 
-#' __tsvg combine__ _inputFiles outputFile_
+#' __tsvg combine__ _inputFiles ?outputFile?_
 #' 
 #' > Combines several SVG files side by side, usually the should have the same height. See the demo which combines two simple "Hello World!" files
 #'
@@ -169,12 +169,14 @@
 #' 
 #' Since version 0.3.1 there is as well a method `tsvg combine` wich can be used to combine two ore more SVG files side by side.
 #' 
-#' ```{.tsvg label=combined fig=false results=hide}
-#' tsvg combine [list images/hello-world.svg images/hello-world2.svg] combined.svg
+#' ```{.tcl echo=false results=hide}
+#' source tsvg.tcl
+#' ```
+#'
+#' ```{.tsvg label=combined results=asis}
+#' tsvg combine [list images/hello-world.svg images/hello-world2.svg]
 #' ```
 #' 
-#' ![](combined.svg)
-#'
 #' ### Pdf and Png writing
 #' 
 #' Since version 0.3.0 writing of PNG and PDF files is as well possible if the command line tool *cairosvg* is installed. You can install this tool either using your package manager, or if yo do not have administrator rights as ordinary user using the Python package installer like this:
@@ -247,10 +249,6 @@
 #' Since version 0.3.1 there is as well a command - getSvgDimensions` to get the width and height 
 #' of an SVG file.
 #' 
-#' ```{.tcl results=hide echo=false}
-#' source tsvg.tcl
-#' ```
-#' 
 #' ```{.tcl}
 #' puts [tsvg getSvgDimensions inline.svg]
 #' ```
@@ -303,7 +301,7 @@
 #' * 2021-08-28 Version 0.1 with docu uploaded to GitHub
 #' * 2021-08-31 Version 0.2 fix for the header line
 #' * 2021-12-01 Version 0.3.0 adding write option for PNG and PDF files using cairosvg 
-#' * 2023-07-15 Version 0.3.1 fixing height issue, adding combine files method
+#' * 2023-07-15 Version 0.3.1 fixing height issue, adding combine files method, own repo, License now BSD
 #'     
 #' ## SEE ALSO
 #' 
@@ -317,27 +315,34 @@
 #' ## LICENSE
 #' 
 #' ```
-#' MIT License
+#' BSD 3-Clause License
 #' 
-#' Copyright (c) 2021-2023 Detlef Groth, Caputh-Schwielowsee, Germany
+#' Copyright (c) 2023, D Groth
 #' 
-#' Permission is hereby granted, free of charge, to any person obtaining a copy
-#' of this software and associated documentation files (the "Software"), to deal
-#' in the Software without restriction, including without limitation the rights
-#' to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-#' copies of the Software, and to permit persons to whom the Software is
-#' furnished to do so, subject to the following conditions:
+#' Redistribution and use in source and binary forms, with or without
+#' modification, are permitted provided that the following conditions are met:
 #' 
-#' The above copyright notice and this permission notice shall be included in all
-#' copies or substantial portions of the Software.
+#' 1. Redistributions of source code must retain the above copyright notice, this
+#' list of conditions and the following disclaimer.
 #' 
-#' THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-#' IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-#' FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-#' AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-#' LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-#' OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-#' SOFTWARE.
+#' 2. Redistributions in binary form must reproduce the above copyright notice,
+#' this list of conditions and the following disclaimer in the documentation
+#' and/or other materials provided with the distribution.
+#' 
+#' 3. Neither the name of the copyright holder nor the names of its
+#' contributors may be used to endorse or promote products derived from
+#' this software without specific prior written permission.
+#' 
+#' THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+#' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+#' IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+#' DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+#' FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+#' DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+#'          SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+#' CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+#' OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+#' OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #' ```
 #' 
 
@@ -513,25 +518,26 @@ tsvg proc figure {filename width height args} {
     return $filename.svg
 }
 
-tsvg proc combine {inputFiles outputFile} {
+tsvg proc combine {inputFiles {outputFile ""}} {
     set self [self]
-    set combinedSvgCode "<?xml version=\"1.0\" encoding=\"utf-8\" standalone=\"yes\"?>\n"
-    append combinedSvgCode "<svg xmlns=\"http://www.w3.org/2000/svg\">\n"
+    set combinedSvgCode ""
     set xTranslate 0
-    puts here
     foreach inputFile $inputFiles {
         set svgCode [$self ReadSvgFile $inputFile]
         array set svgDimensions [$self getSvgDimensions $inputFile]
-        set combinedSvgCode "${combinedSvgCode}\n<g transform=\"translate(${xTranslate}, 0)\">\n${svgCode}\n</g>\n"
-
+        append combinedSvgCode "<g transform=\"translate(${xTranslate}, 0)\">\n${svgCode}\n</g>\n"
         set xTranslate [expr {$xTranslate + $svgDimensions(width)}]
     }
-
-    set combinedSvgCode "${combinedSvgCode}\n</svg>"
-    
-    set file [open $outputFile w]
-    puts -nonewline $file $combinedSvgCode
-    close $file
+    $self set code $combinedSvgCode
+    $self set width $xTranslate
+    $self set height $svgDimensions(width)
+    #puts $combinedSvgCode
+    if {$outputFile ne ""} {
+        $self write $outputFile
+    } else {
+        $self write test.svg
+        return $combinedSvgCode
+    }
 }
 
 tsvg proc ReadSvgFile {filename} {
@@ -541,7 +547,7 @@ tsvg proc ReadSvgFile {filename} {
     set file [open $filename r]
     set content ""
     while {[gets $file line] >= 0} {
-        if {![regexp {(<\?xml|</?svg)} $line]} {
+        if {![regexp {<\?xml} $line] && ![regexp {<svg} $line] && ![regexp {</svg>} $line]} {
             append content "$line\n"
         }
         
