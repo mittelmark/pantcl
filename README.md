@@ -1,4 +1,4 @@
-# Pantcl
+# Pantcl ![](https://github.com/mittelmark/pantcl/actions/workflows/main.yml/badge.svg)
 
 Standalone Tcl application for document conversion with support for Tcl based
 filters using the Pandoc document processor or Tcl only.
