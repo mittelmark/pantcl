@@ -3,8 +3,9 @@
 #          for literate programming
 # Author: Detlef Groth, Schwielowsee, Germany
 # Version: 0.9.12 - 2023-04-17
+# Version: 0.9.13 - 2023-09-07
 
-package provide pantcl 0.9.12
+package provide pantcl 0.9.13
 namespace eval ::pantcl { }
 
 if {[llength $argv] > 0 && ([lsearch -exact $argv -v] >= 0 || [lsearch -exact $argv --version] >= 0)} {
@@ -431,17 +432,18 @@ proc ::pantcl::lineFilter {argv} {
                     set res [filter-$filt $cont $dchunk]
                     if {[dict get $dchunk echo]} {
                         # TODO: indentation adding if was there"
-                        puts $out "$ind```${filt}inn\n$cont\n$ind```"
+                        puts $out "$ind```${filt}inn\n$cont$ind```"
                     }
                     if {[lindex $res 0] ne ""} {
                         if {[dict get $dchunk results] eq "show"} {
                             # TODO: indentation adding if was there"
                             # remove trailing newline as we add our own
                             set r [regsub {\n$} [lindex $res 0] ""]
+                            set r [string map  {&amp;gt; &gt;} $r] ;#BUG in markdown lib?
                             puts $out "\n$ind```${filt}out\n$r\n$ind```"
                         } elseif {[dict get $dchunk results] eq "asis"} {
                             set ores [regsub {^```} [lindex $res 0] "\n"]
-                            puts $out "\n$ores\n"
+                            puts $out "$ores\n"
                         }
                     }
                     if {[lindex $res 1] ne ""} {
@@ -620,7 +622,7 @@ if {[info exists argv] && [llength $argv] > 1 && [file exists [lindex $argv 0]]}
 #' ---
 #' title: pantcl filter documentation - 0.9.12
 #' author: Detlef Groth, Schwielowsee, Germany
-#' date: 2023-05-26
+#' date: 2023-09-13
 #' tcl:
 #'    echo: "true"
 #'    results: show
@@ -1015,7 +1017,7 @@ if {[info exists argv] && [llength $argv] > 1 && [file exists [lindex $argv 0]]}
 #' * 2023-03-11 - version 0.9.11
 #'    * eval is now per default `false` for all filters
 #'    * support for Rst and LaTeX as input if pantcl is used as a filter
-#' * 2023-0X-XX - version 0.9.12
+#' * 2023-04-06 - version 0.9.12
 #'    * adding filter-emf.tcl for MicroEmacs macro language
 #'    * adding external Tcl filter support via YAML declaration
 #'    * adding example user/filter-geasy.tcl as example for the latter
@@ -1025,6 +1027,9 @@ if {[info exists argv] && [llength $argv] > 1 && [file exists [lindex $argv 0]]}
 #'    * filter for Julia code, however Julia is slow at startup and even slower at plotting
 #'    * support for pandoc single percent title, author, date at the beginning of documents
 #'    * extending support for tangle for non Tcl code chunks
+#' * 2023-09-07 - version 0.9.13
+#'    * support for --inline option to allow inlining of images and css files
+#'    * bug fix for image/img-tag
 #'    
 #' ## SEE ALSO
 #' 
