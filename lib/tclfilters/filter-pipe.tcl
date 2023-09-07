@@ -357,7 +357,7 @@ proc ::fpipe::filter-pipe-R-df2md {} {
                     }
                 }
             }
-            fin <- paste0(c(headr, sepr, substr(st,1,nchar(st)-1)), collapse="\n")
+            fin <- paste0(c("\n \n ",headr, sepr, substr(st,1,nchar(st)-1)), collapse="\n")
             if (caption!='') {
                 fin=paste0(fin,'\n',caption,'\n')
             }
@@ -445,15 +445,18 @@ proc filter-pipe {cont dict} {
     if {!([dict get $dict results] in [list show asis])} {
         set res ""
     } 
-    if {[dict get $dict results] eq "asis" && ([string range [dict get $dict pipe] 0 0] eq "R" || [dict get $dict pipe] eq "python")} {
+    if {[dict get $dict results] eq "asis" && [string range [dict get $dict pipe] 0 0] in [list "R" "python"]} {
         set nres ""
         set res [regsub -- {\|\|---:} $res "|\n|---:"]
         foreach line [split $res \n] {
-            if {![regexp {^[+>]} $line]} {
+            ## not sure where this K comes from ...
+            if {![regexp {^[+>]} $line] && ![regexp {^.\[K>} $line]} {
                 append nres "$line\n"
             }
         }
         set res $nres
+     } else {
+        set res [regsub {^.\[K> } $res ""]
     }
     if {[dict get $dict results] in [list show asis] && [string range [dict get $dict pipe] 0 1] eq "oc"} {
         set nres ""
