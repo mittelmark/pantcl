@@ -4,7 +4,7 @@ exec tclsh "$0" "$@"
 ##############################################################################
 #  Author        : Dr. Detlef Groth
 #  Created       : Fri Nov 15 10:20:22 2019
-#  Last Modified : <230602.2042>
+#  Last Modified : <230907.0838>
 #
 #  Description	 : Command line utility and package to extract Markdown documentation 
 #                  from programming code if embedded as after comment sequence #' 
@@ -122,7 +122,7 @@ package require Tcl 8.4
 if {[package provide Markdown] eq ""} {
     package require Markdown
 }
-package provide mkdoc::mkdoc 0.6.1
+package provide mkdoc::mkdoc 0.7.0
 package provide mkdoc [package present mkdoc::mkdoc]
 namespace eval mkdoc {
     variable mkdocfile [info script]
@@ -319,7 +319,7 @@ proc mkdoc::mkdoc {filename outfile args} {
     if {[llength $args] == 1} {
         set args {*}$args
     }
-    ::mkdoc::pargs arg [list mode "" css ""] $args
+    ::mkdoc::pargs arg [list mode "" css "" inline false] $args
     set mode $arg(mode)
     if {$mode ni [list "" html markdown man pandoc]} {
         set file [file join [file dirname $mkdocfile] ${mode}.tcl]
@@ -398,7 +398,17 @@ proc mkdoc::mkdoc {filename outfile args} {
         if {$arg(css) eq ""} {
             set document(style) $style
         } else {
-            set document(style) "<link rel='stylesheet' href='$arg(css)' type='text/css'>"
+            if {$arg(inline)} {
+                if [catch {open $arg(css) r} infh] {
+                    error "Cannot open $arg(css): $infh"
+                } else {
+                    set document(style) [read $infh]
+                }
+                close $infh
+                set document(style) "<style>\n$document(style)\n</style>"
+            } else {
+                set document(style) "<link rel='stylesheet' href='$arg(css)' type='text/css'>"
+            }
         }
         set mdhtml ""
         set YAML ""
@@ -492,12 +502,14 @@ proc mkdoc::mkdoc {filename outfile args} {
                     dict set dmeths $dkey "$ometh$indent$line\n"
                     continue
                 }
-                set line [regsub -all {!\[\]\((.+?)\)} $line "<image src=\"\\1\"></img>"]
+                set line [regsub -all {!\[\]\((.+?)\)} $line "<img src=\"\\1\"></img>"]
                 append mdhtml "$indent$line\n"
             }
         }
         if {$mode eq "html"} {
             set htm [Markdown::convert $mdhtml]
+            ## Fixing issue in markdown package(?)
+            set htm [string map {&amp;gt; &gt; &amp;quot; &quot;} $htm] 
             set html ""
             # synopsis fix as in tcllib with blue background
             set synopsis false
@@ -512,6 +524,27 @@ proc mkdoc::mkdoc {filename outfile args} {
                     set line [regsub {<pre>} $line "<pre class='synopsis'>"]
                 } 
                 set line [regsub {(<pre class='code)'(><code class=')(.+?)'>} $line "\\1 \\3'\\2\\3'>"]
+                if {$arg(inline)} {
+                    if {[regexp {<img src="(.+?)"} $line]} {
+                        set imgname [regsub {.*<img src="(.+?)".+} $line "\\1"]
+                        if {![regexp {^http} $imgname]} {
+                            set ext [regsub {.+\.([a-zA-Z]{2,4})$} $imgname "\\1"]
+                            set imgname [file join [file dirname $filename] $imgname]
+                            set mode rb
+                            if {$ext eq "svg"} {
+                                set mode r
+                                set ext "svg+xml"
+                            }
+                            if [catch {open $imgname $mode} infh] {
+                                error "Cannot open $imgname: $infh"
+                            } else {
+                                set imgdata [binary encode base64 [read $infh]]
+                                close $infh
+                                set line [regsub {.*<img src="(.+?)"} $line "<img src=\"data:image/$ext;base64, $imgdata\""]
+                            }
+                        }
+                    }
+                }
                 append html "$line\n"
             }
             set out [open $outfile w 0644]
@@ -632,11 +665,12 @@ if {[info exists argv0] && $argv0 eq [info script]} {
         puts "        --md   give Markdown output event if outputfile extension is not md"
         puts "        --pandoc command line argument will emmit as well the YAML header"
         puts "          header which is a Markdown extension."
-        puts "     --css file.css: use the given stylesheet filename instead of the"
+        puts "     --css file.css - use the given stylesheet filename instead of the"
         puts "           inbuild default on"
-        puts "     --help: shows this help page"        
-        puts "     --version: returns the package version"
-        puts "     --run: runs the example section in the input file finishs after the given time (default) 1"        
+        puts "     --inline true|false - inline the given style sheet and the images"
+        puts "     --help    - shows this help page"
+        puts "     --version - returns the package version"
+        puts "     --run     - runs the example section in the input file finishs after the given time (default) 1"
         puts "  Example: extract mkdoc's own embedded documentation as html:"
         puts "       tclsh mkdoc.tcl mkdoc.tcl mkdoc.html" 
         #        puts "        The -rox2md flag extracts roxygen2 R documentation from R script files"
