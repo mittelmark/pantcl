@@ -1,5 +1,8 @@
 # Pantcl ![](https://github.com/mittelmark/pantcl/actions/workflows/main.yml/badge.svg)
 
+__Currently  the filter for function for pandoc version larger than 3.0 is broken, only the standalone
+line filtering does work!__
+
 Standalone Tcl application for document conversion with support for Tcl based
 filters using the Pandoc document processor or Tcl only.
 
