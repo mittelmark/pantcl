@@ -389,15 +389,15 @@ proc ::pantcl::lineFilter {argv} {
                 }
             }
             set x 0
-            while {!$pre && [regexp -nocase {`(r|py) +([^`]+)`} $line -> lang code]} {
+            while {!$pre && [regexp {`(r|py) +([^`]+)`} $line -> lang code]} {
+                
                 if {$lang eq "r"} { set lang R }
-                if {$lang eq "py"} { set lang python }                
+                if {$lang eq "py"} { set lang python }                    
                 set res [filter-pipe $code [dict create pipe $lang eval true]]
-                if {$lang eq "python"} {
-                    set res [string replace [lindex $res 0] 0 [expr {[string length $code]+3}] ""]
-                } else {
-                    set res [regsub {.+\[1\] } [lindex $res 0] ""]
-                }
+                set res [regsub {.*>>>} [lindex $res 0] ""]
+                set res [string range $res [expr {[string length $code]+2}] end]
+                set res [regsub {.+\[1\] } $res ""]
+                set res [regsub {^ +} $res ""]
                 set line [regsub {`(r|py) +([^`]+)`} $line $res]
                 # to avoid endless loops
                 if {[incr x] > 10} {
