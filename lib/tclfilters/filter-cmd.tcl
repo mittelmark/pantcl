@@ -36,7 +36,7 @@
 #' 
 #' > - cachedir - directory where the files should be stored, default to
 #'     `~/.config/pantcl` on Unix systems and  `AppData/Local/pantcl` on
-#'     Windows
+#'     Windows, set to a . (dot) to place the files in the current working directory
 #'   - eval - should the code in the code block be evaluated, default: false
 #'   - file - the output filename for the code which will be executed using the given shebang line on top, if not given, code will be evaluated line by line, default: null
 #'   - results - should the output of the command line application been shown, should be asis, show or hide, default: show
@@ -48,7 +48,7 @@
 #'  ----
 #'  title: "filter-cmd.tcl documentation"
 #'  author: "Detlef Groth, Caputh-Schwielowsee, Germany"
-#'  date: 2021-12-27
+#'  date: 2024-07-23
 #'  cmd:
 #'      results: hide
 #'      eval: 1
@@ -509,10 +509,49 @@
 #' } 
 #' ```
 #'
-#' Please take car that you need to use the same file extension in your shebang
+#' Please take care that you need to use the same file extension in your shebang
 #' line  and for your file argument, if your file ends in `cpp` as well your
 #' shebang has to use not `cxx` but `cpp` in the first line, the compiler line.
 #'
+#' Sometimes your code required other files in the same directory or in files being
+#' in relative order to the current source code, for instance if you include local
+#' header files. In this case you should set the `cachedir` property to a `.` (dot) 
+#' to indicate the current working directory. Here an example using the `[popl.h](https://github.com/badaix/popl)` 
+#' argument parsing library.
+#' 
+#' ```{.cmd file="poplex.cxx",cachdir="."}
+#' ///usr/bin/g++ -o "${0%.cxx}" -I. "$0" && exec "${0%.cxx}"
+#' #include <iostream>
+#' #include "include/popl.hpp"
+#' 
+#' void usage (char * appname) {
+#'     std::cout << "Usage: " << appname << " [-h, --help | -v, --verbose | -r, --rounding int]\n";
+#' }
+#' int main (int argc, char * argv[]) {
+#'     popl::OptionParser app(
+#'           "popl application\nUsage: poplex [options] number\nOptions");
+#'     auto help   = app.add<popl::Switch>("h", "help",
+#'           "produce help message");
+#'     auto verbose   = app.add<popl::Switch>("v", "verbose",
+#'           "set verbose on");
+#'     auto round = app.add<popl::Value<int>>("r", "round", 
+#'           "rounding digits",2);
+#'     if (argc == 1) { 
+#'         usage(argv[0]); 
+#'         return(0);
+#'     }
+#'     app.parse(argc, argv); 
+#'     // print auto-generated help message
+#'     if (help->is_set()) {
+#'         std::cout << app << "\n";
+#'         return(0);
+#'     } else if (verbose->is_set()) {
+#'         std::cout << "verbose is on\n";
+#'     }
+#'     return(0);
+#' }
+#' ```
+#' 
 #' ## Go, Rust and Vlang
 #'
 #' Here an example for the Go language (`{.cmd file="hello.go"}`):
@@ -571,7 +610,7 @@
 proc filter-cmd {cont dict} {
     global n
     incr n
-    set def [dict create results asis eval true label null file null\
+    set def [dict create results asis eval true label null file null \
              include true app sh cachedir [pantcl::getCacheDir]]
     # TODO: dict app using
     set dict [dict merge $def $dict]
