@@ -159,7 +159,7 @@ proc filter-eqn {cont dict} {
     puts $out $cont
     close $out
     # TODO: error catching
-    set res [exec cat $fname.eqn | [dict get $dict app] -density [dict get $dict density] \
+    set res [exec -ignorestderr cat $fname.eqn | [dict get $dict app] -density [dict get $dict density] \
              -format [dict get $dict ext] -background [dict get $dict background] \
              -bordercolor [dict get $dict background] -alpha off -colorspace RGB \
              -border [dict get $dict border] > $fname.[dict get $dict ext]]

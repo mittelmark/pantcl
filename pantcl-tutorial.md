@@ -700,14 +700,15 @@ The complete code was:
 And here an example for the EQN language:
 
 
-```{.eqn echo=false eval=true}
+```{.eqn echo=false eval=true density=144}
 x = {-b +- sqrt{b sup 2 - 4ac}} over 2a
 ```
 
-The code here was (the indentation of five spaces is just to avoid interpretation):
+The  code  here  was  (the  indentation  of  five  spaces  is  just  to  avoid
+interpretation), density 144 was used to make the equation smaller:
 
 ```
-     ```{.eqn echo=false eval=true}
+     ```{.eqn echo=false eval=true density=144}
      x = {-b +- sqrt{b sup 2 - 4ac}} over 2a
      ```
 ```
@@ -725,7 +726,7 @@ diagrams. The downloads of *fossil* for various platforms can be found here
 If the *fossil* application is in your PATH ou can create easily as well
 *pikchr* diagrams. Here an example:
 
-```{.pikchr app=fossil-2.17 ext=svg eval=true}
+```{.pikchr app=fossil ext=svg eval=true}
 box "box"
 circle "circle" fill cornsilk at 1 right of previous
 ellipse "ellipse" at 1 right of previous
@@ -737,7 +738,7 @@ file "file" at 1 right of previous
 The code for this diagram follows below:
 
 ```
-` ``{.pikchr app=fossil-2.17 ext=pdf eval=true}
+` ``{.pikchr app=fossil ext=pdf eval=true}
 box "box"
 circle "circle" fill cornsilk at 1 right of previous
 ellipse "ellipse" at 1 right of previous
@@ -747,9 +748,7 @@ file "file" at 1 right of previous
 ` ``
 ```
 
-The option `app=fossil-2.17` was used to use a newer version of the *fossil*
-application than the default one. Please note, that at least *fossil* in
-version 2.13 is required.
+Please note, that at least *fossil* in version 2.13 or higher is required.
  
 We can as well resize the image. In this case we have to create a *png*
 extension. As conversion from svg to png is then required we need a tool
@@ -763,7 +762,7 @@ Should do this. The advantage if using this tool is, that we beside resizing
 we can as well create PDF's for inclusion into LaTeX documents. 
 Here an example for a PNG image.
 
-```{.pikchr label=fossil-sample app=fossil-2.17 ext=png width=500 height=300 eval=true}
+```{.pikchr label=fossil-sample app=fossil ext=png width=500 height=300 eval=true}
 box "box"
 circle "circle" fill cornsilk at 1 right of previous
 ellipse "ellipse" at 1 right of previous
@@ -776,7 +775,7 @@ file "file" at 1 right of previous
 Here is the code:
 
 ```
-` ``{.pikchr app=fossil-2.17 ext=png  width=500 height=300 eval=true}
+` ``{.pikchr app=fossil ext=png  width=500 height=300 eval=true}
 ` ``
 ```
 
