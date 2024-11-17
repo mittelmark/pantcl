@@ -2,7 +2,7 @@
 ##############################################################################
 #  Author        : Dr. Detlef Groth
 #  Created       : Fri Nov 15 10:20:22 2019
-#  Last Modified : <241117.0830>
+#  Last Modified : <241117.0850>
 #
 #  Description	 : Command line utility and package to extract Markdown documentation 
 #                  from programming code if embedded as after comment sequence #' 
@@ -141,6 +141,7 @@ package require yaml
 package require Markdown
 
 package provide mkdoc 0.9.0
+package provide mkdoc::mkdoc 0.9.0
 
 namespace eval mkdoc {
     variable deindent [list \n\t \n "\n    " \n]

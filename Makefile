@@ -6,10 +6,13 @@ default:
 	
 pantcl-docu:
 	pandoc header.md -o header.html
-	tclsh pantcl.tcl pantcl.tcl pantcl.html --css mini.css -s
+	TCLLIBPATH=lib tclsh pantcl.tcl pantcl.tcl pantcl.md --no-pandoc 
+	pandoc pantcl.md -o pantcl.html --css mini.css -s
 	htmlark pantcl.html -o pantcl-out.html
 	mv pantcl-out.html pantcl.html
-	tclsh pantcl.tcl pantcl-tutorial.md pantcl-tutorial.html --css mini.css -s  --toc \
+	echo done
+	tclsh pantcl.tcl pantcl-tutorial.md pantcl-tutorial-out.md --no-pandoc
+	pandoc pantcl-tutorial-out.md -o pantcl-tutorial.html -s --css mini.css  --toc \
 		--lua-filter=lib/tclfilters/smallcaps.lua
 	htmlark pantcl-tutorial.html -o pantcl-out.html
 	mv pantcl-out.html pantcl-tutorial.html

@@ -563,7 +563,7 @@ you can enter neato code in your code chunk here an example:
 
 
 ```
-` ``{.dot label=neato-sample app=neato eval=true}
+` ``{.dot label=neato app=neato eval=true}
 graph G {
     node [shape=box,style=filled,fillcolor=skyblue,
         color=black,width=0.4,height=0.4];
@@ -575,7 +575,7 @@ graph G {
 Which will produce this:
 
 
-```{.dot label=neato-sample app=neato eval=false}
+```{.dot label=neato app=neato eval=false}
 graph G {
     node [shape=box,style=filled,fillcolor=skyblue,
         color=black,width=0.4,height=0.4];

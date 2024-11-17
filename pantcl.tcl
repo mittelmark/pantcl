@@ -648,9 +648,9 @@ if {[info exists argv] && [llength $argv] > 1 && [file exists [lindex $argv 0]]}
 }
 
 #' ---
-#' title: pantcl filter documentation - 0.9.12
+#' title: pantcl filter documentation - 0.9.14
 #' author: Detlef Groth, Schwielowsee, Germany
-#' date: 2023-09-13
+#' date: 2024-11-17
 #' tcl:
 #'    echo: "true"
 #'    results: show
