@@ -55,6 +55,7 @@ if {[llength $argv] > 0 && ([lsearch -regex $argv {-h$}] >= 0 || [lsearch -regex
     puts "         $argv0 --version                  - display the version"
     puts "         $argv0 infile outfile --no-pandoc - use the standalone converter"
     puts "         $argv0 infile outfile --tangle .tcl - extract all code from .tcl chunks"
+    puts "         $argv0 infile outfile --mathjax true --no-pandoc - render equations within the document"
     puts "\nUsage (GUI): $argv0 --gui \[infile]\n"
     puts "        Supported infiles: abc, dot, eqn, mmd, mtex, pic, pik, puml, rplot, tdot, tsvg\n"
     puts "Examples:\n"
@@ -177,8 +178,7 @@ set css {
     .left {
         display: flex;
         justify-content: flex-start;
-     }
-
+    }
 }    
 # some helper functions
 # some generic helper functions
@@ -400,7 +400,7 @@ proc ::pantcl::lineFilter {argv} {
                 if {$lang eq "py"} { set lang python }                    
                 set res [filter-pipe $code [dict create pipe $lang eval true]]
                 set res [regsub {.*>>>} [lindex $res 0] ""]
-                set res [string range $res [expr {[string length $code]+2}] end]
+                set res [string range $res [expr {[string length $code]+1}] end]
                 set res [regsub {.+\[1\] } $res ""]
                 set res [regsub {^ +} $res ""]
                 set line [regsub {`(r|py) +([^`]+)`} $line $res]
@@ -530,6 +530,12 @@ proc ::pantcl::lineFilter {argv} {
     }
     close $out
     if {$mode eq "html"} {
+        if {![lsearch -glob $argv *-mathjax] > -1} {
+            if {[dict exists $yamldict mathjax] && [dict get $yamldict mathjax]} {
+                lappend argv -mathjax 
+                lappend argv true
+            }   
+        }
         mkdoc::mkdoc $outfile [regsub -- {-out.md} $outfile ".html"] {*}[lrange $argv 2 end]
         file delete $outfile
     }
@@ -594,13 +600,13 @@ if {[info exists argv] && [llength $argv] > 1 && [file exists [lindex $argv 0]]}
         set pandoc false
     } 
     if {[file extension [lindex $argv 1]] eq ".html" && [lsearch [lrange $argv 1 end] --css] == -1} {
-        if {![file exists pandoc-filter.css]} {
-            set out [open pandoc-filter.css w 0600]
+        if {![file exists pantcl.css]} {
+            set out [open pantcl.css w 0600]
             puts $out $css
             close $out
         }
         lappend argv --css
-        lappend argv pandoc-filter.css
+        lappend argv pantcl.css
     }
     if {[file extension [lindex $argv 0]] in [list .tcl .tm .py .R .r .c .cxx .cpp .m .pl .pm .h .hpp .hxx]} {
         set tempfile [file tempfile].md 
@@ -1052,6 +1058,8 @@ if {[info exists argv] && [llength $argv] > 1 && [file exists [lindex $argv 0]]}
 #' * 2023-09-07 - version 0.9.13
 #'    * support for --inline option to allow inlining of images and css files
 #'    * bug fix for image/img-tag
+#' * 2024-11-13 - version 0.9.14
+#'    * updating to newer mkdoc with support for mathjax equations and highlightjs library
 #'    
 #' ## SEE ALSO
 #' 
