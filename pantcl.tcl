@@ -174,6 +174,11 @@ set css {
         text-align: left; 
         padding: 10px;
     }
+    .left {
+        display: flex;
+        justify-content: flex-start;
+     }
+
 }    
 # some helper functions
 # some generic helper functions
