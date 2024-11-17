@@ -23,9 +23,9 @@ filter-docs: filter-abc.html \
 	 -rm -f mini*png octave.png plot.R plotR.png pyhist.png sample* sin*
 	 -rm -f sqlite-?.sqlite test*
 %.html: %.tcl mini.css
-	pandoc header.md -o header.html
+	pandoc-2.19.2 header.md -o header.html
 	# -B header.html 
-	tclsh ../../pantcl.tcl $< temp.html -s --css mini.css \
+	pandoc-2.19.2 --filter ../../pantcl.tcl $< temp.html -s --css mini.css \
 		-M date="`date +"%b %d, %Y"`" --syntax-definition ../../xml/emf.xml
 	htmlark temp.html -o `basename $< .tcl`.html
 	rm temp.html
