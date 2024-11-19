@@ -95,9 +95,10 @@
 #' 
 #' ```
 #' #!/bin/sh
+#' ## file ~/bin/hw-button.sh
 #' if [ -z $2 ] ; then
 #'     echo "Usage: hwbutton.sh 'rectangle \" title \" color'" outfile.png
-#'     return
+#'     exit
 #' fi
 #' echo "@startuml" > temp.uml
 #' echo "skinparam handwritten true" >> temp.uml

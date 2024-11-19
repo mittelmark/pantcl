@@ -401,8 +401,10 @@ proc ::pantcl::lineFilter {argv} {
                 set res [filter-pipe $code [dict create pipe $lang eval true]]
                 set res [regsub {.*>>>} [lindex $res 0] ""]
                 set res [string range $res [expr {[string length $code]+1}] end]
-                set res [regsub {.+\[1\] } $res ""]
-                set res [regsub {^ +} $res ""]
+                set res [regsub {.*\[1\] } $res ""]
+                set res [string trim $res]
+                #set res [regsub {^ +} $res ""]
+                #set res [regsub { +$} $res ""]
                 set line [regsub {`(r|py) +([^`]+)`} $line $res]
                 # to avoid endless loops
                 if {[incr x] > 10} {
@@ -648,9 +650,9 @@ if {[info exists argv] && [llength $argv] > 1 && [file exists [lindex $argv 0]]}
 }
 
 #' ---
-#' title: pantcl filter documentation - 0.9.14
+#' title: pantcl filter documentation - 0.9.12
 #' author: Detlef Groth, Schwielowsee, Germany
-#' date: 2024-11-17
+#' date: 2023-09-13
 #' tcl:
 #'    echo: "true"
 #'    results: show
