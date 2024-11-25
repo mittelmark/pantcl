@@ -227,7 +227,7 @@
 #' \end{psgoboard*}
 #' ```
 #' 
-#' The *psg* package us using the *pstricks* package and so needs a special conversion via *dvips* so that's why the LaTeX engine must be set to *dvips*.
+#' The *psgo* package us using the *pstricks* package and so needs a special conversion via *dvips* so that's why the LaTeX engine must be set to *dvips*.
 #' 
 #' Next we display a sudoku (`{.mtex packages="sudoku"}`):
 #' 
@@ -244,7 +244,6 @@
 #' |9| |3| | | |6| |4|.
 #' \end{sudoku}
 #' ```
-#' 
 #' ### Tikz package code
 #' 
 #' Let's now finally add examples using the famous *tikz* package or packages build on top of the *tkiz*
@@ -263,6 +262,9 @@
 #' \draw[<->, ultra thick] (A) to[out=45, in=135] (C);
 #' \end{tikzpicture}
 #' ```
+#' 
+#' For more possibilities to use tikz graphics you should have a look at 
+#' the *tikz* and at the *pgf* manual.
 #' 
 #' And here a plot using the *pgfplot* package `{.mtex packages="pgfplots" latex="pdflatex"}`.
 #' 
@@ -293,7 +295,7 @@
 #' To include more lines of LaTeX code before the acutal document section you can use the *header* 
 #' code chunk option like shown here (`{.mtex packages="tikz" header="tikz-tree.tex" latex="pdflatex" ext="svg" resize="150%"}`). WE further set the output format to *svg* to improve the display quality:
 #' 
-#' ```{.mtex packages="tikz" header="tikz-tree.tex" latex="pdflatex" ext="svg" resize="150%"}
+#' ```{.mtex packages="tikz" header="tikz-tree.tex" latex="latex" ext="svg" resize="150%"}
 #' \scalebox{1.1}{
 #' \begin{tikzpicture}
 #'   [
@@ -335,7 +337,7 @@
 #' 
 #' And now as well a *tikz* based calendar (`{.mtex packages="[calendar]tikz" latex="pdflatex"}`):
 #' 
-#' ```{.mtex packages="[calendar]tikz" latex="pdflatex"}
+#' ```{.mtex packages="tikz" header="calendar.tex" latex="pdflatex"}
 #' \tikz 
 #' \calendar
 #'     [dates=2022-01-01 to 2022-02-last,week list,
@@ -359,9 +361,9 @@
 #' \end{tikzpicture}}
 #' ```
 #' 
-#' And here a mindmap example (`{.mtex packages="[mindmap]tikz" latex="pdflatex" ext="svg"}`):
+#' And here a mindmap example (`{.mtex packages="tikz" latex="latex" ext="svg"}`):
 #' 
-#' ```{.mtex packages="[mindmap]tikz" latex="pdflatex" ext="svg"}
+#' ```{.mtex packages="tikz" header="calendar.tex" latex="latex" ext="svg"}
 #' \tikz
 #' [root concept/.append style={concept color=red!30},
 #'    level 1 concept/.append style={concept color=red!20},
@@ -395,9 +397,7 @@
 #'   \end{tikzpicture}
 #' ```
 #' 
-#' For more possibilities to use tikz graphics you should have a look at 
-#' the *tikz* and at the *pgf* manual.
-#' 
+
 #' ## See also:
 #' 
 #' * [Pantcl Readme](../../README.html)
@@ -417,6 +417,7 @@
 #
 ##############################################################################
 proc filter-mtex {cnt dict} {
+    puts stderr $cnt
 set codestart {
 \documentclass[preview]{standalone}
 \usepackage{amsmath}

@@ -592,12 +592,17 @@ if {[info exists argv] && [llength $argv] > 1 && [file exists [lindex $argv 0]]}
         pantcl::tangle {*}$argv
         return
     }
+    if {[catch {package require rl_json}]} {
+       if {![lsearch $argv --no-pandoc] > 1} {
+          lappend argv --no-pandoc
+       }
+    }
     if {[lsearch $argv --no-pandoc] > 1 || [auto_execok pandoc] eq ""} {
         package require yaml
         package require mkdoc::mkdoc
         set idx [lsearch $argv --no-pandoc] 
         if {$idx > 0} {
-            set argv [lreplace $argv $idx $idx {}]
+            set argv [lsearch -inline -all -not -exact $argv --no-pandoc]
         }
         set pandoc false
     } 
@@ -650,9 +655,9 @@ if {[info exists argv] && [llength $argv] > 1 && [file exists [lindex $argv 0]]}
 }
 
 #' ---
-#' title: pantcl filter documentation - 0.9.12
+#' title: pantcl filter documentation - 0.9.14
 #' author: Detlef Groth, Schwielowsee, Germany
-#' date: 2023-09-13
+#' date: 2024-11-25
 #' tcl:
 #'    echo: "true"
 #'    results: show

@@ -3,7 +3,7 @@
 #' author: "Detlef Groth, Caputh-Schwielowsee, Germany"
 #' date: 2023-04-15
 #' emf:
-#'     app: me
+#'     app: mec
 #'     eval: 1
 #' ---
 #' 

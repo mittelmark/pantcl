@@ -146,7 +146,7 @@ proc filter-mmd {cont dict} {
     puts $out $cont
     close $out
     # TODO: error catching
-    set res [exec [dict get $dict app]  -i $fname.mmd -o $fname.[dict get $dict ext] \
+    set res [exec -ignorestderr [dict get $dict app]  -i $fname.mmd -o $fname.[dict get $dict ext] \
              -w [dict get $dict width] -H [dict get $dict height] -t [dict get $dict theme] \
              -b [dict get $dict background]]
     if {[dict get $dict results] eq "show"} {

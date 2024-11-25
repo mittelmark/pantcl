@@ -2,7 +2,7 @@
 #' ---
 #' title: Tcl application and package dealing with bibtex references.
 #' author: Detlef Groth, University of Potsdam, Germany
-#' date: <230530.1427>
+#' date: 2024-11-25
 #' tcl:
 #'     eval: 1
 #' bibliography: assets/literature.bib
@@ -14,12 +14,13 @@
 #
 #  History       : 2023-05-25: initial version
 #                  2023-05-26: first functional version created with aid of ChatGPT
+#                  2024-11-25: Documentation updates, some tests
 #	
 ##############################################################################
 #
-#  Copyright (c) 2023 Dr. Detlef Groth.
+#  Copyright (c) 2023-2024 Dr. Detlef Groth.
 # 
-#  License:      BSD3
+#  License:      BSD 3
 # 
 ##############################################################################
 #' 
@@ -53,7 +54,7 @@
 
 package require Tcl
 package require bibtex
-package provide citer 0.1.0
+package provide citer 0.1.1
 
 namespace eval citer {
     variable style 
@@ -328,8 +329,12 @@ namespace eval citer {
 #' again a number 1 citation. Instead of citer the approach embedding references
 #' using the at sign should work as well. Here is an example for 
 #' Sievers et. al [@Sievers2011].
+#'
+#' Let's now check non existing citations like `tcl citer::cite Dummy2525` or using
+#' the at syntax like [@Dummay2525].
 #' ```
 #' 
+#'
 #' And here the output:
 #' 
 #' This filter as well supports basic reference management using Bibtex files.
@@ -345,6 +350,9 @@ namespace eval citer {
 #' again a number 1 citation. Instead of citer the approach embedding references
 #' using the at sign should work as well. Here is an example for 
 #' Sievers et. al [@Sievers2011].
+#'
+#' Let's now check non existing citations like `tcl citer::cite Dummy2525` or using
+#' the at syntax like [@Dummy2525].
 #' 
 #' The citations list can be then finally displayed like this:
 #' 
@@ -412,11 +420,37 @@ if {[info exists argv0] && $argv0 eq [info script] && [regexp citer $argv0]} {
         } elseif {[lindex $argv 0] eq "--test"} {
             package require tcltest
             set argv [list] 
-            tcltest::test dummy-1.1 {
-                Calling my proc should always return a list of at least length 3
+            tcltest::test pkg-1.1 {
+                Check package version
             } -body {
-                set result 1
-            } -result {1}
+                package present citer
+            } -result {0.1.1}
+            tcltest::test cite-1.1 {
+                Calling cite with an existing key.
+            } -body {
+                citer::bibliography assets/literature.bib
+                citer::cite Yachdav2016
+            } -result {[Yachdav2016]}
+            tcltest::test cite-1.2 {
+                Calling cite with an existing key.
+            } -body {
+                citer::cite Groth2013
+            } -result {[Groth2013]}
+            tcltest::test cite-1.3 {
+                Calling cite with an non existing key.
+            } -body {
+                citer::cite Dummy1901
+            } -result {[Dummy1901]}
+            tcltest::test biblio-1.1 {
+                Retrieving first item
+            } -body {
+                lindex [citer::bibliography tcl] 0
+            } -result {Dummy1901 {Error: Dummy1901 - reference not found!}}
+            tcltest::test biblio-1.2 {
+                Retrieving second item
+            } -body {
+                lindex [citer::bibliography tcl] 1
+            } -result {Groth2013 {Groth, D., Hartmann, S., Klie, S., Selbig, J. (2013). Principal Components Analysis. In: Computational Toxicology, Humana Press. 930: 527-547.}}
             tcltest::cleanupTests
             catch { destroy . }
         } else {
@@ -450,7 +484,7 @@ if {[info exists argv0] && $argv0 eq [info script] && [regexp citer $argv0]} {
 #' ```
 #' BSD 3-Clause License
 #'
-#' Copyright (c) 2023, Detlef Groth, University of Potsdam
+#' Copyright (c) 2023-2024, Detlef Groth, University of Potsdam
 #' 
 #' Redistribution and use in source and binary forms, with or without
 #' modification, are permitted provided that the following conditions are met:

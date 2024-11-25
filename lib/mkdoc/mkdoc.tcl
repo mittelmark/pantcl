@@ -2,7 +2,7 @@
 ##############################################################################
 #  Author        : Dr. Detlef Groth
 #  Created       : Fri Nov 15 10:20:22 2019
-#  Last Modified : <241117.0850>
+#  Last Modified : <241122.1644>
 #
 #  Description	 : Command line utility and package to extract Markdown documentation 
 #                  from programming code if embedded as after comment sequence #' 
@@ -19,6 +19,7 @@
 #                  2023-09-07 Release 0.7.1 (img tag fix)
 #                  2023-11-18 Release 0.8.0 
 #                  2024-11-16 Release 0.9.0 Mathjax support
+#                  2024-11-21 Release 0.10.0 auto refresh support
 #	
 ##############################################################################
 #
@@ -33,8 +34,9 @@
 #
 ##############################################################################
 #' ---
-#' title: mkdoc::mkdoc 0.9.0
+#' title: mkdoc::mkdoc 0.10.0
 #' author: Detlef Groth, Schwielowsee, Germany
+#' date: 2024-11-22
 #' css: mkdoc.css
 #' ---
 #' 
@@ -51,10 +53,10 @@
 #'  - [SYNOPSIS](#synopsis)
 #'  - [DESCRIPTION](#description)
 #'  - [COMMAND](#command)
-#'      - [mkdoc::mkdoc](#mkdoc)
-#'      - [mkdoc::run](#run)
 #'  - [EXAMPLE](#example)
-#'  - [BASIC FORMATTING](#format)
+#'  - [FORMATTING](#format)
+#'     - [Code Blocks](#code-blocks)
+#'     - [Equations](#equations)
 #'  - [INSTALLATION](#install)
 #'  - [SEE ALSO](#see)
 #'  - [CHANGES](#changes)
@@ -68,21 +70,23 @@
 #'
 #' ```
 #' package require mkdoc::mkdoc
-#' mkdoc::mkdoc inputfile outputfile ?--css file1.css,file2.css? ?--header header.html? ?--footer footer.html? \
-#'    ?--javascript highlightjs|file1.js,file2.js? ?--mathjax true?
+#' mkdoc::mkdoc inputfile outputfile ?--css file1.css,file2.css? \
+ä'    ?--header header.html? ?--footer footer.html? \
+#'    ?--javascript highlightjs|file1.js,file2.js? ?--mathjax true? ?--refresh 10?
 #' ```
 #'
 #' Usage as command line application for extraction of Markdown comments prefixed with `#'`:
 #'
 #' ```
-#' mkdoc inputcodefile outputfile.md 
+#' mkdoc inputcodefile outputfile.md ?options?
 #' ```
 #'
 #' Usage as command line application for conversion of Markdown to HTML:
 #'
 #' ```
 #' mkdoc inputfile.md outputfile.html ?--css file.css,file2.css --header header.html \
-#'   --footer footer.html --javascript highlighjs|filename1,filename2  --mathjax true?
+#'   --footer footer.html --javascript highlighjs|filename1,filename2  --mathjax true \
+#'   --refresh 10?
 #' ```
 #'
 #' ## <a name='description'>DESCRIPTION</a>
@@ -102,7 +106,7 @@
 #' ## <a name='command'>COMMAND</a>
 #'
 #'  <a name="mkdoc"> </a>
-#' **mkdoc::mkdoc** *infile outfile ?--css file.css --header header.html --footer footer.html --mathjax true? *
+#' **mkdoc::mkdoc** *infile outfile ?--css file.css --header header.html --footer footer.html --mathjax true --refresh 10? *
 #' 
 #' > Extracts the documentation in Markdown format from *infile* and writes the documentation 
 #'    to *outfile* either in Markdown, Doctools  or HTML format. 
@@ -114,6 +118,7 @@
 #'   - *--header header.html* if outfile is an HTML file add this header after  the opening body tag
 #'   - *--javascript highlighjs|filename1,filename2* if outfile is an HTML file embeds either the hilightjs Javascript hilighter or the given local javascript filename(s) 
 #'   - *--mathjax true|false* should there be the MathJax library included
+#'   - *--refresh 0|10* should there be the autorefresh header included only values above 9 are consudered
 #'     
 #' > If the file extension of the outfile is either html or htm a HTML file is created. If the output
 #'   file has other file extension the documentation after _#'_ comments is simply extracted and stored
@@ -131,8 +136,9 @@
 #'
 #' > ```
 #' package require mkdoc::mkdoc
-#' mkdoc::mkdoc mkdoc.tcl mkdoc.html
-#' mkdoc::mkdoc mkdoc.tcl mkdoc.md 
+#' mkdoc::mkdoc mkdoc.tcl mkdoc.html              ## simple HTML page
+#' mkdoc::mkdoc mkdoc.tcl mkdoc.md                ## just output a Markdown page
+#' mkdoc::mkdoc mkdoc.tcl mkdoc.html --refresh 20 ## reload HTML page every twenty seconds
 #' > ```
 
 package require Tcl 8.6
@@ -140,8 +146,8 @@ package require Tcl 8.6
 package require yaml
 package require Markdown
 
-package provide mkdoc 0.9.0
-package provide mkdoc::mkdoc 0.9.0
+package provide mkdoc 0.10.0
+package provide mkdoc::mkdoc 0.10.0
 
 namespace eval mkdoc {
     variable deindent [list \n\t \n "\n    " \n]
@@ -153,20 +159,21 @@ namespace eval mkdoc {
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta name="title" content="$document(title)">
 	<meta name="author" content="$document(author)">
+        $document(refresh)
 	<title>$document(title)</title>
-	$style
-        
         $document(javascript)
         $document(mathjax)
+	$style
+        $stylejs
 	</head>
 	<body>
         $document(header)
     }]
     variable footer [string map $deindent {
-        $document(footer)
-        </body>
-        </html>
-    }]
+    $document(footer)
+</body>
+</html>
+}]
     variable htmlstart [string map $deindent {
 	<h1 class="title">$document(title)</h1>
 	<h2 class="author">$document(author)</h2>
@@ -192,7 +199,8 @@ proc mkdoc::mkdoc {filename outfile args} {
     variable htmlstart
     variable mkdocstyle
 
-    array set arg [list --css "" --footer "" --header "" --javascript "" --mathjax false]
+    array set arg [list --css "" --footer "" --header "" --javascript "" \
+                   --mathjax false --refresh 0]
     array set arg $args
     if {[file extension $filename] eq [file extension $outfile]} {
 	return -code error "Error: infile and outfile must have different file extensions!"
@@ -276,6 +284,7 @@ proc mkdoc::mkdoc {filename outfile args} {
             }
             dict set yamldict css $css
         }
+        set stylejs ""
         if {$arg(--javascript) ne ""} {
             if {$arg(--javascript) eq "highlightjs"} {
                 dict set yamldict javascript [string map $deindent {
@@ -285,7 +294,11 @@ proc mkdoc::mkdoc {filename outfile args} {
                 <script src="https://unpkg.com/@highlightjs/cdn-assets@11.9.0/languages/tcl.min.js"></script>
                 <!-- Initialize highlight.js -->
                 <script>hljs.highlightAll();</script>
-                 }]
+               }]
+               set stylejs {<style>
+               pre, blockquote pre { background: #fafafa !important; }
+               </style>
+               }
             } else {
                 set jscode ""
                 foreach js [split $arg(--javascript) ","] {
@@ -296,8 +309,14 @@ proc mkdoc::mkdoc {filename outfile args} {
         }
         if {$arg(--mathjax)} {
             set document(mathjax) {<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>}
+
         } else {
             set document(mathjax) ""
+        }
+        if {$arg(--refresh) > 9} {
+            set document(refresh) "<meta http-equiv=\"refresh\" content=\"$arg(--refresh)\" />"
+        } else {
+            set document(refresh) ""
         }
         if {$arg(--header) ne ""} {
             if {[file exists $arg(--header)]} {
@@ -329,17 +348,25 @@ proc mkdoc::mkdoc {filename outfile args} {
             }
             set html [Markdown::convert $mdhtml]
             ## issue in Markdown package?
-            set htm [string map {&amp;gt; &gt; &amp;quot; &quot;} $htm]  
+            set html [string map {&amp;lt; &lt;  &amp;gt; &gt; &amp;quot; &quot;} $html]  
             ## fixing curly brace issues in backtick code chunk
             set html [regsub -all "code class='\{" $html {code class='}] 
             set html [regsub -all "code class='(\[^'\]+)\}'" $html {code class='\1'}]             
             set out [open $outfile w 0644]
             foreach key [dict keys $yamldict] {
-                set document($key) [dict get $yamldict $key]
+                if {$key == "date"} {
+                    if {[string is integer [dict get $yamldict $key]]} {
+                        set document($key) [clock format [dict get $yamldict $key] -format "%Y-%m-%d"]
+                    } else {
+                        set document($key) [clock format [clock scan [dict get $yamldict $key]] -format "%Y-%m-%d"]
+                    }
+                } else {
+                    set document($key) [dict get $yamldict $key]
+                }
             }
             if {![dict exists $yamldict date]} {
-                dict set yamldict date [clock format [clock seconds]]
-            }
+                dict set yamldict date [clock format [clock seconds] format "%Y-%m-%d"]
+            } 
             set header [subst -nobackslashes -nocommands $header]
             puts $out $header
             if {$hasyaml} {
@@ -360,77 +387,16 @@ proc mkdoc::mkdoc {filename outfile args} {
     }
 }
 
-#' 
-#' <a name="run"> </a>
-#' **mkdoc::run** *infile* 
-#' 
-#' > Source the code in infile and runs the examples in the documentation section
-#'    written with Markdown documentation. Below follows an example section which can be
-#'    run with `tclsh mkdoc.tcl mkdoc.tcl --run`
-#' 
-#' ## <a name="example">EXAMPLE</a>
-#' 
-#' ```
-#' puts {Hello mkdoc package}
-#' puts {I am in the example section}
-#' ```
-#' 
-proc ::mkdoc::run {argv} {
-    set filename [lindex $argv 0]
-    if {[llength $argv] == 3} {
-        set t [lindex $argv 2]
-    } else {
-        set t 1
-    }
-    source $filename
-    set extext ""
-    set example false
-    set excode false
-    if [catch {
-	open $filename r
-    } infh] {
-	return -code error "Cannot open $filename: $infh"
-    } else {
-	while {[gets $infh line] >= 0} {
-	    # Process line
-	    if {$extext eq "" && \
-		    [regexp -nocase {^\s*#'\s+#{2,3}\s.+Example} $line]} {
-                set example true
-            } elseif {$extext ne "" && \
-			  [regexp -nocase "^\\s*#'.*\\s# demo: $extext" $line]} {
-                set excode true
-            } elseif {$example && [regexp {^\s*#'\s+>?\s*```} $line]} {
-                set example false
-                set excode true
-            } elseif {$excode && [regexp {^\s*#'\s+>?\s*```} $line]} {
-                namespace eval :: $code
-                break
-                # eval code
-            } elseif {$excode && [regexp {^\s*#'\s(.+)} $line -> c]} {
-                append code "$c\n"
-            }
-        }
-        close $infh
-        if {$t > -1} {
-            catch {
-                update idletasks
-                after [expr {$t*1000}]
-                destroy .
-            }
-        }
-    }
-}
-
 #'
-#' ## <a name='format'>BASIC FORMATTING</a>
+#' ## <a name='format'>FORMATTING</a>
 #' 
 #' For a complete list of Markdown formatting commands consult the basic Markdown syntax at [https://daringfireball.net](https://daringfireball.net/projects/markdown/syntax). 
 #' Here just the most basic essentials  to create documentation are described.
 #' Please note, that formatting blocks in Markdown are separated by an empty line, and empty line in this documenting mode is a line prefixed with the `#'` and nothing thereafter. 
 #'
-#' **Title and Author**
+#' **Title, Author and Date**
 #' 
-#' Title and author can be set at the beginning of the documentation in a so called YAML header. 
+#' Title, author and date can be set at the beginning of the documentation in a so called YAML header. 
 #' This header will be as well used by the document converter [pandoc](https://pandoc.org)  to handle various options for later processing if you extract not HTML but Markdown code from your documentation.
 #'
 #' A YAML header starts and ends with three hyphens. Here is the YAML header of this document:
@@ -439,10 +405,11 @@ proc ::mkdoc::run {argv} {
 #' #' ---
 #' #' title: mkdoc - Markdown extractor and formatter
 #' #' author: Dr. Detlef Groth, Schwielowsee, Germany
+#' #' date: 2024-11-21
 #' #' ---
 #' ```
 #' 
-#' Those four lines produce the two lines on top of this document. You can extend the header if you would like to process your document after extracting the Markdown with other tools, for instance with Pandoc.
+#' Those five lines produce the three lines on top of this document. You can extend the header if you would like to process your document after extracting the Markdown with other tools, for instance with Pandoc.
 #' 
 #' You can as well specify an other style sheet, than the default by adding
 #' the following style information:
@@ -451,6 +418,7 @@ proc ::mkdoc::run {argv} {
 #' #' ---
 #' #' title: mkdoc - Markdown extractor and formatter
 #' #' author: Dr. Detlef Groth, Schwielowsee, Germany
+#' #' date: 2024-11-21
 #' #' css: tufte.css
 #' #' ---
 #' ```
@@ -570,7 +538,20 @@ proc ::mkdoc::run {argv} {
 #'
 #' > I am _italic_ and I am __bold__! But I am programming code: `ls -l`
 #' 
-#' **Code blocks**
+#' **Images**
+#'
+#' If you insist on images in your documentation, images can be embedded in Markdown with a syntax close to links.
+#' The links here however start with an exclamation mark:
+#' 
+#' ```
+#' #' ![image caption](filename.png)
+#' ```
+#' 
+#' The source code of mkdoc.tcl is a good example for usage of this source code 
+#' annotation tool. Don't overuse the possibilities of Markdown, sometimes less is more. 
+#' Write clear and concise, don't use fancy visual effects.
+#' 
+#' ### <a name="code-blocks">Code blocks</a>
 #'
 #' Code blocks can be started using either three or more spaces after the #' sequence 
 #' or by embracing the code block with triple backticks on top and on bottom. Here an example:
@@ -587,20 +568,27 @@ proc ::mkdoc::run {argv} {
 #' puts "Hello World!"
 #' ```
 #'
-#' **Images**
+#' Since version 0.8.0 mkdoc as well included the inclusion of Javascript files or libraries like the library 
+#' [highlighjs](https://highlightjs.org/). Just use the command line or mkdoc function argument `--javascript highlightjs`
+#' and you get syntax highlighting for code blocks. Here an example:
+#' 
+#' ```
+#' #' ```{r} 
+#' #' test <- function () {
+#' #'   print("testig2")
+#' #' test();
+#' #' ```
+#' ```
 #'
-#' If you insist on images in your documentation, images can be embedded in Markdown with a syntax close to links.
-#' The links here however start with an exclamation mark:
+#' Output:
 #' 
+#' ```{r} 
+#' test <- function () {
+#'   print("testig2")
+#' test();
 #' ```
-#' #' ![image caption](filename.png)
-#' ```
 #' 
-#' The source code of mkdoc.tcl is a good example for usage of this source code 
-#' annotation tool. Don't overuse the possibilities of Markdown, sometimes less is more. 
-#' Write clear and concise, don't use fancy visual effects.
-#' 
-#' **Equations**
+#' ### <a name="equations">Equations</a>
 #'
 #' Since version 0.9.0 as well LaTeX equations can be embedded into Markdown documents and are
 #' rendered using the [MathJax](https://www.mathjax.org/) library. Just include either inline 
@@ -617,10 +605,10 @@ proc ::mkdoc::run {argv} {
 #' And here the output:
 #' 
 #' The  famous  Einstein  equation  \\( E = mc^2 \\) is  probably  the most know
-#' equation world wide.
+#' equation world wide. 
 #' 
-#' Block equations should be usually aligned left, like in the following examples:
-#'
+#' Block equations should be usually aligned left, like in the
+#' following examples:
 #'
 #' ```
 #' <div style="display: flex;">
@@ -714,6 +702,11 @@ proc ::mkdoc::run {argv} {
 #'      - adding Makefile to build standalone application using tpack (80kb)
 #' - 2024-11-16 Release 0.9.0
 #'      - support for mathjax
+#' - 2024-11-XX Release 0.10.0
+#'      - support for refresh option to autorefresh a HTML page 
+#'      - removed run support, use pantcl instead
+#'      - fixing issues with greater, lower and quote signs in code fragments
+#'      - removing inlining external javascript files into HTML output
 #'
 #' ## <a name='todo'>TODO</a>
 #'
@@ -725,7 +718,7 @@ proc ::mkdoc::run {argv} {
 #'
 #' ## <a name='license'>LICENSE AND COPYRIGHT</a>
 #'
-#' Markdown extractor and converter mkdoc::mkdoc, version 0.9.0
+#' Markdown extractor and converter mkdoc::mkdoc, version 0.10.0
 #'
 #' Copyright (c) 2019-24  Detlef Groth, E-mail: <detlef(at)dgroth(dot)de>
 #' 
