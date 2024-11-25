@@ -95,7 +95,7 @@
 #' 
 #' ```
 #' #!/bin/sh
-#' ## file ~/bin/hw-button.sh
+#' ## file ~/bin/hwbutton.sh
 #' if [ -z $2 ] ; then
 #'     echo "Usage: hwbutton.sh 'rectangle \" title \" color'" outfile.png
 #'     exit
@@ -458,28 +458,7 @@
 #' ### C and C++ code
 #' 
 #' Using the approach with the lilypond examples we can as well embed C code by creating a wrapper for the compiler.
-#' We here use the shebang script implementation for gcc found here: 
-#' [https://rosettacode.org/wiki/Native_shebang#2nd_version._Pure_C.2C_no_extra_bash_script](https://rosettacode.org/wiki/Native_shebang#2nd_version._Pure_C.2C_no_extra_bash_script)
-#' 
-#' Now an example (`{.cmd file="test.csr" eval=true}`):
-#' 
-#' ```{.cmd file="test.csr"}
-#' #!/usr/bin/env -S script_gcc -lm
-#' 
-#' #include <stdio.h>
-#' #include <math.h>
-#' 
-#' int main (int argc, char** argv) {
-#'     printf("Hello C World!\n");
-#'     float pi = 3.141492653;
-#'     printf("pi is: %f\n",pi);
-#'     printf("sin(pi) is: %f\n",sin(pi));
-#'     return(0);
-#' }
-#' ```
-#' 
-#' Again there is a simpler approach without a wrapper function using a pseudo-
-#' shebang line (`{.cmd file="hello2.c" eval=true}`):
+#' Here we are usinfusing a pseudo- shebang line (`{.cmd file="hello2.c" eval=true}`):
 #'  
 #' ```{.cmd file="hello2.c"}
 #' ///usr/bin/cc -o "${0%.c}" "$0" -lm && exec "${0%.c}"
@@ -557,6 +536,7 @@
 #'
 #' Here an example for the Go language (`{.cmd file="hello.go"}`):
 #'
+#' On Fedora I had to install Go with `sudo dnf install golang`.
 #' 
 #' ```{.cmd file="hello.go"}
 #' ///usr/bin/go run $0 $@  2>&1 && exit 0
@@ -568,22 +548,34 @@
 #' ```
 #' 
 #' Next try is Rust (`{.cmd file="hello-rust.rs"}`), as there is no `run` for
-#' rust we need to compile and then to execute the file as in C/C++:
+#' rust we need to compile and then to execute the file as in C/C++.
+#' On Fedora I had to install Go with `sudo dnf install rust`. 
 #'
 #'
 #' ```{.cmd file="hello-rust.rs"}
-#' ///home/groth/.cargo/bin/rustc $0 $@  -o ${0%.rs} 2>&1 && exec "${0%.rs}" && exit 0
+#' ///usr/bin/rustc $0 $@  -o ${0%.rs} 2>&1 && exec "${0%.rs}" && exit 0
 #' fn main () {
-#'   println!("Hello Rust World in 2023!")
+#'   println!("Hello Rust World in 2024!")
 #' }
 #' ```
 #'
-#' Now as the last example the new programming language [Vlang](https://vlang.io/) (V) (`{.cmd file="hello.v"}`):
+#' Now the new programming language [Vlang](https://vlang.io/) (V) (`{.cmd file="hello.v"}`):
 #' 
 #' ```{.cmd file="hello.v"}
 #' ///usr/local/bin/v run $0 $@  2>&1 && exit 0
 #' fn main () {
-#'   println("Hello V World in 2023!")
+#'   println("Hello V World in 2024!")
+#' }
+#' ```
+#'
+#' And now the Java Programming language:
+#'
+#' ```{.cmd file="hello-java.java"}
+#' ////usr/bin/javac $0 $@ 2>&1 && exec java -cp . HelloWorld && exit 0
+#' class HelloWorld {
+#'    public static void main(String[] args) {
+#'        System.out.println("Hello, World!"); 
+#'    }
 #' }
 #' ```
 #'
@@ -591,10 +583,6 @@
 #' 
 #' I left it as an exercise to embed Perl, Ruby, Julia scripts using the standard Shebang mechanism. 
 #' 
-#' 
-#' ## TODO:
-#' 
-#' * compile option to embed/Java etc code
 #' 
 #' ## See also:
 #' 
@@ -614,6 +602,21 @@ proc filter-cmd {cont dict} {
     set def [dict create results asis eval true label null file null \
              include true app sh cachedir [pantcl::getCacheDir]]
     # TODO: dict app using
+    ## fixing , issues in dict and TRUE==true etc
+    if {$dict ne ""} {
+        set d [regsub -nocase -all FALSE $dict false]
+        set d [regsub -nocase -all TRUE  $d    true]
+        set d [regsub -nocase -all ,     $d    " "]
+        set d [regsub -nocase -all =     $d    " "]  ;#
+        set d [regsub -nocase -all {\\"} $d    ""]   ;#"
+        set dict [dict create {*}$d]
+    }
+    dict for {key value} $dict {
+        if {[regexp {,.+=} $value]} {
+            set val [regsub {,.+} $value ""]
+            set rest [regsub {.+?,} $value ""]
+        }
+    }
     set dict [dict merge $def $dict]
     if {![dict get $dict eval]} {
         return [list "" ""]
