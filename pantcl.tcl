@@ -1224,16 +1224,17 @@ proc codeBlock {} {
                             }
                         } else {
                             set cres $code
-                            set mdfile [file tempfile].md
+                            set mdfile asis.md ;#[file tempfile].md
                             set out [open $mdfile w 0600]
                             puts $out $code
                             close $out
                             set cres [exec pandoc -t json $mdfile]
-                            file delete $mdfile
-                            # pandoc 2.9 (block first then meta)
-                            set cres [regsub {^.+"blocks":\[(.+)\],"pandoc-api-version".+} $cres "\\1"]
-                            # pandoc 2.12++ (meta first, then block)
-                            #set cres [regsub {^\{"pandoc-api-version".+"blocks":\[(.+)\]\}} $cres "\\1"]                                
+                            if {[regexp {blocks.+pandoc-api-version} $cres]} {
+                                set cres [regsub {^.+"blocks":\[(.+)\],"pandoc-api-version".+} $cres "\\1"]
+                            } else {
+                                # pandoc 2.12++ (meta first, then block)
+                                set cres [regsub {^\{"pandoc-api-version".+"blocks":\[(.+)\]\}} $cres "\\1"] 
+                            }
                             append blocks ,
                             append blocks $cres
                         }
