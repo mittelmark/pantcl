@@ -8,7 +8,7 @@
 
 package provide pantcl 0.9.14
 namespace eval ::pantcl { }
-
+#puts stderr $argv0
 if {[llength $argv] > 0 && ([lsearch -exact $argv -v] >= 0 || [lsearch -exact $argv --version] >= 0)} {
     puts "[package present pantcl]"
     exit 0
@@ -54,8 +54,10 @@ if {[llength $argv] > 0 && ([lsearch -regex $argv {-h$}] >= 0 || [lsearch -regex
     puts "         $argv0 --help                     - display this help page"
     puts "         $argv0 --version                  - display the version"
     puts "         $argv0 infile outfile --no-pandoc - use the standalone converter"
-    puts "         $argv0 infile outfile --tangle .tcl - extract all code from .tcl chunks"
-    puts "         $argv0 infile outfile --mathjax true --no-pandoc - render equations within the document"
+    puts "         $argv0 infile outfile --tangle .tcl             - extract all code from .tcl chunks"
+    puts "         $argv0 infile outfile --mathjax true     --no-pandoc - render equations within the document"
+    puts "         $argv0 infile outfile --javascript highlightjs --no-pandoc - support highlighting source code"
+    puts "         $argv0 infile outfile --refresh 10       --no-pandoc - support HTML refreshing every N seconds"
     puts "\nUsage (GUI): $argv0 --gui \[infile]\n"
     puts "        Supported infiles: abc, dot, eqn, mmd, mtex, pic, pik, puml, rplot, tdot, tsvg\n"
     puts "Examples:\n"
@@ -537,6 +539,19 @@ proc ::pantcl::lineFilter {argv} {
             if {[dict exists $yamldict mathjax] && [dict get $yamldict mathjax]} {
                 lappend argv -mathjax 
                 lappend argv true
+            }   
+        }
+        if {![lsearch -glob $argv *-javascript] > -1} {
+            if {[dict exists $yamldict javascript] && [dict get $yamldict javascript] ne ""}  {
+                lappend argv --javascript
+                lappend argv [dict get $yamldict javascript]
+            }   
+        }
+        #puts $argv
+        if {![lsearch -glob $argv *-refresh] > -1} {
+            if {[dict exists $yamldict refresh] && [dict get $yamldict refresh]} {
+                lappend argv -refresh 
+                lappend argv  [dict get $yamldict refresh]
             }   
         }
         mkdoc::mkdoc $outfile [regsub -- {-out.md} $outfile ".html"] {*}[lrange $argv 2 end]
