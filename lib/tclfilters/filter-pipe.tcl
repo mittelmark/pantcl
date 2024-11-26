@@ -149,7 +149,14 @@
 #' # a type
 #' print(y00)
 #' ```
-#' 
+#' Using the non-pandoc based Tcl application there is as well the comma based syntax supported,
+#' here an example (`{python terminal=FALSE,results="show",echo=TRUE}`):
+#'
+#' ```{python terminal=FALSE,results="show",echo=TRUE}
+#' x=1
+#' print(x)
+#' ```
+#'
 #' ### R examples
 #' 
 #' ```
@@ -226,7 +233,25 @@
 #' 2+3
 #' ```
 #' 
-#' ### Octave example
+#' The R code blocks as well support knitr and Rmarkdown compatible chunk code options
+#' so you could say for instance instead of `{.pipe pipe="R" eval=true echo=false results=show}` also
+#' `{r eval=TRUE,echo=FALSE,results="show"}` here both examples:
+#' 
+#' Space based syntax:
+#' 
+#' ```{.pipe pipe="R" eval=true echo=false results=show}
+#' x=1
+#' print(x)
+#' ```
+#'
+#' And here Knitr/RMarkdown compatible syntax:
+#'
+#' ```{r eval=TRUE,echo=FALSE,results="show"}
+#' x=1
+#' print(x)
+#' ```
+#'
+#' ### Octave examples
 #' 
 #' ```{.pipe pipe="oc"}  
 #' x=1;
@@ -262,6 +287,12 @@
 #' ```{.pipe pipe="octave"}
 #' z
 #' disp(k)
+#' ```
+#' Also Octave supports as a non-pandoc filter as well the Knitr/RMarkdown compatible syntax, here an example:
+#' 
+#' ```{octave}
+#' z=x+y
+#' disp(z)
 #' ```
 #' 
 #' ## TODO:

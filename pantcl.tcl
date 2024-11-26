@@ -414,7 +414,8 @@ proc ::pantcl::lineFilter {argv} {
             # translate r-chunks into pipe chunks
             if {[regexp {``` ?\{.*\}} $line]} {
                 set line [regsub {\{r(.*)\}} $line "{.pipe pipe=\"R\"\\1}"]
-                set line [regsub {\{py(.*)\}} $line "{.pipe pipe=\"python\"\\1}"]                
+                set line [regsub {\{py(.*)\}} $line "{.pipe pipe=\"python\"\\1}"]
+                set line [regsub {\{oc(.*)\}} $line "{.pipe pipe=\"octave\"\\1}"]
                 set line [regsub -all {TRUE} $line true]
                 set line [regsub -all {FALSE} $line false]                
                 set line [regsub -all {,} $line " "]

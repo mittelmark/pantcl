@@ -315,22 +315,6 @@
 #' @endditaa
 #' ```
 #' 
-#' As well as AsciiMath and LaTeX math. To use this example see for the installation instructions of JLatexMath here [https://plantuml.com/ascii-math](https://plantuml.com/ascii-math): 
-#' 
-#' ```{.puml}
-#' @startlatex
-#' \sum_{i=0}^{n-1} (a_i + b_i^2)
-#' @endlatex
-#' ```
-#' 
-#' Here an example for AsciiMath:
-#' 
-#' ```{.puml}
-#' @startmath
-#' f(t)=(a_0)/2 + sum_(n=1)^ooa_ncos((npit)/L)+sum_(n=1)^oo b_n\ sin((npit)/L)
-#' @endmath
-#' ```
-#' 
 
 #' ## See also:
 #' 

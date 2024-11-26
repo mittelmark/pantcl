@@ -417,7 +417,7 @@
 #
 ##############################################################################
 proc filter-mtex {cnt dict} {
-    puts stderr $cnt
+    #puts stderr $cnt
 set codestart {
 \documentclass[preview]{standalone}
 \usepackage{amsmath}

@@ -304,6 +304,40 @@
 #' }
 #' ```
 #' 
+#' And now an example doing plots with Gnuplot:
+#'
+#' ```{.cmd eval=false file=test-gnuplot.sh}
+#' #!/usr/bin/env gnuplot
+#' # Set the title for the graph.
+#' set title "Gnuplot Sine against Phase"
+#' 
+#' # We want the graph to cover a full sine wave.
+#' set xrange [0:6.28]
+#' 
+#' # Set the label for the X axis.
+#' set xlabel "Phase (radians)"
+#' # Unicode for pi
+#' set xtics ("0" 0,"0.5\U+03C0" pi/2, "\U+03C0" pi, \
+#' 	"1.5\U+03C0" 1.5*pi, "2\U+03C0" 2*pi)
+#' 
+#' # Draw a horizontal centreline.
+#' set xzeroaxis
+#' 
+#' # Pure sine wave amplitude ranges from +1 to -1.
+#' set yrange [-1:1]
+#' 
+#' # No tick-marks are needed for the Y-axis .
+#' unset ytics
+#' 
+#' set terminal png 
+#' set output 'images/test.png'
+#' # Plot the curve.
+#' plot sin(x)
+#' ```
+#' 
+#'
+#' ![](images/test.png)
+
 #' ![](dot.png)
 #' 
 #' ### Simple shell scripts
