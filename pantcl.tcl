@@ -4,7 +4,8 @@
 # Author: Detlef Groth, Schwielowsee, Germany
 # Version: 0.9.12 - 2023-04-17
 # Version: 0.9.13 - 2023-09-07
-# Version: 0.9.14 - 2024-11-13 - line filter with single backtick eval for R
+# Version: 0.9.14 - 2024-11-27
+
 
 package provide pantcl 0.9.14
 namespace eval ::pantcl { }
@@ -1081,9 +1082,13 @@ if {[info exists argv] && [llength $argv] > 1 && [file exists [lindex $argv 0]]}
 #' * 2023-09-07 - version 0.9.13
 #'    * support for --inline option to allow inlining of images and css files
 #'    * bug fix for image/img-tag
-#' * 2024-11-13 - version 0.9.14
+#' * 2024-11-27 - version 0.9.14
 #'    * updating to newer mkdoc with support for mathjax equations and highlightjs library
-#'    
+#'    * support for refresh option
+#'    * bugfix for working as filter pandoc version 3
+#'    * support for single backticks for line-filter for R and Python
+#'    * documentation updates and fixes
+#' 
 #' ## SEE ALSO
 #' 
 #' * [Readme.html](Readme.html) - more information and small tutorial
