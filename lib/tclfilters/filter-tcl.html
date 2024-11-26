@@ -9,76 +9,21 @@
 <style>
     code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
-    span.underline{text-decoration: underline;}
-    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
     div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
-    ul.task-list{list-style: none;}
-    pre > code.sourceCode { white-space: pre; position: relative; }
-    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
-    pre > code.sourceCode > span:empty { height: 1.2em; }
-    .sourceCode { overflow: visible; }
-    code.sourceCode > span { color: inherit; text-decoration: inherit; }
-    div.sourceCode { margin: 1em 0; }
-    pre.sourceCode { margin: 0; }
-    @media screen {
-    div.sourceCode { overflow: auto; }
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
     }
-    @media print {
-    pre > code.sourceCode { white-space: pre-wrap; }
-    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
-    }
-    pre.numberSource code
-      { counter-reset: source-line 0; }
-    pre.numberSource code > span
-      { position: relative; left: -4em; counter-increment: source-line; }
-    pre.numberSource code > span > a:first-child::before
-      { content: counter(source-line);
-        position: relative; left: -1em; text-align: right; vertical-align: baseline;
-        border: none; display: inline-block;
-        -webkit-touch-callout: none; -webkit-user-select: none;
-        -khtml-user-select: none; -moz-user-select: none;
-        -ms-user-select: none; user-select: none;
-        padding: 0 4px; width: 4em;
-        color: #aaaaaa;
-      }
-    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
-    div.sourceCode
-      {   }
-    @media screen {
-    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
-    }
-    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
-    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
-    code span.at { color: #7d9029; } /* Attribute */
-    code span.bn { color: #40a070; } /* BaseN */
-    code span.bu { } /* BuiltIn */
-    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
-    code span.ch { color: #4070a0; } /* Char */
-    code span.cn { color: #880000; } /* Constant */
-    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
-    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
-    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
-    code span.dt { color: #902000; } /* DataType */
-    code span.dv { color: #40a070; } /* DecVal */
-    code span.er { color: #ff0000; font-weight: bold; } /* Error */
-    code span.ex { } /* Extension */
-    code span.fl { color: #40a070; } /* Float */
-    code span.fu { color: #06287e; } /* Function */
-    code span.im { } /* Import */
-    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
-    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
-    code span.op { color: #666666; } /* Operator */
-    code span.ot { color: #007020; } /* Other */
-    code span.pp { color: #bc7a00; } /* Preprocessor */
-    code span.sc { color: #4070a0; } /* SpecialChar */
-    code span.ss { color: #bb6688; } /* SpecialString */
-    code span.st { color: #4070a0; } /* String */
-    code span.va { color: #19177c; } /* Variable */
-    code span.vs { color: #4070a0; } /* VerbatimString */
-    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
     .display.math{display: block; text-align: center; margin: 0.5rem auto;}
   </style>
-<link href="data:text/css,%20%20%20%20html%20%7B%0A%20%20%20%20%20%20%20%20overflow-y%3A%20scroll%3B%0A%20%20%20%20%7D%0A%20%20%20%20body%20%7B%0A%20%20%20%20%20%20%20%20color%3A%20%23444%3B%0A%20%20%20%20%20%20%20%20font-family%3A%20Georgia%2C%20Palatino%2C%20%27Palatino%20Linotype%27%2C%20Times%2C%20%27Times%20New%20Roman%27%2C%20serif%3B%0A%20%20%20%20%20%20%20%20line-height%3A%201.2%3B%0A%20%20%20%20%20%20%20%20padding%3A%201em%3B%0A%20%20%20%20%20%20%20%20margin%3A%20auto%3B%0A%20%20%20%20%20%20%20%20max-width%3A%20%201100px%3B%0A%20%20%20%20%7D%0A%20%20%20%20a%20%7B%0A%20%20%20%20%20%20%20%20color%3A%20%230645ad%3B%0A%20%20%20%20%20%20%20%20text-decoration%3A%20none%3B%0A%20%20%20%20%7D%0A%20%20%20%20a%3Avisited%20%7B%0A%20%20%20%20%20%20%20%20color%3A%20%230b0080%3B%0A%20%20%20%20%7D%0A%20%20%20%20a%3Ahover%20%7B%0A%20%20%20%20%20%20%20%20color%3A%20%2306e%3B%0A%20%20%20%20%7D%0A%20%20%20%20a%3Aactive%20%7B%0A%20%20%20%20%20%20%20%20color%3A%20%23faa700%3B%0A%20%20%20%20%7D%0A%20%20%20%20a%3Afocus%20%7B%0A%20%20%20%20%20%20%20%20outline%3A%20thin%20dotted%3B%0A%20%20%20%20%7D%0A%20%20%20%20p%20%7B%0A%20%20%20%20%20%20%20%20margin%3A%200.5em%200%3B%0A%20%20%20%20%7D%0A%20%20%20%20p.date%20%7B%0A%20%20%20%20%20%20%20%20text-align%3A%20center%3B%0A%20%20%20%20%7D%0A%20%20%20%20img%20%7B%0A%20%20%20%20%20%20%20%20max-width%3A%20100%25%3B%0A%20%20%20%20%7D%0A%20%20%20%20%0A%20%20%20%20h1%2C%20h2%2C%20h3%2C%20h4%2C%20h5%2C%20h6%20%7B%0A%20%20%20%20%20%20%20%20color%3A%20%23111%3B%0A%20%20%20%20%20%20%20%20line-height%3A%20115%25%3B%0A%20%20%20%20%20%20%20%20margin-top%3A%201em%3B%0A%20%20%20%20%20%20%20%20font-weight%3A%20normal%3B%0A%20%20%20%20%7D%0A%20%20%20%20h2.date%2C%20h2.author%20%7B%0A%20%20%20%20%20%20%20%20text-align%3A%20center%3B%0A%20%20%20%20%20%20%20%20font-size%3A%20110%25%3B%0A%20%20%20%20%7D%0A%20%20%20%20h1%20%7B%0A%20%20%20%20%20%20%20%20text-align%3A%20center%3B%0A%20%20%20%20%20%20%20%20font-size%3A%20130%25%3B%0A%20%20%20%20%7D%0A%20%20%20%20p.author%2C%20p.date%20%7B%0A%20%20%20%20%20%20%20%20font-size%3A%20110%25%3B%0A%20%20%20%20%7D%0A%20%20%20%20%0A/%2A%20%20%20%20h2%20%7B%0A%20%20%20%20%20%20%20%20text-transform%3A%20uppercase%3B%0A%20%20%20%20%7D%0A%20%20%20%20%2A/%0A%20%20%20%20pre%2C%20blockquote%20pre%20%7B%0A%20%20%20%20%20%20%20%20border-top%3A%200.1em%20%239ac%20solid%3B%0A%20%20%20%20%20%20%20%20background%3A%20%23e9f6ff%3B%0A%20%20%20%20%20%20%20%20padding%3A%2010px%3B%0A%20%20%20%20%20%20%20%20border-bottom%3A%200.1em%20%239ac%20solid%3B%0A%20%20%20%20%7D%0A%20%20%20%20%0A%20%20%20%20blockquote%20%7B%0A%20%20%20%20%20%20%20%20margin%3A%200%3B%0A%20%20%20%20%20%20%20%20padding-left%3A%203em%3B%20%0A%20%20%20%20%7D%0A%20%20%20%20%0A%20%20%20%20hr%20%7B%0A%20%20%20%20%20%20%20%20display%3A%20block%3B%0A%20%20%20%20%20%20%20%20height%3A%202px%3B%0A%20%20%20%20%20%20%20%20border%3A%200%3B%0A%20%20%20%20%20%20%20%20border-top%3A%201px%20solid%20%23aaa%3B%0A%20%20%20%20%20%20%20%20border-bottom%3A%201px%20solid%20%23eee%3B%0A%20%20%20%20%20%20%20%20margin%3A%201em%200%3B%0A%20%20%20%20%20%20%20%20padding%3A%200%3B%0A%20%20%20%20%7D%0A%20%20%20%20%0A%20%20%20%20pre%2C%20code%2C%20kbd%2C%20samp%20%7B%0A%20%20%20%20%20%20%20%20color%3A%20%23000%3B%0A%20%20%20%20%20%20%20%20font-family%3A%20Monaco%2C%20%27courier%20new%27%2C%20monospace%3B%0A%20%20%20%20%20%20%20%20font-size%3A%2090%25%3B%20%0A%20%20%20%20%7D%0A%20%20%20%20code.r%20%7B%0A%20%20%20%20%20%20%20%20color%3A%20%23770000%3B%0A%20%20%20%20%7D%0A%20%20%20%20pre%20%7B%0A%20%20%20%20%20%20%20%20white-space%3A%20pre%3B%0A%20%20%20%20%20%20%20%20white-space%3A%20pre-wrap%3B%0A%20%20%20%20%20%20%20%20word-wrap%3A%20break-word%3B%0A%20%20%20%20%7D%0A%20%20%20%20/%2A%20fix%2C%20do%20not%20like%20bold%20for%20every%20keyword%20%2A/%0A%20%20%20%20code%20span.kw%20%7B%20color%3A%20%23007020%3B%20font-weight%3A%20normal%3B%20%7D%20/%2A%20Keyword%20%2A/%0A%20%20%20%20%20pre.sourceCode%2C%20pre.cmd%20%7B%0A%20%20%20%20%20%20%20%20background%3A%20%23fff6f6%3B%0A%20%20%20%20%7D%0A%20%20%20%20pre.cmdout%20%7B%0A%20%20%20%20%20%20%20%20background%3A%20%23fffff6%3B%0A%20%20%20%20%7D%0A%20%20%20%20figure%2C%20p.author%20%7B%0A%20%20%20%20%20%20%20%20text-align%3A%20center%3B%0A%20%20%20%20%7D%0A%20%20%20%20table%20%7B%20%20%20%20%0A%20%20%20%20%20%20%20%20border-collapse%3A%20collapse%3B%0A%20%20%20%20%20%20%20%20border-bottom%3A%202px%20solid%3B%0A%20%20%20%20%20%20%20%20border-spacing%3A%205px%3B%0A%20%20%20%20%20%20%20%20min-width%3A%20400px%3B%0A%20%20%20%20%7D%0A%20%20%20%20table%20thead%20tr%20th%20%7B%20%0A%20%20%20%20%20%20%20%20background-color%3A%20%23fde9d9%3B%0A%20%20%20%20%20%20%20%20text-align%3A%20left%3B%20%0A%20%20%20%20%20%20%20%20padding%3A%2010px%3B%0A%20%20%20%20%20%20%20%20border-top%3A%202px%20solid%3B%0A%20%20%20%20%20%20%20%20border-bottom%3A%202px%20solid%3B%0A%20%20%20%20%7D%0A%20%20%20%20table%20td%20%7B%20%0A%20%20%20%20%20%20%20%20background-color%3A%20%23fff9e9%3B%0A%0A%20%20%20%20%20%20%20%20text-align%3A%20left%3B%20%0A%20%20%20%20%20%20%20%20padding%3A%2010px%3B%0A%20%20%20%20%7D%0A" rel="stylesheet"/><!--URL:mini.css-->
+<link href="data:text/css,%20%20%20%20html%20%7B%0A%20%20%20%20%20%20%20%20overflow-y%3A%20scroll%3B%0A%20%20%20%20%7D%0A%20%20%20%20body%20%7B%0A%20%20%20%20%20%20%20%20color%3A%20%23444%3B%0A%20%20%20%20%20%20%20%20font-family%3A%20Georgia%2C%20Palatino%2C%20%27Palatino%20Linotype%27%2C%20Times%2C%20%27Times%20New%20Roman%27%2C%20serif%3B%0A%20%20%20%20%20%20%20%20line-height%3A%201.2%3B%0A%20%20%20%20%20%20%20%20padding%3A%201em%3B%0A%20%20%20%20%20%20%20%20margin%3A%20auto%3B%0A%20%20%20%20%20%20%20%20max-width%3A%20%20900px%3B%0A%20%20%20%20%7D%0A%20%20%20%20a%20%7B%0A%20%20%20%20%20%20%20%20color%3A%20%230645ad%3B%0A%20%20%20%20%20%20%20%20text-decoration%3A%20none%3B%0A%20%20%20%20%7D%0A%20%20%20%20a%3Avisited%20%7B%0A%20%20%20%20%20%20%20%20color%3A%20%230b0080%3B%0A%20%20%20%20%7D%0A%20%20%20%20a%3Ahover%20%7B%0A%20%20%20%20%20%20%20%20color%3A%20%2306e%3B%0A%20%20%20%20%7D%0A%20%20%20%20a%3Aactive%20%7B%0A%20%20%20%20%20%20%20%20color%3A%20%23faa700%3B%0A%20%20%20%20%7D%0A%20%20%20%20a%3Afocus%20%7B%0A%20%20%20%20%20%20%20%20outline%3A%20thin%20dotted%3B%0A%20%20%20%20%7D%0A%20%20%20%20p%20%7B%0A%20%20%20%20%20%20%20%20margin%3A%200.5em%200%3B%0A%20%20%20%20%7D%0A%20%20%20%20p.date%20%7B%0A%20%20%20%20%20%20%20%20text-align%3A%20center%3B%0A%20%20%20%20%7D%0A%20%20%20%20img%20%7B%0A%20%20%20%20%20%20%20%20max-width%3A%20100%25%3B%0A%20%20%20%20%7D%0A%20%20%20%20%0A%20%20%20%20h1%2C%20h2%2C%20h3%2C%20h4%2C%20h5%2C%20h6%20%7B%0A%20%20%20%20%20%20%20%20color%3A%20%23111%3B%0A%20%20%20%20%20%20%20%20line-height%3A%20115%25%3B%0A%20%20%20%20%20%20%20%20margin-top%3A%201em%3B%0A%20%20%20%20%20%20%20%20font-weight%3A%20normal%3B%0A%20%20%20%20%7D%0A%20%20%20%20h1%20%7B%0A%20%20%20%20%20%20%20%20text-align%3A%20center%3B%0A%20%20%20%20%20%20%20%20font-size%3A%20120%25%3B%0A%20%20%20%20%7D%0A%20%20%20%20h2.author%2C%20h2.date%20%7B%0A%20%20%20%20%20%20%20%20text-align%3Acenter%3B%0A%20%20%20%20%20%20%20%20font-size%3A%20100%25%0A%20%20%20%20%7D%0A%20%20%20%20p.author%2C%20p.date%20%7B%0A%20%20%20%20%20%20%20%20font-size%3A%20110%25%3B%0A%20%20%20%20%7D%0A%20%20%20%20%0A/%2A%20%20%20%20h2%20%7B%0A%20%20%20%20%20%20%20%20text-transform%3A%20uppercase%3B%0A%20%20%20%20%7D%0A%20%20%20%20%2A/%0A%20%20%20%20pre%2C%20blockquote%20pre%20%7B%0A%20%20%20%20%20%20%20%20border-top%3A%200.1em%20%239ac%20solid%3B%0A%20%20%20%20%20%20%20%20background%3A%20%23e9f6ff%3B%0A%20%20%20%20%20%20%20%20padding%3A%2010px%3B%0A%20%20%20%20%20%20%20%20border-bottom%3A%200.1em%20%239ac%20solid%3B%0A%20%20%20%20%7D%0A%20%20%20%20%0A%20%20%20%20blockquote%20%7B%0A%20%20%20%20%20%20%20%20margin%3A%200%3B%0A%20%20%20%20%20%20%20%20padding-left%3A%203em%3B%20%0A%20%20%20%20%7D%0A%20%20%20%20%0A%20%20%20%20hr%20%7B%0A%20%20%20%20%20%20%20%20display%3A%20block%3B%0A%20%20%20%20%20%20%20%20height%3A%202px%3B%0A%20%20%20%20%20%20%20%20border%3A%200%3B%0A%20%20%20%20%20%20%20%20border-top%3A%201px%20solid%20%23aaa%3B%0A%20%20%20%20%20%20%20%20border-bottom%3A%201px%20solid%20%23eee%3B%0A%20%20%20%20%20%20%20%20margin%3A%201em%200%3B%0A%20%20%20%20%20%20%20%20padding%3A%200%3B%0A%20%20%20%20%7D%0A%20%20%20%20%0A%20%20%20%20pre%2C%20code%2C%20kbd%2C%20samp%20%7B%0A%20%20%20%20%20%20%20%20color%3A%20%23000%3B%0A%20%20%20%20%20%20%20%20font-family%3A%20Monaco%2C%20%27courier%20new%27%2C%20monospace%3B%0A%20%20%20%20%20%20%20%20font-size%3A%2090%25%3B%20%0A%20%20%20%20%7D%0A%20%20%20%20code.r%20%7B%0A%20%20%20%20%20%20%20%20color%3A%20%23770000%3B%0A%20%20%20%20%7D%0A%20%20%20%20pre%3Ahas%28code.tclout%29%20%7B%0A%20%20%20%20%20%20%20%20background%3A%20%23ffeeee%3B%0A%20%20%20%20%7D%0A%20%20%20%20pre%20%7B%0A%20%20%20%20%20%20%20%20white-space%3A%20pre%3B%0A%20%20%20%20%20%20%20%20white-space%3A%20pre-wrap%3B%0A%20%20%20%20%20%20%20%20word-wrap%3A%20break-word%3B%0A%20%20%20%20%7D%0A%20%20%20%20/%2A%20fix%2C%20do%20not%20like%20bold%20for%20every%20keyword%20%2A/%0A%20%20%20%20code%20span.kw%20%7B%20color%3A%20%23007020%3B%20font-weight%3A%20normal%3B%20%7D%20/%2A%20Keyword%20%2A/%0A%20%20%20%20%20pre.sourceCode%20%7B%0A%20%20%20%20%20%20%20%20background%3A%20%23fff6f6%3B%0A%20%20%20%20%7D%20%0A%20%20%20%20figure%2C%20p.author%20%7B%0A%20%20%20%20%20%20%20%20text-align%3A%20center%3B%0A%20%20%20%20%7D%0A%20%20%20%20table%20%7B%20%20%20%20%0A%20%20%20%20%20%20%20%20border-collapse%3A%20collapse%3B%0A%20%20%20%20%20%20%20%20border-bottom%3A%202px%20solid%3B%0A%20%20%20%20%20%20%20%20border-spacing%3A%205px%3B%0A%20%20%20%20%20%20%20%20min-width%3A%20400px%3B%0A%20%20%20%20%7D%0A%20%20%20%20table%20thead%20tr%20th%20%7B%20%0A%20%20%20%20%20%20%20%20background-color%3A%20%23fde9d9%3B%0A%20%20%20%20%20%20%20%20text-align%3A%20left%3B%20%0A%20%20%20%20%20%20%20%20padding%3A%2010px%3B%0A%20%20%20%20%20%20%20%20border-top%3A%202px%20solid%3B%0A%20%20%20%20%20%20%20%20border-bottom%3A%202px%20solid%3B%0A%20%20%20%20%7D%0A%20%20%20%20table%20td%20%7B%20%0A%20%20%20%20%20%20%20%20background-color%3A%20%23fff9e9%3B%0A%0A%20%20%20%20%20%20%20%20text-align%3A%20left%3B%20%0A%20%20%20%20%20%20%20%20padding%3A%2010px%3B%0A%20%20%20%20%7D%0A" rel="stylesheet"/><!--URL:mini.css-->
 <!--[if lt IE 9]>
     <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
   <![endif]-->
@@ -87,26 +32,38 @@
 <header id="title-block-header">
 <h1 class="title">filter-tcl documentation</h1>
 <p class="author">Detlef Groth, Schwielowsee, Germany</p>
-<p class="date">Jun 02, 2023</p>
+<p class="date">Nov 26, 2024</p>
 </header>
 <hr/>
-<p></p>
 <center>
 <p><a href="../tclfilters/filter-abc.html">filter-abc</a> - <a href="../tclfilters/filter-cmd.html">filter-cmd</a> - <a href="../tclfilters/filter-dot.html">filter-dot</a> - <a href="../tclfilters/filter-emf.html">filter-emf</a> - <a href="../tclfilters/filter-eqn.html">filter-eqn</a> - <a href="../tclfilters/filter-julia.html">filter-julia</a> - <a href="../tclfilters/filter-kroki.html">filter-kroki</a> - <a href="../tclfilters/filter-mmd.html">filter-mmd</a> - <a href="../tclfilters/filter-mtex.html">filter-mtex</a> - <a href="../tclfilters/filter-pic.html">filter-pic/dpic</a> - <a href="../tclfilters/filter-pik.html">filter-pik</a> <br/> <a href="../tclfilters/filter-pipe.html">filter-pipe</a> - <a href="../tclfilters/filter-puml.html">filter-puml</a> - <a href="../tclfilters/filter-rplot.html">filter-rplot</a> - <a href="../tclfilters/filter-sqlite.html">filter-sqlite</a> - <a href="../tclfilters/filter-tcrd.html">filter-tcrd</a> - <a href="../tclfilters/filter-tcl.html">filter-tcl</a> - <a href="../tclfilters/filter-tdot.html">filter-tdot</a> - <a href="../tclfilters/filter-tsvg.html">filter-tsvg</a></p>
-Documentation: <a href="../../pantcl.html">Pantcl filter documentation</a> - <a href="../../pantcl-tutorial.html">Pantcl tutorial</a> - <a href="../../README.html">Pantcl Readme</a> - <a href="../fview/filter-view.html">Pantcl Gui</a>
+Documentation: <a href="../../pantcl.html">Pantcl filter
+documentation</a> - <a href="../../pantcl-tutorial.html">Pantcl
+tutorial</a> - <a href="../../README.html">Pantcl Readme</a> - <a href="../fview/filter-view.html">Pantcl Gui</a>
 </center>
 <hr/>
 <h2 id="name">NAME</h2>
-<p><em>filter-tcl.tcl</em> - filter to embed Tcl code in documentation.</p>
-<p>The code for the Tcl filter is in <code>pantcl.tcl</code> or in the standalone application <code>pantcl.bin</code>. It is to deeply involved into the main filter engine which drives the other Tcl and all other filters.</p>
+<p><em>filter-tcl.tcl</em> - filter to embed Tcl code in
+documentation.</p>
+<p>The code for the Tcl filter is in <code>pantcl.tcl</code> or in the
+standalone application <code>pantcl.bin</code>. It is to deeply involved
+into the main filter engine which drives the other Tcl and all other
+filters.</p>
 <h2 id="code-block-functions">CODE BLOCK FUNCTIONS</h2>
 <p>The following functions can be used within code blocks.</p>
 <ul>
-<li><em>bibliography FILENAME</em> - display a list of citations from a Bibtex file, please note that cite should be called first at least once</li>
-<li><em>bibstyle STYLE</em> - set the citations style either abbrev (default) or number, usually done before bibliography is called</li>
-<li><em>cite KEY</em> - add a citation using the given key, usually within inline codes</li>
-<li><em>include FILENAME</em> - include the given filename in the output document, usually used with <code>results="asis"</code> as chunk option</li>
-<li><em>list2mdtab HEADER ENTRIES</em> - creates a Markdown table for the given header and table cell entries</li>
+<li><em>bibliography FILENAME</em> - display a list of citations from a
+Bibtex file, please note that cite should be called first at least
+once</li>
+<li><em>bibstyle STYLE</em> - set the citations style either abbrev
+(default) or number, usually done before bibliography is called</li>
+<li><em>cite KEY</em> - add a citation using the given key, usually
+within inline codes</li>
+<li><em>include FILENAME</em> - include the given filename in the output
+document, usually used with <code>results="asis"</code> as chunk
+option</li>
+<li><em>list2mdtab HEADER ENTRIES</em> - creates a Markdown table for
+the given header and table cell entries</li>
 </ul>
 <h2 id="code-blocks">CODE BLOCKS</h2>
 <p>Here an example:</p>
@@ -117,18 +74,21 @@ Documentation: <a href="../../pantcl.html">Pantcl filter documentation</a> - <a 
     puts $x
     ```</code></pre>
 <p>Here the output:</p>
-<div class="sourceCode" data-eval="true" id="cb2"><pre class="sourceCode tcl"><code class="sourceCode tcl"><span id="cb2-1"><a aria-hidden="true" href="#cb2-1" tabindex="-1"></a><span class="kw">set</span> <span class="ot">x</span> <span class="dv">1</span></span>
-<span id="cb2-2"><a aria-hidden="true" href="#cb2-2" tabindex="-1"></a><span class="kw">puts</span> <span class="dt">$x</span></span></code></pre></div>
-<pre class="tclout" data-eval="true"><code>1
-</code></pre>
+<pre class="tclinn"><code>set x 1
+puts $x</code></pre>
+<pre class="tclout"><code>1</code></pre>
 <h3 id="code-chunk-options">Code chunk options</h3>
 <p>The basic Tcl filter has three code chunk options:</p>
 <ul>
-<li><em>echo</em> - should the code itself been shown, default: true</li>
+<li><em>echo</em> - should the code itself been shown, default:
+true</li>
 <li><em>eval</em> - should the code be evaluated, default: false</li>
-<li><em>results</em> - should the code output be shown, either “show”, “hide” or “asis”, default: “show”</li>
+<li><em>results</em> - should the code output be shown, either “show”,
+“hide” or “asis”, default: “show”</li>
 </ul>
-<p>You can set these options either in the YAML header or on individual code chunks. Here a YAML header of the document to make other defaults:</p>
+<p>You can set these options either in the YAML header or on individual
+code chunks. Here a YAML header of the document to make other
+defaults:</p>
 <pre><code>    ---
     title: your title
     author: your name
@@ -137,69 +97,83 @@ Documentation: <a href="../../pantcl.html">Pantcl filter documentation</a> - <a 
        eval: 1
        results: "hide"
     ---</code></pre>
-<p>Please note that in the document header <em>true</em> or <em>false</em> is not possible only using 1 and 0 as values.</p>
-<p>For the <code>eval</code> option there is as well an environment variable which can be set. If you in a bash shell use <code>export FILTEREVAL=0</code> the default of <code>eval=0</code> (false) will be overwritten. You can reset the default option <code>eval</code> later again to <code>export FILTEREVAL=1</code> if you like.</p>
-<p>Now an example where we hide the code itself and only show the output using the chunk argument <code>echo=false</code>:</p>
+<p>Please note that in the document header <em>true</em> or
+<em>false</em> is not possible only using 1 and 0 as values.</p>
+<p>For the <code>eval</code> option there is as well an environment
+variable which can be set. If you in a bash shell use
+<code>export FILTEREVAL=0</code> the default of <code>eval=0</code>
+(false) will be overwritten. You can reset the default option
+<code>eval</code> later again to <code>export FILTEREVAL=1</code> if you
+like.</p>
+<p>Now an example where we hide the code itself and only show the output
+using the chunk argument <code>echo=false</code>:</p>
 <pre><code>    ```{.tcl echo=false eval=true}
     puts "The sinus of 3 is [expr {round(sin(3))}]"
     ```</code></pre>
 <p>And here the output where the code is as well hidden:</p>
-<p></p>
-<pre class="tclout" data-echo="false" data-eval="true"><code>The sinus of 3 is 0.141
-</code></pre>
-<p>With the option <code>eval</code> we can just avoid interpretations of code chunks.</p>
+<pre class="tclout"><code>The sinus of 3 is 0.141</code></pre>
+<p>With the option <code>eval</code> we can just avoid interpretations
+of code chunks.</p>
 <pre><code>    ```{.tcl eval=false}
     puts "The sinus of 3 is [format %0.3f [expr {sin(3)}]]"
     ```</code></pre>
 <p>And here the “output”:</p>
-<div class="sourceCode" data-eval="false" id="cb8"><pre class="sourceCode tcl"><code class="sourceCode tcl"><span id="cb8-1"><a aria-hidden="true" href="#cb8-1" tabindex="-1"></a><span class="kw">puts</span> <span class="st">"The sinus of 3 is [format %0.3f [expr {sin(3)}]]"</span></span></code></pre></div>
-<p>As we can use the <em>echo</em> chunk option to hide and show the code itself, we can as well do the same with the output. So if we combine <em>echo=“false”</em> and <em>results=“hide”</em> the code will be evaluated but we will not seen anything in the output. This option is useful if you like to hide the Tcl code and just use it in the background for some computations.</p>
-<p>But what does the code chunk option <em>results=“asis”</em> mean? It allows you to create Markup code, such as Markdown if we you are writing in Markdown, using the Tcl programming language.</p>
+<pre class="tclinn"><code>puts "The sinus of 3 is [format %0.3f [expr {sin(3)}]]"</code></pre>
+<p>As we can use the <em>echo</em> chunk option to hide and show the
+code itself, we can as well do the same with the output. So if we
+combine <em>echo=“false”</em> and <em>results=“hide”</em> the code will
+be evaluated but we will not seen anything in the output. This option is
+useful if you like to hide the Tcl code and just use it in the
+background for some computations.</p>
+<p>But what does the code chunk option <em>results=“asis”</em> mean? It
+allows you to create Markup code, such as Markdown if we you are writing
+in Markdown, using the Tcl programming language.</p>
 <pre><code>    ```{.tcl results="asis" eval=true}
     set md "This is **bold** and this is _italic_ text.\n"
     append md "\nYou get the point?\n"
     set md
     ```</code></pre>
 <p>And here is the output:</p>
-<div class="sourceCode" data-eval="true" data-results="asis" id="cb10"><pre class="sourceCode tcl"><code class="sourceCode tcl"><span id="cb10-1"><a aria-hidden="true" href="#cb10-1" tabindex="-1"></a><span class="kw">set</span> md <span class="st">"This is **bold** and this is _italic_ text.</span><span class="ch">\n</span><span class="st">"</span></span>
-<span id="cb10-2"><a aria-hidden="true" href="#cb10-2" tabindex="-1"></a><span class="kw">append</span> md <span class="st">"</span><span class="ch">\n</span><span class="st">You get the point?</span><span class="ch">\n</span><span class="st">"</span></span>
-<span id="cb10-3"><a aria-hidden="true" href="#cb10-3" tabindex="-1"></a><span class="kw">set</span> md</span></code></pre></div>
+<pre class="tclinn"><code>set md "This is **bold** and this is _italic_ text.\n"
+append md "\nYou get the point?\n"
+set md</code></pre>
 <p>This is <strong>bold</strong> and this is <em>italic</em> text.</p>
 <p>You get the point?</p>
-<p>Let’s create a table based on a nested Tcl list, code chunk options - <code>{.tcl results="show" eval=true}</code>:</p>
-<div class="sourceCode" data-results="show" id="cb11"><pre class="sourceCode tcl"><code class="sourceCode tcl"><span id="cb11-1"><a aria-hidden="true" href="#cb11-1" tabindex="-1"></a><span class="kw">set</span> l <span class="kw">[list</span> <span class="kw">[list</span> A B C D E<span class="kw">]</span> \</span>
-<span id="cb11-2"><a aria-hidden="true" href="#cb11-2" tabindex="-1"></a>   <span class="kw">[list</span> <span class="dv">1</span> <span class="dv">2</span> <span class="dv">3</span> <span class="dv">4</span> <span class="dv">5</span><span class="kw">]</span> \</span>
-<span id="cb11-3"><a aria-hidden="true" href="#cb11-3" tabindex="-1"></a>   <span class="kw">[list</span> <span class="dv">6</span> <span class="dv">7</span> <span class="dv">8</span> <span class="dv">9</span> <span class="dv">10</span><span class="kw">]</span> \</span>
-<span id="cb11-4"><a aria-hidden="true" href="#cb11-4" tabindex="-1"></a>   <span class="kw">[list</span> <span class="dv">11</span> <span class="dv">12</span> <span class="dv">13</span> <span class="dv">14</span> <span class="dv">15</span><span class="kw">]]</span></span>
-<span id="cb11-5"><a aria-hidden="true" href="#cb11-5" tabindex="-1"></a><span class="kw">set</span> md <span class="st">""</span></span>
-<span id="cb11-6"><a aria-hidden="true" href="#cb11-6" tabindex="-1"></a><span class="kw">set</span> <span class="ot">x</span> <span class="dv">0</span></span>
-<span id="cb11-7"><a aria-hidden="true" href="#cb11-7" tabindex="-1"></a><span class="kw">foreach</span> row <span class="dt">$l</span> <span class="kw">{</span></span>
-<span id="cb11-8"><a aria-hidden="true" href="#cb11-8" tabindex="-1"></a>    <span class="kw">incr</span> <span class="ot">x</span></span>
-<span id="cb11-9"><a aria-hidden="true" href="#cb11-9" tabindex="-1"></a>    <span class="kw">append</span> md <span class="st">"|"</span></span>
-<span id="cb11-10"><a aria-hidden="true" href="#cb11-10" tabindex="-1"></a>    <span class="kw">foreach</span> cell <span class="dt">$row</span> <span class="kw">{</span></span>
-<span id="cb11-11"><a aria-hidden="true" href="#cb11-11" tabindex="-1"></a>       <span class="kw">append</span> md <span class="st">" </span><span class="dt">$</span><span class="st">cell |"</span></span>
-<span id="cb11-12"><a aria-hidden="true" href="#cb11-12" tabindex="-1"></a>    <span class="kw">}</span></span>
-<span id="cb11-13"><a aria-hidden="true" href="#cb11-13" tabindex="-1"></a>    <span class="kw">append</span> md <span class="st">"</span><span class="ch">\n</span><span class="st">"</span></span>
-<span id="cb11-14"><a aria-hidden="true" href="#cb11-14" tabindex="-1"></a>    <span class="kw">if</span> <span class="kw">{</span><span class="dt">$x</span> == <span class="dv">1</span><span class="kw">}</span> <span class="kw">{</span></span>
-<span id="cb11-15"><a aria-hidden="true" href="#cb11-15" tabindex="-1"></a>      <span class="kw">append</span> md <span class="st">"|"</span></span>
-<span id="cb11-16"><a aria-hidden="true" href="#cb11-16" tabindex="-1"></a>      <span class="kw">foreach</span> cell <span class="dt">$row</span> <span class="kw">{</span></span>
-<span id="cb11-17"><a aria-hidden="true" href="#cb11-17" tabindex="-1"></a>          <span class="kw">append</span> md <span class="st">" ---- |"</span></span>
-<span id="cb11-18"><a aria-hidden="true" href="#cb11-18" tabindex="-1"></a>      <span class="kw">}</span></span>
-<span id="cb11-19"><a aria-hidden="true" href="#cb11-19" tabindex="-1"></a>      <span class="kw">append</span> md <span class="st">"</span><span class="ch">\n</span><span class="st">"</span></span>
-<span id="cb11-20"><a aria-hidden="true" href="#cb11-20" tabindex="-1"></a>    <span class="kw">}</span></span>
-<span id="cb11-21"><a aria-hidden="true" href="#cb11-21" tabindex="-1"></a><span class="kw">}</span></span>
-<span id="cb11-22"><a aria-hidden="true" href="#cb11-22" tabindex="-1"></a><span class="kw">set</span> md</span></code></pre></div>
-<pre class="tclout" data-results="show"><code>| A | B | C | D | E |
+<p>Let’s create a table based on a nested Tcl list, code chunk options -
+<code>{.tcl results="show" eval=true}</code>:</p>
+<pre class="tclinn"><code>set l [list [list A B C D E] \
+   [list 1 2 3 4 5] \
+   [list 6 7 8 9 10] \
+   [list 11 12 13 14 15]]
+set md ""
+set x 0
+foreach row $l {
+    incr x
+    append md "|"
+    foreach cell $row {
+       append md " $cell |"
+    }
+    append md "\n"
+    if {$x == 1} {
+      append md "|"
+      foreach cell $row {
+          append md " ---- |"
+      }
+      append md "\n"
+    }
+}
+set md</code></pre>
+<pre class="tclout"><code>| A | B | C | D | E |
 | ---- | ---- | ---- | ---- | ---- |
 | 1 | 2 | 3 | 4 | 5 |
 | 6 | 7 | 8 | 9 | 10 |
-| 11 | 12 | 13 | 14 | 15 |
-</code></pre>
-<p>If we now switch to <code>results="asis"</code> the output is this:</p>
-<div class="sourceCode" data-results="asis" id="cb13"><pre class="sourceCode tcl"><code class="sourceCode tcl"><span id="cb13-1"><a aria-hidden="true" href="#cb13-1" tabindex="-1"></a><span class="co"># variable md still exists from the </span></span>
-<span id="cb13-2"><a aria-hidden="true" href="#cb13-2" tabindex="-1"></a><span class="co"># previous code chunk</span></span>
-<span id="cb13-3"><a aria-hidden="true" href="#cb13-3" tabindex="-1"></a><span class="kw">set</span> md <span class="st">"&lt;center&gt;</span><span class="ch">\n\n</span><span class="dt">$</span><span class="st">md</span><span class="ch">\n\n</span><span class="st">&lt;/center&gt;</span><span class="ch">\n</span><span class="st">"</span></span>
-<span id="cb13-4"><a aria-hidden="true" href="#cb13-4" tabindex="-1"></a><span class="kw">set</span> md</span></code></pre></div>
+| 11 | 12 | 13 | 14 | 15 |</code></pre>
+<p>If we now switch to <code>results="asis"</code> the output is
+this:</p>
+<pre class="tclinn"><code># variable md still exists from the 
+# previous code chunk
+set md "&lt;center&gt;\n\n$md\n\n&lt;/center&gt;\n"
+set md</code></pre>
 <center>
 <table>
 <thead>
@@ -236,12 +210,14 @@ Documentation: <a href="../../pantcl.html">Pantcl filter documentation</a> - <a 
 </tbody>
 </table>
 </center>
-<p>As the display of tabular data is quite a common problem, the Tcl filter comes with a helper function <em>list2mdtab</em>, so we do not need to write this manual loop:</p>
-<div class="sourceCode" data-results="asis" id="cb14"><pre class="sourceCode tcl"><code class="sourceCode tcl"><span id="cb14-1"><a aria-hidden="true" href="#cb14-1" tabindex="-1"></a><span class="co"># syntax: list2mdtab header rows</span></span>
-<span id="cb14-2"><a aria-hidden="true" href="#cb14-2" tabindex="-1"></a><span class="co"># we need to flatten the row list</span></span>
-<span id="cb14-3"><a aria-hidden="true" href="#cb14-3" tabindex="-1"></a><span class="kw">set</span> r &lt;center&gt;<span class="ch">\n\n</span></span>
-<span id="cb14-4"><a aria-hidden="true" href="#cb14-4" tabindex="-1"></a><span class="kw">append</span> r <span class="kw">[</span>list2mdtab <span class="kw">[lindex</span> <span class="dt">$l</span> <span class="dv">0</span><span class="kw">]</span> <span class="kw">[concat</span> <span class="kw">{</span>*<span class="kw">}[lrange</span> <span class="dt">$l</span> <span class="dv">1</span> end<span class="kw">]]]</span></span>
-<span id="cb14-5"><a aria-hidden="true" href="#cb14-5" tabindex="-1"></a><span class="kw">append</span> r <span class="ch">\n\n</span>&lt;/center&gt;<span class="ch">\n</span></span></code></pre></div>
+<p>As the display of tabular data is quite a common problem, the Tcl
+filter comes with a helper function <em>list2mdtab</em>, so we do not
+need to write this manual loop:</p>
+<pre class="tclinn"><code># syntax: list2mdtab header rows
+# we need to flatten the row list
+set r &lt;center&gt;\n\n
+append r [list2mdtab [lindex $l 0] [concat {*}[lrange $l 1 end]]]
+append r \n\n&lt;/center&gt;\n</code></pre>
 <center>
 <table>
 <thead>
@@ -279,46 +255,60 @@ Documentation: <a href="../../pantcl.html">Pantcl filter documentation</a> - <a 
 </table>
 </center>
 <h3 id="graphics">Graphics</h3>
-<p>R has no default graphics engine for plotting etc. There is however the <em>tsvg</em> package which allows us to create SVG graphics. As this package is included in the Pantcl filter application we can use it here and later include the generated graphics using the Markdown image markup:</p>
-<div class="sourceCode" id="cb15"><pre class="sourceCode tcl"><code class="sourceCode tcl"><span id="cb15-1"><a aria-hidden="true" href="#cb15-1" tabindex="-1"></a><span class="kw">package</span> <span class="ot">require</span> tsvg</span>
-<span id="cb15-2"><a aria-hidden="true" href="#cb15-2" tabindex="-1"></a>tsvg <span class="kw">set</span> code <span class="st">""</span></span>
-<span id="cb15-3"><a aria-hidden="true" href="#cb15-3" tabindex="-1"></a>tsvg circle<span class="ot"> -cx</span> <span class="dv">50</span><span class="ot"> -cy</span> <span class="dv">50</span><span class="ot"> -r</span> <span class="dv">45</span><span class="ot"> -stroke</span> black \</span>
-<span id="cb15-4"><a aria-hidden="true" href="#cb15-4" tabindex="-1"></a>   -stroke-<span class="ot">width</span> <span class="dv">2</span><span class="ot"> -fill</span> green</span>
-<span id="cb15-5"><a aria-hidden="true" href="#cb15-5" tabindex="-1"></a>tsvg <span class="kw">text</span><span class="ot"> -x</span> <span class="dv">29</span><span class="ot"> -y</span> <span class="dv">45</span> Hello</span>
-<span id="cb15-6"><a aria-hidden="true" href="#cb15-6" tabindex="-1"></a>tsvg <span class="kw">text</span><span class="ot"> -x</span> <span class="dv">27</span><span class="ot"> -y</span> <span class="dv">65</span> World!</span>
-<span id="cb15-7"><a aria-hidden="true" href="#cb15-7" tabindex="-1"></a>tsvg write images/hw.svg</span></code></pre></div>
+<p>R has no default graphics engine for plotting etc. There is however
+the <em>tsvg</em> package which allows us to create SVG graphics. As
+this package is included in the Pantcl filter application we can use it
+here and later include the generated graphics using the Markdown image
+markup:</p>
+<pre class="tclinn"><code>package require tsvg
+tsvg set code ""
+tsvg circle -cx 50 -cy 50 -r 45 -stroke black \
+   -stroke-width 2 -fill green
+tsvg text -x 29 -y 45 Hello
+tsvg text -x 27 -y 65 World!
+tsvg write images/hw.svg</code></pre>
 <p><img src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiIHN0YW5kYWxvbmU9InllcyI/PgogICAgPHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgaGVpZ2h0PSIxMDAiIHdpZHRoPSIxMDAiPgoKPGNpcmNsZSBjeD0iNTAiIGN5PSI1MCIgcj0iNDUiIHN0cm9rZT0iYmxhY2siIHN0cm9rZS13aWR0aD0iMiIgZmlsbD0iZ3JlZW4iIC8+Cgo8dGV4dCB4PSIyOSIgeT0iNDUiPgpIZWxsbwo8L3RleHQ+Cgo8dGV4dCB4PSIyNyIgeT0iNjUiPgpXb3JsZCEKPC90ZXh0PgoKPC9zdmc+Cg=="/><!--URL:images/hw.svg--></p>
-<p>If <a href="https://cairosvg.org/">cairosvg</a> is installed as well png files can be created. Here an other example which creates a barplot and saves it as a PNG:</p>
-<div class="sourceCode" id="cb16"><pre class="sourceCode tcl"><code class="sourceCode tcl"><span id="cb16-1"><a aria-hidden="true" href="#cb16-1" tabindex="-1"></a>tsvg <span class="kw">set</span> code <span class="st">""</span></span>
-<span id="cb16-2"><a aria-hidden="true" href="#cb16-2" tabindex="-1"></a>tsvg <span class="kw">set</span> <span class="ot">width</span> <span class="dv">400</span></span>
-<span id="cb16-3"><a aria-hidden="true" href="#cb16-3" tabindex="-1"></a>tsvg <span class="kw">set</span> <span class="ot">height</span> <span class="dv">400</span></span>
-<span id="cb16-4"><a aria-hidden="true" href="#cb16-4" tabindex="-1"></a>tsvg rect<span class="ot"> -x</span> <span class="dv">10</span><span class="ot"> -y</span> <span class="dv">10</span><span class="ot"> -width</span> <span class="dv">380</span><span class="ot"> -height</span> <span class="dv">380</span><span class="ot"> -fill</span> #eeeee</span>
-<span id="cb16-5"><a aria-hidden="true" href="#cb16-5" tabindex="-1"></a>tsvg rect<span class="ot"> -x</span> <span class="dv">20</span><span class="ot"> -y</span> <span class="dv">20</span><span class="ot"> -width</span> <span class="dv">360</span><span class="ot"> -height</span> <span class="dv">360</span><span class="ot"> -fill</span> #eeeee \</span>
-<span id="cb16-6"><a aria-hidden="true" href="#cb16-6" tabindex="-1"></a>   -<span class="kw">style</span> <span class="st">"stroke-width: 1px;stroke:black;"</span></span>
-<span id="cb16-7"><a aria-hidden="true" href="#cb16-7" tabindex="-1"></a><span class="kw">set</span> col <span class="kw">[list</span> #ffaaaa #ffccaa #ffaacc #aaffff<span class="kw">]</span></span>
-<span id="cb16-8"><a aria-hidden="true" href="#cb16-8" tabindex="-1"></a><span class="kw">set</span> labels <span class="kw">[list</span> A B C D<span class="kw">]</span></span>
-<span id="cb16-9"><a aria-hidden="true" href="#cb16-9" tabindex="-1"></a><span class="kw">foreach</span> i <span class="kw">[list</span>  <span class="dv">0</span> <span class="dv">1</span> <span class="dv">2</span> <span class="dv">3</span><span class="kw">]</span> <span class="kw">{</span></span>
-<span id="cb16-10"><a aria-hidden="true" href="#cb16-10" tabindex="-1"></a>    <span class="kw">set</span> val <span class="kw">[expr</span> <span class="kw">{</span>round(rand()*<span class="dv">300</span>)<span class="kw">}]</span></span>
-<span id="cb16-11"><a aria-hidden="true" href="#cb16-11" tabindex="-1"></a>    tsvg rect<span class="ot"> -x</span> <span class="kw">[expr</span> <span class="kw">{</span>(<span class="dt">$i</span>+<span class="dv">1</span>)*<span class="dv">70</span><span class="kw">}]</span><span class="ot"> -y</span> <span class="kw">[expr</span> <span class="kw">{</span><span class="dv">340</span>-<span class="dt">$val</span><span class="kw">}]</span> \</span>
-<span id="cb16-12"><a aria-hidden="true" href="#cb16-12" tabindex="-1"></a>          -<span class="ot">width</span> <span class="dv">50</span><span class="ot"> -height</span> <span class="dt">$val</span> \</span>
-<span id="cb16-13"><a aria-hidden="true" href="#cb16-13" tabindex="-1"></a>          -fill <span class="kw">[lindex</span> <span class="dt">$col</span> <span class="dt">$i</span><span class="kw">]</span></span>
-<span id="cb16-14"><a aria-hidden="true" href="#cb16-14" tabindex="-1"></a>    tsvg <span class="kw">text</span><span class="ot"> -x</span> <span class="kw">[expr</span> <span class="kw">{</span>(<span class="dt">$i</span>+<span class="dv">1</span>)*<span class="dv">70</span>+<span class="dv">20</span><span class="kw">}]</span><span class="ot"> -y</span> <span class="dv">370</span> <span class="kw">[lindex</span> <span class="dt">$labels</span> <span class="dt">$i</span><span class="kw">]</span></span>
-<span id="cb16-15"><a aria-hidden="true" href="#cb16-15" tabindex="-1"></a><span class="kw">}</span></span>
-<span id="cb16-16"><a aria-hidden="true" href="#cb16-16" tabindex="-1"></a>tsvg write images/barplot.png</span></code></pre></div>
-<p><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAZAAAAGQCAYAAACAvzbMAAAABmJLR0QA/wD/AP+gvaeTAAALeklEQVR4nO3dS4iWhR7H8X8HSQuznBQr0e5BSSiGUDk1SdMFTKgksI2IVORGAgMxIYqgCxR0YTZNyiwqRwxDu+CQLRzGNha2mUULhcCFQcw0Yzen0rM4JJ0KjufX6zyjfj7wgvLKw4/x5f3O816rAAAAAAAAAAAAAAAAAAAA4I/OOdl/ODQ0dPxUDgFgYmhrazupNvzrVA8B4MwkIABEBASAiIAAEBEQACICAkBEQACICAgAkUmtPNjAwEDt3bu3lYcEoEUWL15c7e3tLTteS89A9u7dWwMDA608JAAtcCp+wW/pGUhVVXt7e61fv77VhwVggvEcCAARAQEgIiAARAQEgIiAABAREAAiAgJAREAAiAgIABEBASAiIABEBASAiIAAEBEQACICAkBEQACICAgAEQEBICIgAEQEBICIgAAQERAAIgICQERAAIgICAARAQEgIiAARAQEgIiAABAREAAiAgJAREAAiAgIABEBASAiIABEBASAiIAAEBEQACICAkBEQACICAgAEQEBICIgAEQEBICIgAAQERAAIgICQERAAIgICAARAQEgIiAARAQEgIiAABAREAAiAgJAREAAiAgIABEBASAiIABEBASAiIAAEBEQACICAkBEQACICAgAEQEBICIgAEQEBICIgAAQERAAIgICQERAAIgICAARAQEgIiAARAQEgIiAABAREAAiAgJAREAAiAgIABEBASAiIABEBASAiIAAEBEQACICAkBEQACICAgAEQEBICIgAEQEBICIgAAQERAAIgICQERAAIgICAARAQEgIiAARAQEgIiAABAREAAiAgJAREAAiAgIABEBASAiIABEBASAiIAAEBEQACICAkBEQACICAgAEQEBICIgAEQEBICIgAAQERAAIgICQERAAIgICAARAQEgIiAARAQEgIiAABAREAAiAgJAREAAiAgIABEBASAiIABEBASAiIAAEBEQACICAkBEQACICAgAEQEBICIgAEQEBICIgAAQERAAIgICQERAAIgICAARAQEgIiAARCY1PQDOBNN3H2x6QksMd17V9AROI85AAIgICAARAQEgIiAARAQEgIiAABAREAAiAgJAREAAiAgIABEBASAiIABEBASAiIAAEBEQACICAkBEQACICAgAEQEBICIgAEQEBICIgAAQERAAIgICQERAAIgICAARAQEgIiAARAQEgIiAABAREAAiAgJAZFLTAzi9TD+4u+kJLTF8VWfTE+C05wwEgIiAABAREAAiAgJAREAAiAgIABEBASAiIABEBASAiIAAEBEQACICAkBEQACICAgAEQEBICIgAEQEBICIgAAQ8ZW2wCmze/r0pie0ROfwcNMTJiRnIABEBASAiIAAEBEQACICAkBEQACICAgAEQEBICIgAEQEBICIgAAQERAAIgICQERAAIgICAARAQEgIiAARAQEgIiAABAREAAiAgJAREAAiAgIABEBASAiIABEBASAiIAAEBEQACICAkBEQACICAgAEQEBICIgAEQEBICIgAAQERAAIgICQERAAIgICAARAQEgIiAARAQEgIiAABAREAAiAgJAREAAiAgIABEBASAiIABEBASAiIAAEBEQACICAkBEQACICAgAEQEBICIgAEQEBICIgAAQERAAIgICQERAAIgICACRSU0PmKim797d9ISWGO7sbHoCcIZyBgJAREAAiAgIABEBASAiIABEBASAiIAAEBEQACICAkBEQACICAgAEQEBICIgAEQEBICIgAAQERAAIgICQERAAIgICAARAQEgIiAARAQEgIiAABAREAAiAgJAREAAiAgIABEBASAiIABEBASAiIAAEBEQACICAkBEQACICAgAEQEBICIgAEQEBICIgAAQERAAIgICQERAAIgICAARAQEgIiAARAQEgIiAABAREAAiAgJAREAAiAgIABEBASAiIABEBASAyKSmB0xUw52dTU+YkIav8nP5O8OdVzU9YULqHB5uegKnkDMQACICAkBEQACICAgAEQEBICIgAEQEBICIgAAQERAAIgICQERAAIgICAARAQEgIiAARAQEgIiAABAREAAiAtKQtWvXVltbW23cuLHpKY3r7u6utra2E5cZM2bUvHnz6pFHHqmDBw82Pa9xX3zxRa1evbquv/76mjVrVl1zzTX10EMP1QcffND0tEb8+fYye/bsWrBgQa1cubJ27txZx48fb3riWcNX2jbg559/rh07dlRV1XvvvVfPPvtsTZrkv+KVV16pyy67rH777bc6cOBAvfHGG7Vv377au3dvTZ06tel5jeju7q4NGzbUddddV2vWrKm5c+fW6Oho7dmzp1avXl1vv/123XPPPU3PbMTvt5exsbE6dOhQ7dq1q1atWlVLliypd999tyZPntz0xDOee60GfPjhh3XkyJG666676pNPPqlPP/30rL0T+KP29va69tprT/x91qxZ9fjjj9fnn39ed9xxR3PDGrJv377asGFDLV26tDZt2vRfv2SsXLmyBgcH65dffmlwYbP+fHtZs2ZNbd68uZ588sl65pln6oUXXmhw3dnBQ1gN2LJlS1100UXV1dVVU6ZMqd7e3qYnTUjTp0+vqjpr7yRff/31Ovfcc+vVV1/92zPUefPm1YIFCxpYNnGtXr26Ojo6qqenp3766aem55zxBGScHT58uPbs2VMPPPBAzZgxo5YuXVq7du2q7777rulpjfvxxx/rhx9+qNHR0dq/f3+9+OKLdemll9bixYubntaI/v7+uvXWW0+ElJNz77331tGjR2v//v1NTznjCcg427p1ax07dqxWrFhRVVUPP/xwHT16tN5///2GlzVvyZIlNWfOnLriiivqzjvvrKGhodq2bVudf/75TU8bd6Ojo3XkyJG6/PLLm55y2pkzZ05VVX3zzTcNLznzCcg46+3trauvvroWLVpUVVUdHR11ySWXeBirqt588836+OOP66OPPqq33nqrZs6cWcuXL/dKLP4vx44dq6qqc845p+ElZz4BGUf79++vr776qu67774aGRmpkZGR+v7772vZsmW1b9++OnDgQNMTGzV//vy6+eab65ZbbqkHH3ywtm3bViMjI/Xyyy83PW3cTZs2rS644IL6+uuvm55y2jl06FBV/edFGJxaAjKOtmzZUlVVr732Wl155ZUnLt3d3VVVzkL+5MILL6zZs2fX4OBg01Macfvtt9dnn31Ww8PDTU85rfT19dXkyZO9wGAcCMg4GRsbq+3bt9dNN91UO3fu/MvlxhtvrK1bt3oT1B98++23dejQobr44oubntKItWvX1tjYWD3xxBP166+//uX6wcHB+vLLLxtYNnFt3rz5xHtkzjvvvKbnnPG8D2Sc9PX11dDQUD333HPV3t7+l+tXrVpV69atq4GBgbrtttsaWNi8gYGBOnjwYB0/frwOHz5cmzZtqrGxsXr00UebntaIRYsW1fPPP19PPfVUdXR01IoVK2ru3Lk1MjJS/f39tWPHjnrnnXeantmY328vv7+RsK+vr/r7+2vJkiX19NNPNz3vrCAg46S3t7emTp1a999//99ev3z58tq4cWP19vaetQFZt27diT/PnDmzbrjhhtq+fXt1dHQ0uKpZjz32WC1cuLC6urqqq6urhoaGatq0abVw4cLq6empu+++u+mJjfn99jJlypSaOXNmzZ8/v3p6emrZsmWeQB8nJ/1THhoa+p+Prbz00ktVVbV+/fp/MAmAVvt/7p/b2tpOqg2eAwEgIiAARAQEgIiAABAREAAiAgJAREAAiAgIAJGWvxN9YGCg1YcE4B8aGBj4249R+idaGpCz9ZvjACa69vb2lt9Ht/SjTAA4/fkoEwBOKQEBICIgAEQEBICIgAAQERAAIgICQERAAAAAAAAAAAAAAAAAAAAAAIAW+DcJkd0FYmyc8gAAAABJRU5ErkJggg=="/><!--URL:images/barplot.png--></p>
-<p>PDF and PNG output might be preferred if your final document is a PDF document created via LaTeX.</p>
-<p>For more information about the tsvg package you might consult the <a href="http://htmlpreview.github.io/?https://github.com/mittelmark/pantcl/blob/master/lib/tsvg/tsvg.html">tsvg package documentation</a>.</p>
+<p>If <a href="https://cairosvg.org/">cairosvg</a> is installed as well
+png files can be created. Here an other example which creates a barplot
+and saves it as a PNG:</p>
+<pre class="tclinn"><code>tsvg set code ""
+tsvg set width 400
+tsvg set height 400
+tsvg rect -x 10 -y 10 -width 380 -height 380 -fill #eeeee
+tsvg rect -x 20 -y 20 -width 360 -height 360 -fill #eeeee \
+   -style "stroke-width: 1px;stroke:black;"
+set col [list #ffaaaa #ffccaa #ffaacc #aaffff]
+set labels [list A B C D]
+foreach i [list  0 1 2 3] {
+    set val [expr {round(rand()*300)}]
+    tsvg rect -x [expr {($i+1)*70}] -y [expr {340-$val}] \
+          -width 50 -height $val \
+          -fill [lindex $col $i]
+    tsvg text -x [expr {($i+1)*70+20}] -y 370 [lindex $labels $i]
+}
+tsvg write images/barplot.png</code></pre>
+<p><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAZAAAAGQCAYAAACAvzbMAAAABmJLR0QA/wD/AP+gvaeTAAALXUlEQVR4nO3dX2jWhR7H8a8rmv0x2PrrP5IiCCrKYjRxldQoycqifxchS4igC/EiYtGVEl0EXdVFUbFAEd3YupgVRpaQM6wcGdVNQUUllZIWIVGYOzfnROY5nM7nPO432+sFXsxn/PhMnj1vf7/n2Z4qAAAAAAAAAAAAAAAAAAAA+KMZf/UT9+/fP3FspwAwFXR2dv6lNrQd+ykA/B0JCAARAQEgIiAARAQEgIiAABAREAAiAgJA5MRWHmxsbKx27NjRykMC0CKLFy+unp6elh2vpWcgO3bsqLGxsVYeEoAWOBb/wW/pGUhVVU9PT/X397f6sABMMZ4DASAiIABEBASAiIAAEBEQACICAkBEQACICAgAEQEBICIgAEQEBICIgAAQERAAIgICQERAAIgICAARAQEgIiAARAQEgIiAABAREAAiAgJAREAAiAgIABEBASAiIABEBASAiIAAEBEQACICAkBEQACICAgAEQEBICIgAEQEBICIgAAQERAAIgICQERAAIgICAARAQEgIiAARAQEgIiAABAREAAiAgJAREAAiAgIABEBASAiIABEBASAiIAAEBEQACICAkBEQACICAgAEQEBICIgAERObHrAVNWxdWvTE1riQG9v0xOAvylnIABEBASAiIAAEBEQACICAkBEQACICAgAEQEBICIgAEQEBICIgAAQERAAIgICQERAAIgICAARAQEgIiAARAQEgIiAABAREAAiAgJAREAAiAgIABEBASAiIABEBASAiIAAEBEQACICAkBEQACICAgAEQEBICIgAEQEBICIgAAQERAAIgICQERAAIgICAARAQEgIiAARAQEgIiAABAREAAiAgJAREAAiAgIABEBASAiIABEBASAiIAAEBEQACICAkBEQACICAgAEQEBICIgAEQEBICIgAAQERAAIgICQERAAIgICAARAQEgIiAARAQEgMiJTQ/g+NLx2damJ7TEgfN7m54Axz1nIABEBASAiIAAEBEQACICAkBEQACICAgAEQEBICIgAEQEBICIgAAQERAAIgICQERAAIgICAARAQEgIiAARAQEgIiAABAREAAiAgJAREAAiAgIABEBASAiIABEBASAiIAAEBEQACICAkBEQACICAgAEQEBICIgAEQEBICIgAAQERAAIgICQERAAIgICAARAQEgIiAARAQEgIiAABAREAAiAgJAREAAiAgIABEBASAiIABEBASAiIAAEBEQACICAkBEQACICAgAEQEBICIgAEQEBICIgAAQERAAIgICQERAAIgICAARAQEgIiAARAQEgIiAABAREAAiAgJAREAAiAgIABEBASAiIABEBASAiIAAEBEQACICAkBEQACICAgAEQEBICIgAEQEBICIgAAQERAAIgICQERAAIgICAARAQEgIiAARAQEgIiAABAREAAiAgJAREAAiAgIABEBASAiIABEBASAiIAAEBEQACICAkBEQACICAgAEQEBICIgAEQEBICIgAAQERAAIgICQERAAIgICAARAQEgIiAARAQEgIiAABAREAAiAgJAREAAiAgIABEBASAiIABEBASAiIAAEBEQACICAkBEQACICAgAEQEBICIgAEQEBICIgAAQERAAIgICQERAAIgICAARAQEgIiAARAQEgIiAABAREAAiAgJAREAAiAgIABEBASAiIABEBASAiIAAEBEQACICAkBEQACICAgAEQEBICIgAEQEBICIgAAQERAAIgICQERAAIgICAARAQEgIiAARAQEgIiAABAREAAiAgJAREAAiAgIABEBASByYtMD4O+gY+tnTU9oiQO95zc9geOIMxAAIgICQERAAIh4DgQ4ZrZ2dDQ9oSV6DxxoesKU5AwEgIiAABAREAAiAgJAREAAiAgIABEBASAiIABEBASAiIAAEBEQACICAkBEQACICAgAEQEBICIgAEQEBICIgAAQERAAIt4T/T840Nvb9IQp6cD5/l3+nQO95zc9YUryXuJ/b85AAIgICAARAQEgIiAARAQEgIiAABAREAAiAgJAREAAiAgIABEBASAiIABEBASAiIAAEBEQACICAkBEQACICEhDuru7q7Ozs7Zs2dL0lMY9+eST1dnZ+fuf2bNn18KFC2vVqlX1+eefNz2vce+880719fXVxRdfXLNnz67LLrusVq5cWePj401Pa8Sf7y/z5s2r7u7uWrNmTX333XdNz5tWvKVtA3bv3l2ffPJJtbe31+DgYC1durTpSVPCvffeW+edd14dPHiwdu/eXRs2bKjXX3+93n///Tr55JObnteIF198sR5++OGaOXNm3XjjjXX22WfXF198Ua+99lr19fU1Pa9Rf76/PP3007Vhw4batGlTXXnllU3PmxYEpAFDQ0M1c+bMWrFiRa1bt65++umnmjVrVtOzGnfPPfdUT0/P7x/39fXV5s2ba3x8/Ii/ny4++uij6u/vr/nz59fmzZtr3rx5v9/mPnP0/WX79u11991313333Vc7d+6sU089tdF904FLWJPst99+q5GRkbrmmmvqtttuq19++aVGR0ebnjUlzZkzp6pq2j4QPPvss3Xo0KFau3btEfGoqmkfj3/n6quvrtWrV9eePXt8T00SAZlk27Ztq3379tXy5cvrqquuqnPOOacGBwebnjUl7N27t7788sv69NNP66WXXqpNmzZVV1dXXX755U1Pa8S2bdvqlFNOqVtuuaXpKceNm266qaqqxsbGmp4yLbiENckGBwervb29li1bVm1tbbV8+fJ6/vnna8+ePTV37tym5zXq/vvvP+LjJUuW1MDAQM2YMaOxTU05fPhw7d27ty688MJp+fWn5s+fX1VV3377bdNTpgVnIJPo4MGD9eqrr1Zvb2+dfvrpVVV1++2318TERA0PDzc9r3GPPvporV+/vl544YV66KGHateuXXX99dfXvn37mp426SYmJmpiYqLa2nyL/i8OHTpUVSW6k8QZyCQaHR2tn3/+uV555ZXq7Ow84rbBwcFavXp1Y9umgu7u7iOeFF2wYEGtWrWqBgYGqr+/v9Ftk+2EE06oM844o7766qumpxxX/vWy7+l+Nj9ZBGQSDQ0NVXt7+1GXat59991677336sMPP6xLL720sX1TzUUXXVRVVV9//XXTUxqxaNGiGh0drTfffLOuu+66puccF0ZGRqr++YQ6x56ATJJvvvmmtm/fXsuWLavHHnvsiNvefvvtuvnmm2toaEhA/uCNN96oqjrqFUjTxcqVK2t0dLTWrFlTCxcurI6OjqYnTWkjIyM1MDBQCxYsqFtvvbXpOdOCgEyS4eHhOnz4cN15551H3bZo0aKaO3duDQ8P19q1a6ftde/h4eHatWtX/frrr/Xxxx/Xyy+/XB0dHbVixYqmpzXi2muvrQcffLCeeeaZ6urqqqVLl9aZZ55Z33//fY2Pj9dzzz1Xl1xySdMzG7Nx48YaGxurH3/8sXbu3FkffPBBnXvuubV+/fo66aSTmp43LQjIJBkcHKxZs2bVDTfccNRtM2bMqDvuuKOeeuqpeuutt2rJkiWNbGzaunXrqqqqra2t5syZU3fddVc98sgjv/88yHT0+OOP1xVXXFEDAwO1ZcuW+uGHH6qjo6O6urrqrLPOanpeozZu3FhVVaeddlpdcMEF1d/fXw888IAztUn0l1+qsH///on/9jlPPPFEVdW0e8ITYKr7Xx6fOzs7/1Ibpue1EgD+bwICQERAAIgICAARAQEgIiAARAQEgIiAABBp+U+ieyMXgKlnbGys5W8N3dKALF68uJWHA6BFenp6Wv4Y3dJfZQLA8c+vMgHgmBIQACICAkBEQACICAgAEQEBICIgAEQEBAAAAAAAAAAAAAAAAAAAAABogX8AesetZwyZSFUAAAAASUVORK5CYII="/><!--URL:images/barplot.png--></p>
+<p>PDF and PNG output might be preferred if your final document is a PDF
+document created via LaTeX.</p>
+<p>For more information about the tsvg package you might consult the <a href="http://htmlpreview.github.io/?https://github.com/mittelmark/pantcl/blob/master/lib/tsvg/tsvg.html">tsvg
+package documentation</a>.</p>
 <h2 id="include-files">INCLUDE FILES</h2>
-<p>An other utility function is the include function where we can include other files, for instance some which contain as well Markdown markup. This can be used for instance to include common header and footers in your documents. Below an example we create an external file and then include this file afterwards, we would like to have links to all filters here in the document (chunk options - <code>{.tcl results="asis"})</code>.</p>
-<div class="sourceCode" data-results="asis" id="cb17"><pre class="sourceCode tcl"><code class="sourceCode tcl"><span id="cb17-1"><a aria-hidden="true" href="#cb17-1" tabindex="-1"></a><span class="kw">set</span> md <span class="ch">\n</span></span>
-<span id="cb17-2"><a aria-hidden="true" href="#cb17-2" tabindex="-1"></a><span class="kw">foreach</span> html <span class="kw">[lsort</span> <span class="kw">[glob</span> filter*.html<span class="kw">]]</span> <span class="kw">{</span></span>
-<span id="cb17-3"><a aria-hidden="true" href="#cb17-3" tabindex="-1"></a>    <span class="kw">append</span> md <span class="st">"* </span><span class="ch">\[</span><span class="st">[regsub {.html} </span><span class="dt">$</span><span class="st">html {}]</span><span class="ch">\]</span><span class="st">(</span><span class="dt">$</span><span class="st">html)</span><span class="ch">\n</span><span class="st">"</span></span>
-<span id="cb17-4"><a aria-hidden="true" href="#cb17-4" tabindex="-1"></a><span class="kw">}</span></span>
-<span id="cb17-5"><a aria-hidden="true" href="#cb17-5" tabindex="-1"></a><span class="kw">append</span> md <span class="ch">\n</span></span>
-<span id="cb17-6"><a aria-hidden="true" href="#cb17-6" tabindex="-1"></a><span class="kw">set</span> out <span class="kw">[open</span> images/links.md w <span class="dv">0600</span><span class="kw">]</span></span>
-<span id="cb17-7"><a aria-hidden="true" href="#cb17-7" tabindex="-1"></a><span class="kw">puts</span> <span class="dt">$out</span> <span class="dt">$md</span></span>
-<span id="cb17-8"><a aria-hidden="true" href="#cb17-8" tabindex="-1"></a><span class="kw">close</span> <span class="dt">$out</span></span>
-<span id="cb17-9"><a aria-hidden="true" href="#cb17-9" tabindex="-1"></a>include images/links.md</span></code></pre></div>
+<p>An other utility function is the include function where we can
+include other files, for instance some which contain as well Markdown
+markup. This can be used for instance to include common header and
+footers in your documents. Below an example we create an external file
+and then include this file afterwards, we would like to have links to
+all filters here in the document (chunk options -
+<code>{.tcl results="asis"})</code>.</p>
+<pre class="tclinn"><code>set md \n
+foreach html [lsort [glob filter*.html]] {
+    append md "* \[[regsub {.html} $html {}]\]($html)\n"
+}
+append md \n
+set out [open images/links.md w 0600]
+puts $out $md
+close $out
+include images/links.md</code></pre>
 <ul>
 <li><a href="filter-abc.html">filter-abc</a></li>
 <li><a href="filter-cmd.html">filter-cmd</a></li>
@@ -340,50 +330,97 @@ Documentation: <a href="../../pantcl.html">Pantcl filter documentation</a> - <a 
 <li><a href="filter-tdot.html">filter-tdot</a></li>
 <li><a href="filter-tsvg.html">filter-tsvg</a></li>
 </ul>
-<p>This allows in a nice way to create the same links for all documentation files such as these which are on top of this document visible.</p>
+<p>This allows in a nice way to create the same links for all
+documentation files such as these which are on top of this document
+visible.</p>
 <h2 id="inline-code">INLINE CODE</h2>
-<p>Short statements can be as well directly embedded into the main text. This will work only if the option <code>eval: 1</code> is set in the YAML header or using the global environment variable <code>FILTEREVAL</code>: Here an example:</p>
+<p>Short statements can be as well directly embedded into the main text.
+This will work only if the option <code>eval: 1</code> is set in the
+YAML header or using the global environment variable
+<code>FILTEREVAL</code>: Here an example:</p>
 <pre><code>The current time of document creation is : `tcl clock format [clock seconds]`.</code></pre>
 <p>Here the output:</p>
-<p>The current time of document creation is : Fri Jun 02 20:15:40 CEST 2023.</p>
+<p>The current time of document creation is : 2024.</p>
 <h2 id="citations">CITATIONS</h2>
-<div class="sourceCode" data-eval="true" id="cb19"><pre class="sourceCode tcl"><code class="sourceCode tcl"><span id="cb19-1"><a aria-hidden="true" href="#cb19-1" tabindex="-1"></a>bibstyle numeric</span></code></pre></div>
-<p>This filter as well supports basic reference management using Bibtex files. Citations should be embedded like this: [1] where <em>Sievers2011</em> is a Bibtex key in your Bibtex file. Here is an other citation [2]. And here is a PCA article from my self [3].</p>
-<p>In case we cite the same paper again the numbers should not be updated. So let’s cite Sivers2011 [1] again which should produce again a number 1 citation. And here a cite command with two citations. The Wilcox comparison of two samples and the Spearman correlation are non-parametric methods [4,5].</p>
+<pre class="tclinn"><code>bibstyle numeric</code></pre>
+<p>This filter as well supports basic reference management using Bibtex
+files. Citations should be embedded like this: [1] where
+<em>Sievers2011</em> is a Bibtex key in your Bibtex file. Here is an
+other citation [2]. And here is a PCA article from my self [3].</p>
+<p>In case we cite the same paper again the numbers should not be
+updated. So let’s cite Sivers2011 [1] again which should produce again a
+number 1 citation. And here a cite command with two citations. The
+Wilcox comparison of two samples and the Spearman correlation are
+non-parametric methods [4,5].</p>
 <p>The citations list can be then finally displayed like this:</p>
-<div class="sourceCode" data-eval="true" data-results="asis" id="cb20"><pre class="sourceCode tcl"><code class="sourceCode tcl"><span id="cb20-1"><a aria-hidden="true" href="#cb20-1" tabindex="-1"></a>bibliography assets/literature.bib</span></code></pre></div>
+<pre class="tclinn"><code>bibliography assets/literature.bib</code></pre>
 <ul>
-<li><strong>[1]</strong> - Sievers, F., Wilm, A., Dineen, D., Gibson, T. J., Karplus, K., Li, W., Lopez, R., McWilliam, H., Remmert, M., Soding, J., Thompson, J. D., Higgins, D. G. (2011). Fast, scalable generation of high-quality protein multiple sequence alignments using Clustal Omega. Mol. Syst. Biol. 7: 539.</li>
-<li><strong>[2]</strong> - Yachdav, G., Wilzbach, S., Rauscher, B., Sheridan, R., Sillitoe, I., Procter, J., Lewis, Suzanna E., Rost, B., Goldberg, T. (2016). MSAViewer: interactive JavaScript visualization of multiple sequence alignments. Bioinformatics 32: 3501.</li>
-<li><strong>[3]</strong> - Groth, D., Hartmann, S., Klie, S., Selbig, J. (2013). Principal Components Analysis. In: Computational Toxicology, Humana Press. 930: 527-547.</li>
-<li><strong>[4]</strong> - Wilcoxon, F. (1945). Individual comparisons by ranking methods. Biom. Bull. 1: 80-93.</li>
-<li><strong>[5]</strong> - Spearman, C. (1904). The proof and measurement of association between two things. The American journal of psychology 15: 72-101.</li>
+<li><strong>[1]</strong> - Sievers, F., Wilm, A., Dineen, D., Gibson, T.
+J., Karplus, K., Li, W., Lopez, R., McWilliam, H., Remmert, M., Soding,
+J., Thompson, J. D., Higgins, D. G. (2011). Fast, scalable generation of
+high-quality protein multiple sequence alignments using Clustal Omega.
+Mol. Syst. Biol. 7: 539.</li>
+<li><strong>[2]</strong> - Yachdav, G., Wilzbach, S., Rauscher, B.,
+Sheridan, R., Sillitoe, I., Procter, J., Lewis, Suzanna E., Rost, B.,
+Goldberg, T. (2016). MSAViewer: interactive JavaScript visualization of
+multiple sequence alignments. Bioinformatics 32: 3501.</li>
+<li><strong>[3]</strong> - Groth, D., Hartmann, S., Klie, S., Selbig, J.
+(2013). Principal Components Analysis. In: Computational Toxicology,
+Humana Press. 930: 527-547.</li>
+<li><strong>[4]</strong> - Wilcoxon, F. (1945). Individual comparisons
+by ranking methods. Biom. Bull. 1: 80-93.</li>
+<li><strong>[5]</strong> - Spearman, C. (1904). The proof and
+measurement of association between two things. The American journal of
+psychology 15: 72-101.</li>
 </ul>
-<p>There is currently only an other style available, ‘abbrev’: to use the style within the same document we have call the bibstyle using ‘abbrev’ as argument.</p>
-<div class="sourceCode" data-eval="true" id="cb21"><pre class="sourceCode tcl"><code class="sourceCode tcl"><span id="cb21-1"><a aria-hidden="true" href="#cb21-1" tabindex="-1"></a>bibstyle abbrev</span></code></pre></div>
-<p>Let’s now write just the same text again. This filter as well supports basic reference management using Bibtex files. Citations should be embedded like this: [Sievers2011] where <em>Sievers2011</em> is a Bibtex key in your Bibtex file. Here is an other citation [Yachdav2016]. And here is a PCA article from my self [Groth2013].</p>
-<p>In case we cite the same paper again the numbers should not be updated. So let’s cite Sivers2011 [Sievers2011] again which should produce again a number 1 citation.</p>
+<p>There is currently only an other style available, ‘abbrev’: to use
+the style within the same document we have call the bibstyle using
+‘abbrev’ as argument.</p>
+<pre class="tclinn"><code>bibstyle abbrev</code></pre>
+<p>Let’s now write just the same text again. This filter as well
+supports basic reference management using Bibtex files. Citations should
+be embedded like this: [Sievers2011] where <em>Sievers2011</em> is a
+Bibtex key in your Bibtex file. Here is an other citation [Yachdav2016].
+And here is a PCA article from my self [Groth2013].</p>
+<p>In case we cite the same paper again the numbers should not be
+updated. So let’s cite Sivers2011 [Sievers2011] again which should
+produce again a number 1 citation.</p>
 <p>The citations list can be then finally displayed like this:</p>
-<div class="sourceCode" data-eval="true" data-results="asis" id="cb22"><pre class="sourceCode tcl"><code class="sourceCode tcl"><span id="cb22-1"><a aria-hidden="true" href="#cb22-1" tabindex="-1"></a>bibliography assets/literature.bib</span></code></pre></div>
+<pre class="tclinn"><code>bibliography assets/literature.bib</code></pre>
 <ul>
-<li><strong>[Groth2013]</strong> - Groth, D., Hartmann, S., Klie, S., Selbig, J. (2013). Principal Components Analysis. In: Computational Toxicology, Humana Press. 930: 527-547.</li>
-<li><strong>[Sievers2011]</strong> - Sievers, F., Wilm, A., Dineen, D., Gibson, T. J., Karplus, K., Li, W., Lopez, R., McWilliam, H., Remmert, M., Soding, J., Thompson, J. D., Higgins, D. G. (2011). Fast, scalable generation of high-quality protein multiple sequence alignments using Clustal Omega. Mol. Syst. Biol. 7: 539.</li>
-<li><strong>[Spearman1904]</strong> - Spearman, C. (1904). The proof and measurement of association between two things. The American journal of psychology 15: 72-101.</li>
-<li><strong>[Wilcoxon1945]</strong> - Wilcoxon, F. (1945). Individual comparisons by ranking methods. Biom. Bull. 1: 80-93.</li>
-<li><strong>[Yachdav2016]</strong> - Yachdav, G., Wilzbach, S., Rauscher, B., Sheridan, R., Sillitoe, I., Procter, J., Lewis, Suzanna E., Rost, B., Goldberg, T. (2016). MSAViewer: interactive JavaScript visualization of multiple sequence alignments. Bioinformatics 32: 3501.</li>
+<li><strong>[Groth2013]</strong> - Groth, D., Hartmann, S., Klie, S.,
+Selbig, J. (2013). Principal Components Analysis. In: Computational
+Toxicology, Humana Press. 930: 527-547.</li>
+<li><strong>[Sievers2011]</strong> - Sievers, F., Wilm, A., Dineen, D.,
+Gibson, T. J., Karplus, K., Li, W., Lopez, R., McWilliam, H., Remmert,
+M., Soding, J., Thompson, J. D., Higgins, D. G. (2011). Fast, scalable
+generation of high-quality protein multiple sequence alignments using
+Clustal Omega. Mol. Syst. Biol. 7: 539.</li>
+<li><strong>[Spearman1904]</strong> - Spearman, C. (1904). The proof and
+measurement of association between two things. The American journal of
+psychology 15: 72-101.</li>
+<li><strong>[Wilcoxon1945]</strong> - Wilcoxon, F. (1945). Individual
+comparisons by ranking methods. Biom. Bull. 1: 80-93.</li>
+<li><strong>[Yachdav2016]</strong> - Yachdav, G., Wilzbach, S.,
+Rauscher, B., Sheridan, R., Sillitoe, I., Procter, J., Lewis, Suzanna
+E., Rost, B., Goldberg, T. (2016). MSAViewer: interactive JavaScript
+visualization of multiple sequence alignments. Bioinformatics 32:
+3501.</li>
 </ul>
 <h2 id="todo">TODO:</h2>
 <ul>
 <li>more flexible list2mdtab function</li>
 </ul>
-<div class="sourceCode" id="cb23"><pre class="sourceCode tcl"><code class="sourceCode tcl"><span id="cb23-1"><a aria-hidden="true" href="#cb23-1" tabindex="-1"></a><span class="kw">set</span> <span class="ot">vars</span> <span class="kw">[lsort</span> <span class="kw">[info</span> <span class="ot">vars</span> ::*<span class="kw">]]</span></span>
-<span id="cb23-2"><a aria-hidden="true" href="#cb23-2" tabindex="-1"></a><span class="kw">set</span> <span class="ot">vars</span> </span></code></pre></div>
+<pre class="tclinn"><code>set vars [lsort [info vars ::*]]
+set vars </code></pre>
 <pre class="tclout"><code>::auto_execs ::auto_index ::auto_path ::biblio ::cell ::col ::env ::errorCode ::errorInfo ::html ::i ::l ::labels ::md ::out ::r ::row ::tcl_interactive ::tcl_library ::tcl_patchLevel ::tcl_pkgPath ::tcl_platform ::tcl_version ::val ::x</code></pre>
 <h2 id="see-also">SEE ALSO</h2>
 <ul>
 <li><a href="../../README.html">Pantcl Readme</a> - more background</li>
-<li><a href="../../pantcl.html">Pantcl documentation</a> - the main filter engine</li>
-<li><a href="filter-pipe.html">filter-pipe</a> - Embedding Python, R and Octave code in a similar way like Tcl in the Tcl filter</li>
+<li><a href="../../pantcl.html">Pantcl documentation</a> - the main
+filter engine</li>
+<li><a href="filter-pipe.html">filter-pipe</a> - Embedding Python, R and
+Octave code in a similar way like Tcl in the Tcl filter</li>
 </ul>
 <h2 id="author">AUTHOR</h2>
 <ul>
@@ -392,4 +429,4 @@ Documentation: <a href="../../pantcl.html">Pantcl filter documentation</a> - <a 
 <h2 id="license">LICENSE</h2>
 <p>MIT - License</p>
 </body>
-</html><!--Generated by HTMLArk 2023-06-02 20:15:41.726270. Original URL temp.html-->
+</html><!--Generated by HTMLArk 2024-11-26 08:45:36.497462. Original URL temp.html-->

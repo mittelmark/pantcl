@@ -94,11 +94,11 @@
 #' 	phone TEXT NOT NULL UNIQUE
 #'         );
 #' INSERT INTO contacts (contact_id, first_name, last_name, email, phone)
-#'        VALUES       (1, "Max", "Musterman", "musterm@mail.de","1234");
+#'        VALUES       (1, 'Max', 'Musterman', 'musterm@mail.de','1234');
 #' INSERT INTO contacts (contact_id, first_name, last_name, email, phone)
-#'        VALUES       (2, "Maxi", "Musterwoman", "musterw@mail.de","1235");
+#'        VALUES       (2, 'Maxi', 'Musterwoman', 'musterw@mail.de','1235');
 #' INSERT INTO contacts (contact_id, first_name, last_name, email, phone)
-#'        VALUES       (3, "Fido", "Dogkeeper", "fido@dog.de","1236");
+#'        VALUES       (3, 'Fido', 'Dogkeeper', 'fido@dog.de','1236');
 #' select * from contacts;
 #' ```
 #' 
