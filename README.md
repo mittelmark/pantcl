@@ -37,16 +37,49 @@ So in summary pantcl allows you:
 
 # Installation
 
-The easiest way to install the application is to use the online installer. Copy and paste the following line into your terminal:
+Please  note, that you must have a tclsh  executable  in your PATH to use this
+tool. On Ubuntu  systems you can install Tcl using your package  managers like
+this: `sudo apt install Tcl`. If you have a `tclsh`  executable in your `PATH`
+you then download the latest build and place the application `pantcl.bin` (pandoc filter enabled) 
+or `pantcl.mbin` (not usable as pandoc filter) as well into a folder belonging to your PATH variable.
+
+The  easiest way to install the  application  is to use the online  installer.
+Copy and paste the following line into your terminal:
 
 ```
 /bin/bash -c "$(curl -fsSL https://github.com/mittelmark/pantcl/releases/latest/download/install-unix.sh)"
 ```
 
-That should have installed an application `pantcl` into ~/.local/bin. Try to check the installation with:
+That should have installed an application  `pantcl` into  `~/.local/bin`. Try to
+check the installation with:
 
 ```
 pantcl --version
+```
+
+Hint: Without an installed pandoc executable only conversion from Markdown to HTML
+can be performed. 
+
+Alternatively you can manually download and install the file 
+[pantcl.bin](https://github.com/mittelmark/pantcl/releases/latest/download/pantcl.bin)
+as a file pantcl somewhere in your PATH. Use this file in case you like to use it as a pandoc
+filter application with a syntax like this:
+
+```
+pandoc --filter pantcl [pandoc arguments]
+pantcl infile outfile [pandoc and pantcl arguments]
+pantcl --help
+````
+
+Or if you just like to convert your Markdown documentation with embedded programming language,
+or diagram tool codes you download the standalone version:
+[pantcl.mbin](https://github.com/mittelmark/pantcl/releases/latest/download/pantcl.mbin). 
+Use this file if you do not want or you cant install pandoc for instance if you have only a local
+account on a machine. You then use the application like this:
+
+```
+pantcl infile outfile [pantcl arguments]
+pantcl --help
 ```
 
 # Processing schema
@@ -88,38 +121,7 @@ External filter(s):
 - [user-filter](https://htmlpreview.github.io/?https://raw.githubusercontent.com/mittelmark/pantcl/master/user/user-filter.html) - documentation on how to create and use a filter not embedded directly within the pantcl executable
 - [filter-geasy](https://htmlpreview.github.io/?https://raw.githubusercontent.com/mittelmark/pantcl/master/user/filter-geasy.html) - example for an external user defined filter not embedded directly within the pantcl executable
 
-# Installation
-
-Please note, that you must have a tclsh executable in your PATH to use this
-tool. On Ubuntu systems you can install Tcl using your package managers like
-this: `sudo apt install Tcl`. If you have a `tclsh` executable in your `PATH`
-you then download the latest build from the Github page here: 
-
-[https://github.com/mittelmark/pantcl/files/11603113/pantcl.bin.gz](https://github.com/mittelmark/pantcl/files/11603113/pantcl.bin.gz)
-
-Unpack the Gzip file and make the file pantcl.bin executable using chmod. You can as rename
-it for instance to just `pantcl`. Then move it to a folder within belonging to your `PATH` variable. For instance "~./bin" or "~/.local/bin".
-
-Before you continue check if you executable is working by writing in the
-terminal something like this:
-
-```
-$ pantcl --version
-0.9.12
-$ pandoc --version
-pandoc 2.14.2
-...
-```
-
-For Windows you should download the standalone executable which contains a Tcl
-library and all required libraries and files within.
-[https://github.com/mittelmark/pantcl/releases/download/0.9.11/pantcl.exe](https://github.com/mittelmark/pantcl/releases/download/0.9.11/pantcl.exe).
-Just dowload the file to your harddisk and place it somewhere in your PATH. The
-in a terminal window, Powershell, Cmd, etc. type `pantcl --version` if this
-works you should be able to use it a Pandoc filter.
-
-Without an installed pandoc executable only conversion from Markdown to HTML
-can be performed.
+# Example
 
 The file `pantcl.bin` contains embedded all the filters mentioned above. You can try out the installation by creating a simple Markdown file with some embedded Tcl code like this:
 
