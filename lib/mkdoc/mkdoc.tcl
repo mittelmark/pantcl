@@ -2,7 +2,7 @@
 ##############################################################################
 #  Author        : Dr. Detlef Groth
 #  Created       : Fri Nov 15 10:20:22 2019
-#  Last Modified : <241122.1644>
+#  Last Modified : <241128.1545>
 #
 #  Description	 : Command line utility and package to extract Markdown documentation 
 #                  from programming code if embedded as after comment sequence #' 
@@ -36,7 +36,7 @@
 #' ---
 #' title: mkdoc::mkdoc 0.10.0
 #' author: Detlef Groth, Schwielowsee, Germany
-#' date: 2024-11-22
+#' date: 2024-11-28
 #' css: mkdoc.css
 #' ---
 #' 
@@ -71,7 +71,7 @@
 #' ```
 #' package require mkdoc::mkdoc
 #' mkdoc::mkdoc inputfile outputfile ?--css file1.css,file2.css? \
-ä'    ?--header header.html? ?--footer footer.html? \
+#'    ?--header header.html? ?--footer footer.html? ?--base64 true?\
 #'    ?--javascript highlightjs|file1.js,file2.js? ?--mathjax true? ?--refresh 10?
 #' ```
 #'
@@ -86,7 +86,7 @@
 #' ```
 #' mkdoc inputfile.md outputfile.html ?--css file.css,file2.css --header header.html \
 #'   --footer footer.html --javascript highlighjs|filename1,filename2  --mathjax true \
-#'   --refresh 10?
+#'   --refresh 10 --base64 true?
 #' ```
 #'
 #' ## <a name='description'>DESCRIPTION</a>
@@ -113,12 +113,13 @@
 #' 
 #' > - *infile* - file with embedded markdown documentation
 #'   - *outfile* -  name of output file extension
+#'   - *--base64 true* should local images and CSS files be included, default: true
 #'   - *--css cssfile* if outfile is an HTML file use the given *cssfile*
 #'   - *--footer footer.html* if outfile is an HTML file add this footer before the closing body tag
 #'   - *--header header.html* if outfile is an HTML file add this header after  the opening body tag
 #'   - *--javascript highlighjs|filename1,filename2* if outfile is an HTML file embeds either the hilightjs Javascript hilighter or the given local javascript filename(s) 
-#'   - *--mathjax true|false* should there be the MathJax library included
-#'   - *--refresh 0|10* should there be the autorefresh header included only values above 9 are consudered
+#'   - *--mathjax true|false* should there be the MathJax library included, default: false
+#'   - *--refresh 0|10* should there be the autorefresh header included only values above 9 are considered, default: 0
 #'     
 #' > If the file extension of the outfile is either html or htm a HTML file is created. If the output
 #'   file has other file extension the documentation after _#'_ comments is simply extracted and stored
@@ -136,9 +137,10 @@
 #'
 #' > ```
 #' package require mkdoc::mkdoc
-#' mkdoc::mkdoc mkdoc.tcl mkdoc.html              ## simple HTML page
-#' mkdoc::mkdoc mkdoc.tcl mkdoc.md                ## just output a Markdown page
-#' mkdoc::mkdoc mkdoc.tcl mkdoc.html --refresh 20 ## reload HTML page every twenty seconds
+#' mkdoc::mkdoc mkdoc.tcl mkdoc.html                ## simple HTML page
+#' mkdoc::mkdoc mkdoc.tcl mkdoc.md                  ## just output a Markdown page
+#' mkdoc::mkdoc mkdoc.tcl mkdoc.html --refresh 20   ## reload HTML page every twenty seconds
+#' mkdoc::mkdoc mkdoc.tcl mkdoc.html --mathjax true ## parse inline equations using mathjax library
 #' > ```
 
 package require Tcl 8.6
@@ -148,7 +150,6 @@ package require Markdown
 
 package provide mkdoc 0.10.0
 package provide mkdoc::mkdoc 0.10.0
-
 namespace eval mkdoc {
     variable deindent [list \n\t \n "\n    " \n]
     
@@ -198,9 +199,9 @@ proc mkdoc::mkdoc {filename outfile args} {
     variable footer
     variable htmlstart
     variable mkdocstyle
-
+    array set document [list title "" author "" css mkdoc.css footer "" header "" javascript ""] 
     array set arg [list --css "" --footer "" --header "" --javascript "" \
-                   --mathjax false --refresh 0]
+                   --mathjax false --refresh 0 --base64 true]
     array set arg $args
     if {[file extension $filename] eq [file extension $outfile]} {
 	return -code error "Error: infile and outfile must have different file extensions!"
@@ -251,6 +252,8 @@ proc mkdoc::mkdoc {filename outfile args} {
                footer   "" \
                header   "" \
                javascript "" \
+               mathjax   "" \
+               refresh   ""
                ]
 
         set mdhtml ""
@@ -347,6 +350,32 @@ proc mkdoc::mkdoc {filename outfile args} {
                 set style [dict get $yamldict css]
             }
             set html [Markdown::convert $mdhtml]
+            if {$arg(--base64)} {
+                set htm ""
+                foreach line [split $html "\n"] {
+                    if {[regexp {<img src="(.+?)"} $line]} {
+                        set imgname [regsub {.*<img src="(.+?)".+} $line "\\1"]
+                        if {![regexp {^http} $imgname]} {
+                            set ext [regsub {.+\.([a-zA-Z]{2,4})$} $imgname "\\1"]
+                            set imgname [file join [file dirname $filename] $imgname]
+                            set mode rb
+                            if {$ext eq "svg"} {
+                                set mode r
+                                set ext "svg+xml"
+                            }
+                            if [catch {open $imgname $mode} infh] {
+                                error "Cannot open $imgname: $infh"
+                            } else {
+                                set imgdata [binary encode base64 [read $infh]]
+                                close $infh
+                                set line [regsub {.*<img src="(.+?)"} $line "<img src=\"data:image/$ext;base64, $imgdata\""]
+                            }
+                        }
+                    } 
+                    append htm "$line\n"
+                }
+                set html $htm
+            }
             ## issue in Markdown package?
             set html [string map {&amp;lt; &lt;  &amp;gt; &gt; &amp;quot; &quot;} $html]  
             ## fixing curly brace issues in backtick code chunk
@@ -360,7 +389,7 @@ proc mkdoc::mkdoc {filename outfile args} {
                     } else {
                         set document($key) [clock format [clock scan [dict get $yamldict $key]] -format "%Y-%m-%d"]
                     }
-                } else {
+                } elseif {![info exists document($key)] || $document($key) eq ""} {
                     set document($key) [dict get $yamldict $key]
                 }
             }
@@ -368,6 +397,32 @@ proc mkdoc::mkdoc {filename outfile args} {
                 dict set yamldict date [clock format [clock seconds] format "%Y-%m-%d"]
             } 
             set header [subst -nobackslashes -nocommands $header]
+            set head ""
+            if {$arg(--base64)} {
+                set head ""
+                foreach line [split $header "\n"] {
+                    if {[regexp {^ +[0-9] *$}  $line]} {
+                        continue
+                    }
+                    if {[regexp -nocase {<link +rel="stylesheet" +href="(.+.css)">} $line match cssfile]} {
+
+                        if {[file exists [file join [file dirname $cssfile]]]} {
+                            set fname [file join [file dirname $filename] $cssfile]
+                            if [catch {open $fname} infh] {
+                                error "Cannot open $fname: $infh"
+                            } else {
+                                set css [binary encode base64 [read $infh]]
+                                close $infh
+                                set line "\n<style>\n@import url(\"data:text/css;base64,$css\");\n</style>\n"
+                            }
+                        } else {
+                            append head $line
+                        }
+                    }
+                    append head "$line\n"
+                }
+                set header $head
+            }
             puts $out $header
             if {$hasyaml} {
                 set start [subst -nobackslashes -nocommands $htmlstart]            
@@ -602,7 +657,7 @@ proc mkdoc::mkdoc {filename outfile args} {
 #' equation world wide.
 #' ```
 #' 
-#' And here the output:
+#' And here the output (will not work on http://htmlpreview.github.io/):
 #' 
 #' The  famous  Einstein  equation  \\( E = mc^2 \\) is  probably  the most know
 #' equation world wide. 
@@ -702,11 +757,12 @@ proc mkdoc::mkdoc {filename outfile args} {
 #'      - adding Makefile to build standalone application using tpack (80kb)
 #' - 2024-11-16 Release 0.9.0
 #'      - support for mathjax
-#' - 2024-11-XX Release 0.10.0
+#' - 2024-11-28 Release 0.10.0
 #'      - support for refresh option to autorefresh a HTML page 
 #'      - removed run support, use pantcl instead
 #'      - fixing issues with greater, lower and quote signs in code fragments
 #'      - removing inlining external javascript files into HTML output
+#'      - adding --base64 option to inline local images and css files
 #'
 #' ## <a name='todo'>TODO</a>
 #'

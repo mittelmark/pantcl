@@ -5,76 +5,109 @@
 # Version: 0.9.12 - 2023-04-17
 # Version: 0.9.13 - 2023-09-07
 # Version: 0.9.14 - 2024-11-27
+# Version: 0.10.0 - 2024-11-29
 
-
-package provide pantcl 0.9.14
+package provide pantcl 0.10.0
 namespace eval ::pantcl { }
-#puts stderr $argv0
 if {[llength $argv] > 0 && ([lsearch -exact $argv -v] >= 0 || [lsearch -exact $argv --version] >= 0)} {
     puts "[package present pantcl]"
     exit 0
 }   
-if {[llength $argv] > 0 && ([lsearch -regex $argv {-h$}] >= 0 || [lsearch -regex $argv {--help$}] >= 0)} {
-    puts {Usage (filter):    pandoc [pandoc arguments] --filter $argv0 [pandoc arguments]
-        
-      This is the pandoc Tcl filter which should be run as filter for the pandoc document
-      converter with a syntax like shown above.  This filter allows you to embed Tcl code 
-      and other tools code within Markdown and other Text format documents. 
-      For a list of filters which are available see below.
-    } 
-    puts "Filters: \n"
-    puts "       - ```{.abc}    ABC music notation code```"    
-    puts "       - ```{.cmd}    Command line application code```"        
-    puts "       - ```{.dot}    GraphViz dot/neato code```"
-    puts "       - ```{.emf}    MicroEmacs macro code```"    
-    puts "       - ```{.eqn}    EQN equations```"    
-    puts "       - ```{.julia}  Julia code```"        
-    puts "       - ```{.mmd}    Mermaid diagram code```"            
-    puts "       - ```{.mtex}   LaTeX equations```"        
-    puts "       - ```{.pic}    PIC diagram code```"        
-    puts "       - ```{.pik}    Pikchr diagram code```"
-    puts "       - ```{.pipe}   Embed Python, R or Octave code```" 
-    puts "       - ```{.puml}   PlantUML diagram code```"    
-    puts "       - ```{.rplot}  R plot code```"    
-    puts "       - ```{.sqlite} SQLite3 code code```"
-    puts "       - ```{.tcl}    Tcl code```"
-    puts "       - ```{.tcrd}   Songs with embedded chords```"        
-    puts "       - ```{.tdot}   Tcl package tdot code```"    
-    puts "       - ```{.tsvg}   Tcl package tsvg code```\n"
-    
-    puts "Usage (standalone): $argv0 \[arguments] infile outfile"
-    puts {      
-        Converting the given infile to outfile.
-        If infile is a source code file ending with.tcl or .py, it is assumed that it
-        contains mkdoc documentation. This is embedded Markdown markup after 
-        a #' comment. In case pandoc is installed the pantcl application will 
-        will be used as filter afterwards.
 
-        Arguments:
-    }
-    puts "         $argv0 --help                     - display this help page"
-    puts "         $argv0 --version                  - display the version"
-    puts "         $argv0 infile outfile --no-pandoc - use the standalone converter"
-    puts "         $argv0 infile outfile --tangle .tcl             - extract all code from .tcl chunks"
-    puts "         $argv0 infile outfile --mathjax true     --no-pandoc - render equations within the document"
-    puts "         $argv0 infile outfile --javascript highlightjs --no-pandoc - support highlighting source code"
-    puts "         $argv0 infile outfile --refresh 10       --no-pandoc - support HTML refreshing every N seconds"
-    puts "\nUsage (GUI): $argv0 --gui \[infile]\n"
-    puts "        Supported infiles: abc, dot, eqn, mmd, mtex, pic, pik, puml, rplot, tdot, tsvg\n"
-    puts "Examples:\n"
-    puts "         $argv0 pantcl.tcl pantcl.html -s --css mini.css\n"
-    puts "         will extract the documentation from the file pantcl.tcl itself"
-    puts "         and create a HTML file executing all filters available."
-    puts "         All usual pandoc options can be passed after the output file name.\n" 
-    puts "         $argv0 --no-pandoc pantcl.tcl pantcl.html --css mini.css\n"
-    puts "         Will do the conversion without using pandoc but with its"
-    puts "         Markdown to HTML converter. Please note that in this case"
-    puts "         only Markdown as input and HTML as output are supported.\n"    
-    puts "Version:  [package present pantcl]"
-    puts "Homepage: https://github.com/mittelmark/pantcl"
-    puts "Author:   Detlef Groth, University of Potsdam, Germany"
-    puts "License:  MIT"
-    puts "Readme:   http://htmlpreview.github.io/?https://github.com/mittelmark/pantcl/blob/master/pantcl/Readme.html\n"
+set HELPFILTER {
+ Usage (filter):    pandoc \[pandoc arguments\] --filter $argv0 \[pandoc arguments\]
+        
+  This is the pandoc Tcl filter which should be run as filter for the pandoc document
+  converter with a syntax like shown above.  This filter allows you to embed Tcl code 
+  and other tools code within Markdown and other Text format documents. 
+  For a list of filters which are available see below.
+}
+
+set FILTERS {
+ Available Filters:
+       - ```{.abc}    ABC music notation code```
+       - ```{.cmd}    Command line application code```
+       - ```{.dot}    GraphViz dot/neato code```
+       - ```{.emf}    MicroEmacs macro code```
+       - ```{.eqn}    EQN equations```
+       - ```{.julia}  Julia code```
+       - ```{.mmd}    Mermaid diagram code```
+       - ```{.mtex}   LaTeX equations```
+       - ```{.pic}    PIC diagram code```
+       - ```{.pik}    Pikchr diagram code```
+       - ```{.pipe}   Embed Python, R or Octave code```
+       - ```{.puml}   PlantUML diagram code```
+       - ```{.rplot}  R plot code```
+       - ```{.sqlite} SQLite3 code code```
+       - ```{.tcl}    Tcl code```
+       - ```{.tcrd}   Songs with embedded chords```
+       - ```{.tdot}   Tcl package tdot code```
+       - ```{.tsvg}   Tcl package tsvg code```
+}
+set HELPSTANDALONE {
+ Usage (standalone): 
+     $argv0 \[arguments\] infile outfile \[options\] --no-pandoc
+
+     Converting the given infile to outfile.
+     If infile is a source code file ending with.tcl or .py, it is assumed that it
+     contains mkdoc documentation. This is embedded Markdown markup after 
+     a #' comment. In case pandoc is installed the pantcl application will 
+     will be used as filter afterwards.
+     
+     To set the default for the evaluation of filters to TRUE you can run the
+     application like this:
+        
+     FILTEREVAL=1 $argv0 \[arguments\] infile outfile \[options\] --no-pandoc
+
+     Hint: The --no-pandoc option is not required for the pantcl.mbin application as
+           this can be only used standalone, but not as a pandoc filter.
+
+ Arguments:
+
+    $argv0 \[arguments\] infile outfile \[options\] --no-pandoc
+      
+    $argv0 --help                     - display this help page
+    $argv0 --version                  - display the version
+    $argv0 infile outfile --no-pandoc - use the standalone converter
+    $argv0 infile outfile --tangle .tcl  - extract all code from .tcl chunks
+    $argv0 infile outfile --mathjax true - render equations within the document
+    $argv0 infile outfile --javascript highlightjs --no-pandoc 
+                                       - support highlighting source code
+    $argv0 infile outfile --refresh 10 --no-pandoc 
+                                       - support HTML refreshing every N seconds
+
+    Usage (GUI): $argv0 --gui \[infile\]
+    
+         Supported infiles: abc, dot, eqn, mmd, mtex, pic, pik, puml, rplot, tdot, tsvg\n"
+
+    Examples:
+
+    $argv0 pantcl.tcl pantcl.html --css mini.css
+
+           will extract the documentation from the file pantcl.tcl itself
+           and create a HTML file executing all filters available.
+           All usual pandoc options can be passed after the output file name
+ 
+
+    Version:  [package present pantcl]
+    Homepage: https://github.com/mittelmark/pantcl
+    Author:   Detlef Groth, University of Potsdam, Germany
+    License:  MIT
+    Readme:   http://htmlpreview.github.io/?https://github.com/mittelmark/pantcl/blob/master/pantcl/Readme.html
+}
+# allow loading Tcl packages and filters
+set appdir [file dirname [info script]]
+if {[file exists  [file join $appdir lib]]} {
+    lappend auto_path [file normalize [file join $appdir lib]]
+    package require tsvg
+}
+
+if {[llength $argv] > 0 && ([lsearch -regex $argv {-h$}] >= 0 || [lsearch -regex $argv {--help$}] >= 0)} {
+    if {![catch {package require rl_json}]} {
+        puts [subst $HELPFILTER]
+    } 
+    puts [subst $HELPSTANDALONE]
+    puts $FILTERS
     exit 0
 }
 
@@ -206,12 +239,6 @@ proc ::pantcl::getCacheDir {} {
     return $path
 }
 
-# allow loading Tcl packages and filters
-set appdir [file dirname [info script]]
-if {[file exists  [file join $appdir lib]]} {
-    lappend auto_path [file normalize [file join $appdir lib]]
-    package require tsvg
-}
 
 # interp create mdi
 # 
@@ -603,16 +630,22 @@ if {[llength $argv] > 0 && [lsearch $argv --gui] > -1} {
 # Standalone processing 
 # calling pandoc eventually itself
 
+if {[catch {package require rl_json}]} {
+   if {[lsearch $argv --no-pandoc] < 0} {
+       lappend argv --no-pandoc
+   }
+   if {[llength $argv] == 1} {
+       puts "Usage: $argv0 \[arguments\] infile outfile \[options\]"
+       puts "       Arguments are for instance --help or --version\n             for options see --help"
+       exit
+   }   
+}
+
 if {[info exists argv] && [llength $argv] > 1 && [file exists [lindex $argv 0]]} {
     set pandoc true
     if {[lsearch $argv --tangle] >= 0} {
         pantcl::tangle {*}$argv
         return
-    }
-    if {[catch {package require rl_json}]} {
-       if {![lsearch $argv --no-pandoc] > 1} {
-          lappend argv --no-pandoc
-       }
     }
     if {[lsearch $argv --no-pandoc] > 1 || [auto_execok pandoc] eq ""} {
         package require yaml
@@ -672,9 +705,9 @@ if {[info exists argv] && [llength $argv] > 1 && [file exists [lindex $argv 0]]}
 }
 
 #' ---
-#' title: pantcl filter documentation - 0.9.14
+#' title: pantcl filter documentation - 0.10.0
 #' author: Detlef Groth, Schwielowsee, Germany
-#' date: 2024-11-25
+#' date: 2024-11-30
 #' tcl:
 #'    echo: "true"
 #'    results: show
@@ -720,10 +753,12 @@ if {[info exists argv] && [llength $argv] > 1 && [file exists [lindex $argv 0]]}
 #' 
 #' ```
 #' # standalone application
-#' pantcl infile outfile ?options?
-#' # as filter
+#' pantcl infile outfile ?options? --no-pandoc
+#' # same with default eval=true for all code chunks
+#' FILTEREVAL=1 pantcl infile outfile ?options? --no-pandoc
+#' # as filter for pandoc
 #' pandoc infile --filter pantcl ?options?
-#' # as graphics user interface
+#' # using graphics user interface
 #' pantcl --gui [filename]
 #' ```
 #' 
@@ -1004,10 +1039,10 @@ if {[info exists argv] && [llength $argv] > 1 && [file exists [lindex $argv 0]]}
 #' ## Documentation
 #' 
 #' To use this pipeline and to create pantcl.html out of the code documentation 
-#' in pantcl.tapp your command in the terminal is still just:
+#' in pantcl.tcl your command in the terminal is still just:
 #' 
 #' ```
-#' pantcl.tapp pantcl.tcl pantcl.html -s --css mini.css
+#' FILTEREVAL=1 pantcl pantcl.tcl pantcl.html --css mini.css --no-pandoc
 #' ```
 #' 
 #' The result should be the file which you are looking currently.
@@ -1035,59 +1070,60 @@ if {[info exists argv] && [llength $argv] > 1 && [file exists [lindex $argv 0]]}
 #'       being then a frontend which calls pandoc internally with 
 #'       itself as a filter ...
 #' * 2021-12-12 Version 0.5.0
-#'    * support for Markdown code creation in the Tcl filter with results="asis"
-#'    * adding list2mdtab proc to the Tcl filter
-#'    * adding include proc to the Tcl filter with results='asis' other Markdown files can be included.
-#'    * support for `pandoc-tcl-filter.tcl infile --tangle .tcl`  to extract code chunks to the terminal
-#'    * support for Mermaid diagrams
-#'    * support for PlantUML diagrams 
-#'    * support for ABC music notation
-#'    * bug fix for Tcl filters for `eval=false`
-#'    * documentation improvements for the filters and for the pandoc-tcl-filter
+#'     * support for Markdown code creation in the Tcl filter with results="asis"
+#'     * adding list2mdtab proc to the Tcl filter
+#'     * adding include proc to the Tcl filter with results='asis' other Markdown files can be included.
+#'     * support for `pandoc-tcl-filter.tcl infile --tangle .tcl`  to extract code chunks to the terminal
+#'     * support for Mermaid diagrams
+#'     * support for PlantUML diagrams 
+#'     * support for ABC music notation
+#'     * bug fix for Tcl filters for `eval=false`
+#'     * documentation improvements for the filters and for the pandoc-tcl-filter
 #' * 2022-01-09 - version 0.6.0
-#'    * adding filter-cmd.tcl for shell scripts for all type of programming languages and tools
-#'    * filter-mtex.tcl with more examples for different LaTeX packages like tikz, pgfplot, skak, sudoku, etc.
-#'    * adding filter-tdot.tcl for tdot Tcl package
-#'    * adding filter-tcrd.tcl for writing music chords above song lyrics
+#'     * adding filter-cmd.tcl for shell scripts for all type of programming languages and tools
+#'     * filter-mtex.tcl with more examples for different LaTeX packages like tikz, pgfplot, skak, sudoku, etc.
+#'     * adding filter-tdot.tcl for tdot Tcl package
+#'     * adding filter-tcrd.tcl for writing music chords above song lyrics
 #' * 2022-02-05 - version 0.7.0
-#'    * graphical user interface to the graphical filters (abc, dot, eqn, mmd, mtex, pic, pikchr, puml, rplot, tdot, tsvg) using the command line option *--gui*
-#'    * can now as well work without pandoc standalone for conversion of Markdown with code chunks into 
-#'      Markdown with evaluated code chunks and HTML code using the
-#'      Markdown library of tcllib
-#'    * that way it deprecates the use of tmdoc::tmdoc and mkdoc::mkdoc as it contains now the same functionality
-#'    * support for inline code evaluations for Tcl, Python (pipe filter) and R (pipe filter) statements as well in nested paragraphs, lists and headers
-#'    * support for indented code blocks with evaluation
-#'    * new - filter-pipe:
-#'        * initial support for R code block features and inline evaluation and error catching
-#'        * initial support for Python with code block features and inline evaluation and error catching
-#'        * initial support for Octave with code block features and error checking
-#'    * more examples filter-mtex, filter-puml, filter-pikchr 
-#'    * fix for filter-tcl making variables chunk and res namespace variables, avoiding variable collisions
+#'     * graphical user interface to the graphical filters (abc, dot, eqn, mmd, mtex, pic, pikchr, puml, rplot, tdot, tsvg) using the command line option *--gui*
+#'     * can now as well work without pandoc standalone for conversion of Markdown with code chunks into 
+#'       Markdown with evaluated code chunks and HTML code using the
+#'       Markdown library of tcllib
+#'     * that way it deprecates the use of tmdoc::tmdoc and mkdoc::mkdoc as it contains now the same functionality
+#'     * support for inline code evaluations for Tcl, Python (pipe filter) and R (pipe filter) statements as well in nested paragraphs, lists and headers
+#'     * support for indented code blocks with evaluation
+#'     * new - filter-pipe:
+#'         * initial support for R code block features and inline evaluation and error catching
+#'         * initial support for Python with code block features and inline evaluation and error catching
+#'         * initial support for Octave with code block features and error checking
+#'     * more examples filter-mtex, filter-puml, filter-pikchr 
+#'     * fix for filter-tcl making variables chunk and res namespace variables, avoiding variable collisions
 #' * 2023-01-10 - version 0.9.0
-#'    * renamed to pantcl.tcl and creating it's own repository
+#'     * renamed to pantcl.tcl and creating it's own repository
 #' * 2023-03-05 - fixing a problem with the @symbol in text
 #' * 2023-03-11 - version 0.9.11
-#'    * eval is now per default `false` for all filters
-#'    * support for Rst and LaTeX as input if pantcl is used as a filter
+#'     * eval is now per default `false` for all filters
+#'     * support for Rst and LaTeX as input if pantcl is used as a filter
 #' * 2023-04-06 - version 0.9.12
-#'    * adding filter-emf.tcl for MicroEmacs macro language
-#'    * adding external Tcl filter support via YAML declaration
-#'    * adding example user/filter-geasy.tcl as example for the latter
-#'    * standalone mode now with Unicode support 
-#'    * fix for standalone mode
-#'    * standalone check and working now as well for pipes and inline single backticks, tested with R
-#'    * filter for Julia code, however Julia is slow at startup and even slower at plotting
-#'    * support for pandoc single percent title, author, date at the beginning of documents
-#'    * extending support for tangle for non Tcl code chunks
+#'     * adding filter-emf.tcl for MicroEmacs macro language
+#'     * adding external Tcl filter support via YAML declaration
+#'     * adding example user/filter-geasy.tcl as example for the latter
+#'     * standalone mode now with Unicode support 
+#'     * fix for standalone mode
+#'     * standalone check and working now as well for pipes and inline single backticks, tested with R
+#'     * filter for Julia code, however Julia is slow at startup and even slower at plotting
+#'     * support for pandoc single percent title, author, date at the beginning of documents
+#'     * extending support for tangle for non Tcl code chunks
 #' * 2023-09-07 - version 0.9.13
-#'    * support for --inline option to allow inlining of images and css files
-#'    * bug fix for image/img-tag
-#' * 2024-11-27 - version 0.9.14
-#'    * updating to newer mkdoc with support for mathjax equations and highlightjs library
-#'    * support for refresh option
-#'    * bugfix for working as filter pandoc version 3
-#'    * support for single backticks for line-filter for R and Python
-#'    * documentation updates and fixes
+#'     * support for --inline option to allow inlining of images and css files
+#'     * bug fix for image/img-tag
+#' * 2024-11-29 - version 0.10.0
+#'     * updating to newer mkdoc with support for mathjax equations and highlightjs library
+#'     * support for refresh option
+#'     * bugfix for working as filter pandoc version 3
+#'     * support for single backticks for line-filter for R and Python
+#'     * documentation updates and fixes
+#'     * inline local images and css files for --no-pandoc option as well
 #' 
 #' ## SEE ALSO
 #' 
@@ -1106,7 +1142,7 @@ if {[info exists argv] && [llength $argv] > 1 && [file exists [lindex $argv 0]]}
 #' ## LICENSE
 #' 
 #' 
-#' Copyright (c) 2021-2023 Detlef Groth, Caputh-Schwielowsee, Germany
+#' Copyright (c) 2021-2024 Detlef Groth, Caputh-Schwielowsee, Germany
 #' 
 #' Permission is hereby granted, free of charge, to any person obtaining a copy
 #' of this software and associated documentation files (the "Software"), to deal

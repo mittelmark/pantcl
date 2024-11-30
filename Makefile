@@ -3,7 +3,10 @@ default:
 	echo "Usage: make pantcl-docu"
 	echo "       make pantcl-app"
 	echo "       make install"  
-	
+
+docu:
+	FILTEREVAL=1 TCLLIBPATH=lib tclsh pantcl.tcl pantcl.tcl pantcl.html --no-pandoc 
+		
 pantcl-docu:
 	pandoc header.md -o header.html
 	TCLLIBPATH=lib tclsh pantcl.tcl pantcl.tcl pantcl.md --no-pandoc 
@@ -42,10 +45,17 @@ pantcl-app:
 	rm -f pantcl-tapp/pantcl.vfs/lib/*/*.pdf			
 	rm -rf pantcl-tapp/pantcl.vfs/lib/tclfilters/figures
 	rm -rf pantcl-tapp/pantcl.vfs/lib/tclfilters/images
-	rm -rf pantcl-tapp/pantcl.vfs/lib/tclfilters/out	
-	cd pantcl-tapp && tclsh ../bin/tpack.tcl wrap pantcl.tapp
+	rm -rf pantcl-tapp/pantcl.vfs/lib/tclfilters/out
+	## just 100k
+	#rm pantcl-tapp/pantcl.vfs/lib/snit/main1*.tcl
+	#perl -i -pe "s/^#'.+//"  pantcl-tapp/pantcl.vfs/lib/tclfilters/*.tcl
+	cd pantcl-tapp && tclsh ../bin/tpack.tcl wrap pantcl.tapp --lz4
 	ls -lh pantcl-tapp/pantcl.tapp
 	cp pantcl-tapp/pantcl.tapp pantcl-tapp/pantcl.bin
+	rm -rf pantcl-tapp/pantcl.vfs/lib/rl_json
+	cd pantcl-tapp && tclsh ../bin/tpack.tcl wrap pantcl.tapp --lz4
+	ls -lh pantcl-tapp/pantcl.tapp
+	cp pantcl-tapp/pantcl.tapp pantcl-tapp/pantcl.mbin
 install: pantcl-app
 	cp pantcl-tapp/pantcl.tapp ~/.local/bin/pantcl
 	chmod 755 ~/.local/bin/pantcl
