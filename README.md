@@ -1,10 +1,14 @@
-# Pantcl ![](https://github.com/mittelmark/pantcl/actions/workflows/main.yml/badge.svg)
+# Pantcl 
 
-__Currently  the filter for function for pandoc version larger than 3.0 is broken, only the standalone
-line filtering does work!__
+[![License](https://img.shields.io/badge/license-GPL2-lightgray.svg)](https://www.gnu.org/licenses/gpl.htm)
+[![Release](https://img.shields.io/github/v/release/mittelmark/pantcl.svg?label=current+release)](https://github.com/mittelmark/pantcl/releases)
+![Downloads Latest](https://img.shields.io/github/downloads/mittelmark/pantcl/latest/total)
+![Downloads All](https://img.shields.io/github/downloads/mittelmark/pantcl/total)
+![Commits](https://img.shields.io/github/commits-since/mittelmark/pantcl/latest)
+![](https://github.com/mittelmark/pantcl/actions/workflows/main.yml/badge.svg)
 
 Standalone Tcl application for document conversion with support for Tcl based
-filters using the Pandoc document processor or Tcl only.
+filters or using the Pandoc document processor as filter application.
 
 For a overview about the Pandoc Tcl filter you can see as well the presentation
 at the presentation at [S
