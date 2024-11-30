@@ -13,7 +13,7 @@ Support:
 ![](https://img.shields.io/badge/Python-code-blue)
 ![](https://img.shields.io/badge/R-code-blue)
 ![](https://img.shields.io/badge/Tcl-code-blue)
-![](https://img.shields.io/badge/GrapViz-diagrams-orange)
+![](https://img.shields.io/badge/GraphViz-diagrams-orange)
 ![](https://img.shields.io/badge/Kroki-diagrams-orange)
 ![](https://img.shields.io/badge/Pikchr-diagrams-orange)
 ![](https://img.shields.io/badge/PlantUML-diagrams-orange)
