@@ -40,7 +40,7 @@ So in summary pantcl allows you:
 The easiest way to install the application is to use the online installer. Copy and paste the following line into your terminal:
 
 ```
-/bin/sh -c "$(curl -fsSL https://github.com/mittelmark/pantcl/releases/latest/download/install-unix.sh)"
+/bin/bash -c "$(curl -fsSL https://github.com/mittelmark/pantcl/releases/latest/download/install-unix.sh)"
 ```
 
 That should have installed an application `pantcl` into ~/.local/bin. Try to check the installation with:
