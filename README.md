@@ -271,7 +271,7 @@ chunk is evaluated and the output is visible in the image window on top:
 
 BSD 2-Clause License
 
-Copyright (c) 2023, Detlef Groth
+Copyright (c) 2023-2024, Detlef Groth, University of Potsdam, Germany
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
