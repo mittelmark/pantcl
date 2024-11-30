@@ -7,7 +7,7 @@
 ![Commits](https://img.shields.io/github/commits-since/mittelmark/pantcl/latest)
 ![](https://github.com/mittelmark/pantcl/actions/workflows/main.yml/badge.svg)
 
-Support: 
+Supports for example embedding and evaluating ... 
 
 ![](https://img.shields.io/badge/Octave-code-blue)
 ![](https://img.shields.io/badge/Python-code-blue)
