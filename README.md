@@ -14,8 +14,9 @@ Support:
 ![](https://img.shields.io/badge/R-code-blue)
 ![](https://img.shields.io/badge/Tcl-code-blue)
 ![](https://img.shields.io/badge/GrapViz-diagrams-orange)
-![](https://img.shields.io/badge/PlantUML-diagrams-blue)
-![](https://img.shields.io/badge/Pikchr-diagrams-blue)
+![](https://img.shields.io/badge/Kroki-diagrams-orange)
+![](https://img.shields.io/badge/Pikchr-diagrams-orange)
+![](https://img.shields.io/badge/PlantUML-diagrams-orange)
 
 Standalone Tcl application for document conversion with support for Tcl based
 filters or using the Pandoc document processor as filter application.
