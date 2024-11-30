@@ -35,6 +35,20 @@ So in summary pantcl allows you:
 - use a graphical interface to edit Markdown files with embedded code chunks
 - use a graphical interface to edit diagram code with real time preview
 
+# Installation
+
+The easiest way to install the application is to use the online installer. Copy and paste the following line into your terminal:
+
+```
+/bin/sh -c "$(curl -fsSL https://github.com/mittelmark/pantcl/releases/latest/download/install-unix.sh)"
+```
+
+That should have installed an application `pantcl` into ~/.local/bin. Try to check the installation with:
+
+```
+pantcl --version
+```
+
 # Processing schema
 
 ![](https://kroki.io/graphviz/svg/eNqNUstOwzAQvPMVq55LRXoCWUZCQoIDSAh6i3JIYzex6tjBdksK4t9Z20mbhlLRQx3Pzo5nH0yUJm8qeICvC4A6N6VQ9GqWELwpzXi60sqpvOZ08iTUpoUnseTGCcUnxIes-OQ0uc72fFvlDadL3U6t20lOV0JKzog_Ci21oXa9W8oNn34I5iqazObTiouycvjqTUYAfyj1BSZXa2rxYQKv1qWl0ZuGllfTgVAua60yID4B4F4XLfS85DcPSd9j5Wd2TrhXbnLFdIG3u7dFggcyHTfpIaHQRlkh11nkzPGIOXMCUeLR1fKMNzhlbsHbf5T9wlZnhHuz9pRb0j8bB_0H4cgT0w4f5u-KQO14i3WKwv-tCZhGakfA2W1JvChODS5v--bhV-gentFRh8wPnPDpGwV-mZ7ZIeLv2I1joNOPvC6K9tK4dkJthc2C0kDd78gIwv4FVlif3kCH4-HLOZIcpKcyX3JJ4y0Eus2I-AQDrpCTQcQe6veg7-YesMEGtnYM-UYPsGBAFGMWzuAI8qMLIxml-oKGEFx8_wB6nUqY)
