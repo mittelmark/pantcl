@@ -94,7 +94,7 @@
 #' `using Plots` is quite slow!! Around 20 seconds in 2023 but much faster in 2024!! Julia is probably a fast
 #' calculator, but startup and plotting is not ... - chunk options `{.julia fig=true}`
 #'
-#' ```{.julia fig=true eval=true}
+#' ```{.julia fig=true eval=false}
 #' t1=time()
 #' x = range(0, 1, length=30)
 #' y = x .^ 2
@@ -128,7 +128,7 @@
 #'
 #' Debugging:
 #'
-#' ```{.tcl eval=false}
+#' ```{.tcl eval=true}
 #' puts "time for document compilation: [expr {[clock seconds] - $t}]"
 #' ```
 #'
