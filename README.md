@@ -7,12 +7,18 @@
 ![Commits](https://img.shields.io/github/commits-since/mittelmark/pantcl/latest)
 ![](https://github.com/mittelmark/pantcl/actions/workflows/main.yml/badge.svg)
 
+Support: 
+
+![](https://img.shields.io/badge/Octave-code-blue)
+![](https://img.shields.io/badge/Python-code-blue)
+![](https://img.shields.io/badge/R-code-blue)
+![](https://img.shields.io/badge/Tcl-code-blue)
+![](https://img.shields.io/badge/GrapViz-diagrams-orange)
+![](https://img.shields.io/badge/PlantUML-diagrams-blue)
+![](https://img.shields.io/badge/Pikchr-diagrams-blue)
+
 Standalone Tcl application for document conversion with support for Tcl based
 filters or using the Pandoc document processor as filter application.
-
-For a overview about the Pandoc Tcl filter you can see as well the presentation
-at the presentation at [S
-& T 2021](https://raw.githubusercontent.com/mittelmark/DGTcl/master/pandoc-tcl-filter/doc/Groth-S-and-T-2021.pdf).
 
 The application `pantcl(.bin)` is a command line tool which can be used as a
 standalone tool for document conversion from Markdown to HTML. In the Markdown
@@ -24,10 +30,13 @@ is as well possible to target other output format like docx, pdf and many
 others. The tools contains as well a graphical user interface for direct
 editing of code for graphical tools like GraphViz, PlantUml and many others.
 
-So in summary pantcl allows you:
+For a overview about the Pandoc Tcl filter you can see as well the presentation
+at the presentation at [S & T 2021](https://raw.githubusercontent.com/mittelmark/DGTcl/master/pandoc-tcl-filter/doc/Groth-S-and-T-2021.pdf).
 
-- document conversion from Markdown to HTNML with evaluation of internal code chunks without pandoc
-- document conversion from many input (Markdown, ReStructuredText, Wiki formats, ...) 
+So in summary the `pantcl` application allows you:
+
+- perform document conversion from Markdown to HTML with evaluation of internal code chunks without pandoc
+- perform document conversion from many input (Markdown, ReStructuredText, Wiki formats, ...) 
   to many output formats (HTML, DOCX, PDF, ...) with evaluation of internal code chunks 
 - writing code documentation inside source code using a `#'` prefix followed by
   Markdown code
