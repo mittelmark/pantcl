@@ -290,9 +290,13 @@ proc filter-kroki {cont dict} {
     }
     set url [dia2kroki $cont [dict get $dict dia] [dict get $dict ext]]
     if {[dict get $dict app] eq "wget"} {
-        set res [exec -ignorestderr wget -q $url -O $fname.[dict get $dict ext]]
+        if { [catch { set res [exec -ignorestderr wget --connect-timeout 10 -q $url -O $fname.[dict get $dict ext]] }] } {
+            set res [list "Could not fetch image for '[dict get $dict label]'" ""]
+        }
     } elseif {[dict get $dict app] eq "curl"} {
-        set res [exec -ignorestderr curl $url -s --output $fname.[dict get $dict ext]]
+        if { [catch { set res [exec -ignorestderr curl $url --connect-timeout 10 -s --output $fname.[dict get $dict ext]] }] } {
+            set res [list "Could not fetch image for '[dict get $dict label]'" ""]
+        }
     }
     if {[dict get $dict results] eq "show"} {
         # should be usually empty

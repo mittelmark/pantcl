@@ -6,8 +6,9 @@
 # Version: 0.9.13 - 2023-09-07
 # Version: 0.9.14 - 2024-11-27
 # Version: 0.10.0 - 2024-11-29
+# Version: 0.10.1 - 2024-12-19
 
-package provide pantcl 0.10.0
+package provide pantcl 0.10.1
 namespace eval ::pantcl { }
 if {[llength $argv] > 0 && ([lsearch -exact $argv -v] >= 0 || [lsearch -exact $argv --version] >= 0)} {
     puts "[package present pantcl]"
@@ -46,27 +47,56 @@ set FILTERS {
 }
 set HELPSTANDALONE {
  Usage (standalone): 
-     $argv0 \[arguments\] infile outfile \[options\] --no-pandoc
+     $argv0 \[arguments\] infile outfile \[options\] \[--no-pandoc\]
 
      Converting the given infile to outfile.
-     If infile is a source code file ending with.tcl or .py, it is assumed that it
-     contains mkdoc documentation. This is embedded Markdown markup after 
-     a #' comment. In case pandoc is installed the pantcl application will 
-     will be used as filter afterwards.
+     If infile is a source code file ending with `.tcl`, `.R`  or `.py,
+     it is assumed that it contains mkdoc documentation. 
+     This is embedded Markdown markup after  a #' comment. 
+     In case pandoc is installed the pantcl application will  will be used
+      as filter afterwards.
      
      To set the default for the evaluation of filters to TRUE you can run the
      application like this:
         
-     FILTEREVAL=1 $argv0 \[arguments\] infile outfile \[options\] --no-pandoc
+     FILTEREVAL=1 $argv0 \[arguments\] infile \[outfile\] \[options\] \[--no-pandoc\]
 
      Hint: The --no-pandoc option is not required for the pantcl.mbin application as
            this can be only used standalone, but not as a pandoc filter.
 
  Arguments:
 
-    $argv0 \[arguments\] infile outfile \[options\] --no-pandoc
-      
-    $argv0 --help                     - display this help page
+    --help                  - display this help page
+
+    --version               - display the pantcl version  
+
+    --gui                   - start the graphical user interace, in this case outfile can
+                              be omitted
+
+    infile                  - the input filename, can be Markdown, Tcl, R,
+                              Python etc with embedded Makrdown behind #' comments  
+
+    outfile                 - the output file either Markdown (.md) or HTML (.html) or
+                              source code files if the outfile has a extension like `.tcl`
+                              or `.R` etc.   
+Options:
+    
+    --base64     BOOL      - should local image and css files being included using base64 encoding
+                             creating standalone HTML files
+                             
+    --javascript LIB|FILE  - should the online Javascript library LIB or the file FILE being included
+                             in the header section, possible LIB is highlightjs
+    --no-pandoc            - do not work as a pandoc filter, but as a standalone application
+
+    --mathjax    BOOL      - should mathjax library being included to display formulas, default: false
+
+    --refresh    INT       - should a refresh header included into the HTML output to refresh the page
+                             automatically every N seconds
+                             
+    --tangle     CHUNK     - exteact all  code from chunk type CHUNK
+                             
+Examples:
+
     $argv0 --version                  - display the version
     $argv0 infile outfile --no-pandoc - use the standalone converter
     $argv0 infile outfile --tangle .tcl  - extract all code from .tcl chunks
@@ -569,6 +599,12 @@ proc ::pantcl::lineFilter {argv} {
                 lappend argv true
             }   
         }
+        if {![lsearch -glob $argv *-base64] > -1} {
+            if {[dict exists $yamldict base64] && [dict get $yamldict base64]} {
+                lappend argv -base64 
+                lappend argv true
+            }   
+        }
         if {![lsearch -glob $argv *-javascript] > -1} {
             if {[dict exists $yamldict javascript] && [dict get $yamldict javascript] ne ""}  {
                 lappend argv --javascript
@@ -705,9 +741,9 @@ if {[info exists argv] && [llength $argv] > 1 && [file exists [lindex $argv 0]]}
 }
 
 #' ---
-#' title: pantcl filter documentation - 0.10.0
+#' title: pantcl filter documentation - 0.10.1
 #' author: Detlef Groth, Schwielowsee, Germany
-#' date: 2024-11-30
+#' date: 2024-12-19
 #' tcl:
 #'    echo: "true"
 #'    results: show
@@ -1124,6 +1160,8 @@ if {[info exists argv] && [llength $argv] > 1 && [file exists [lindex $argv 0]]}
 #'     * support for single backticks for line-filter for R and Python
 #'     * documentation updates and fixes
 #'     * inline local images and css files for --no-pandoc option as well
+#' * 2024-12-19 - version 0.10.1
+#'     * timeout for fetching images from the net
 #' 
 #' ## SEE ALSO
 #' 

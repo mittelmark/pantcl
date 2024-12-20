@@ -2,7 +2,7 @@
 ##############################################################################
 #  Author        : Dr. Detlef Groth
 #  Created       : Fri Nov 15 10:20:22 2019
-#  Last Modified : <241128.1545>
+#  Last Modified : <241220.1412>
 #
 #  Description	 : Command line utility and package to extract Markdown documentation 
 #                  from programming code if embedded as after comment sequence #' 
@@ -148,8 +148,8 @@ package require Tcl 8.6
 package require yaml
 package require Markdown
 
-package provide mkdoc 0.10.0
-package provide mkdoc::mkdoc 0.10.0
+package provide mkdoc 0.10.1
+package provide mkdoc::mkdoc 0.10.1
 namespace eval mkdoc {
     variable deindent [list \n\t \n "\n    " \n]
     
@@ -192,6 +192,44 @@ namespace eval mkdoc {
 	}
     }]
 } 
+
+proc mkdoc::inline-assets {filename html} {
+    set htm ""
+    foreach line [split $html "\n"] {
+        if {[regexp {<img src="(.+?)"} $line]} {
+            set imgname [regsub {.*<img src="(.+?)".+} $line "\\1"]
+            if {![regexp {^http} $imgname]} {
+                set ext [regsub {.+\.([a-zA-Z]{2,4})$} $imgname "\\1"]
+                set imgname [file normalize [file join [file dirname $filename] $imgname]]
+                set mode rb
+                if {$ext eq "svg"} {
+                    set mode r
+                    set ext "svg+xml"
+                }
+                if { [catch { set infhi [open $imgname $mode] }] } {
+                    error "Error: Cannot open '$imgname'!"
+                } else {
+                    set imgdata [binary encode base64 [read $infhi]]
+                    close $infhi
+                    set line [regsub {(.*)<img src="(.+?)"} $line "\\1<img src=\"data:image/$ext;base64, $imgdata\""]
+                }
+            }
+        } elseif {[regexp -nocase {<link +rel="stylesheet" +href="(.+.css)">} $line match cssfile]} {
+            if {[file exists [file join [file dirname $cssfile]]]} {
+                set fname [file join [file dirname $filename] $cssfile]
+                if [catch {open $fname} infhc] {
+                    error "Cannot open $fname: $infhc"
+                } else {
+                    set css [binary encode base64 [read $infhc]]
+                    close $infhc
+                    set line "\n<style>\n@import url(\"data:text/css;base64,$css\");\n</style>\n"
+                }
+            } 
+        }
+        append htm "$line\n"
+    }
+    return $htm
+}
 
 proc mkdoc::mkdoc {filename outfile args} {
     variable deindent [list \n\t \n "\n    " \n]    
@@ -351,30 +389,7 @@ proc mkdoc::mkdoc {filename outfile args} {
             }
             set html [Markdown::convert $mdhtml]
             if {$arg(--base64)} {
-                set htm ""
-                foreach line [split $html "\n"] {
-                    if {[regexp {<img src="(.+?)"} $line]} {
-                        set imgname [regsub {.*<img src="(.+?)".+} $line "\\1"]
-                        if {![regexp {^http} $imgname]} {
-                            set ext [regsub {.+\.([a-zA-Z]{2,4})$} $imgname "\\1"]
-                            set imgname [file join [file dirname $filename] $imgname]
-                            set mode rb
-                            if {$ext eq "svg"} {
-                                set mode r
-                                set ext "svg+xml"
-                            }
-                            if [catch {open $imgname $mode} infh] {
-                                error "Cannot open $imgname: $infh"
-                            } else {
-                                set imgdata [binary encode base64 [read $infh]]
-                                close $infh
-                                set line [regsub {.*<img src="(.+?)"} $line "<img src=\"data:image/$ext;base64, $imgdata\""]
-                            }
-                        }
-                    } 
-                    append htm "$line\n"
-                }
-                set html $htm
+                set html [mkdoc::inline-assets $filename $html]
             }
             ## issue in Markdown package?
             set html [string map {&amp;lt; &lt;  &amp;gt; &gt; &amp;quot; &quot;} $html]  
@@ -399,29 +414,7 @@ proc mkdoc::mkdoc {filename outfile args} {
             set header [subst -nobackslashes -nocommands $header]
             set head ""
             if {$arg(--base64)} {
-                set head ""
-                foreach line [split $header "\n"] {
-                    if {[regexp {^ +[0-9] *$}  $line]} {
-                        continue
-                    }
-                    if {[regexp -nocase {<link +rel="stylesheet" +href="(.+.css)">} $line match cssfile]} {
-
-                        if {[file exists [file join [file dirname $cssfile]]]} {
-                            set fname [file join [file dirname $filename] $cssfile]
-                            if [catch {open $fname} infh] {
-                                error "Cannot open $fname: $infh"
-                            } else {
-                                set css [binary encode base64 [read $infh]]
-                                close $infh
-                                set line "\n<style>\n@import url(\"data:text/css;base64,$css\");\n</style>\n"
-                            }
-                        } else {
-                            append head $line
-                        }
-                    }
-                    append head "$line\n"
-                }
-                set header $head
+                set header [mkdoc::inline-assets $filename $header]
             }
             puts $out $header
             if {$hasyaml} {
