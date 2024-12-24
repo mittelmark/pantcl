@@ -7,8 +7,9 @@
 # Version: 0.9.14 - 2024-11-27
 # Version: 0.10.0 - 2024-11-29
 # Version: 0.10.1 - 2024-12-19
+# Version: 0.10.2 - 2024-12-24
 
-package provide pantcl 0.10.1
+package provide pantcl 0.10.2
 namespace eval ::pantcl { }
 if {[llength $argv] > 0 && ([lsearch -exact $argv -v] >= 0 || [lsearch -exact $argv --version] >= 0)} {
     puts "[package present pantcl]"
@@ -741,9 +742,9 @@ if {[info exists argv] && [llength $argv] > 1 && [file exists [lindex $argv 0]]}
 }
 
 #' ---
-#' title: pantcl filter documentation - 0.10.1
+#' title: pantcl filter documentation - 0.10.2
 #' author: Detlef Groth, Schwielowsee, Germany
-#' date: 2024-12-19
+#' date: 2024-12-24
 #' tcl:
 #'    echo: "true"
 #'    results: show
@@ -1162,6 +1163,8 @@ if {[info exists argv] && [llength $argv] > 1 && [file exists [lindex $argv 0]]}
 #'     * inline local images and css files for --no-pandoc option as well
 #' * 2024-12-19 - version 0.10.1
 #'     * timeout for fetching images from the net
+#' * 2024-12-24 - version 0.10.2
+#'     * fixing ampersand issues in source code
 #' 
 #' ## SEE ALSO
 #' 

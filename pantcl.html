@@ -1,94 +1,152 @@
-
 <!DOCTYPE html>
-<html>
+<html lang="" xml:lang="" xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="title" content="pantcl filter documentation - 0.10.0">
-<meta name="author" content="Detlef Groth, Schwielowsee, Germany">
-    
-<title>pantcl filter documentation - 0.10.0</title>
-    
-    
-
+<meta charset="utf-8"/>
+<meta content="pandoc" name="generator"/>
+<meta content="width=device-width, initial-scale=1.0, user-scalable=yes" name="viewport"/>
+<meta content="Detlef Groth, Schwielowsee, Germany" name="author"/>
+<meta content="2024-12-24" name="dcterms.date"/>
+<title>pantcl filter documentation - 0.10.2</title>
 <style>
-@import url("data:text/css;base64,CiAgICBodG1sIHsKICAgICAgICBvdmVyZmxvdy15OiBzY3JvbGw7CiAgICB9CiAgICBib2R5IHsKICAgICAgICBjb2xvcjogIzQ0NDsKICAgICAgICBmb250LWZhbWlseTogR2VvcmdpYSwgUGFsYXRpbm8sICdQYWxhdGlubyBMaW5vdHlwZScsIFRpbWVzLCAnVGltZXMgTmV3IFJvbWFuJywgc2VyaWY7CiAgICAgICAgbGluZS1oZWlnaHQ6IDEuMjsKICAgICAgICBwYWRkaW5nOiAxZW07CiAgICAgICAgbWFyZ2luOiBhdXRvOwogICAgICAgIG1heC13aWR0aDogIDExMDBweDsKICAgIH0KICAgIGgxLCBoMiwgaDMsIGg0LCBoNSwgaDYgewogICAgICAgIGNvbG9yOiAjMTExOwogICAgICAgIGxpbmUtaGVpZ2h0OiAxMTUlOwogICAgICAgIG1hcmdpbi10b3A6IDFlbTsKICAgICAgICBmb250LXdlaWdodDogbm9ybWFsOwogICAgfQogICAgaDEgewogICAgICAgIHRleHQtYWxpZ246IGNlbnRlcjsKICAgIH0KICAgIGgyLmF1dGhvciwgaDIuZGF0ZSB7CiAgICAgICAgdGV4dC1hbGlnbjogY2VudGVyOwogICAgfQogICAgYSB7CiAgICAgICAgY29sb3I6ICMwNjQ1YWQ7CiAgICAgICAgdGV4dC1kZWNvcmF0aW9uOiBub25lOwogICAgfQogICAgYTp2aXNpdGVkIHsgIGNvbG9yOiAjMGIwMDgwOyB9CiAgICBhOmhvdmVyICAgeyAgY29sb3I6ICMwNmU7ICAgIH0KICAgIGE6YWN0aXZlICB7ICBjb2xvcjogI2ZhYTcwMDsgfQogICAgYTpmb2N1cyAgIHsgIG91dGxpbmU6IHRoaW4gZG90dGVkOyB9CiAgICAKICAgIHAgeyAgbWFyZ2luOiAwLjVlbSAwOyAgICB9CiAgICBwLmF1dGhvciwgcC5kYXRlIHsKICAgICAgICBmb250LXNpemU6IDExMCU7CiAgICAgICAgdGV4dC1hbGlnbjogY2VudGVyOwogICAgfQogICAgaW1nIHsgIG1heC13aWR0aDogMTAwJTsgICAgfQogICAgZmlndXJlIHsgdGV4dC1hbGlnbjogY2VudGVyIDsgfSAKICAgIHByZSwgYmxvY2txdW90ZSBwcmUgewogICAgICAgIGJvcmRlci10b3A6IDAuMWVtICM5YWMgc29saWQ7CiAgICAgICAgYmFja2dyb3VuZDogI2U5ZjZmZjsKICAgICAgICBwYWRkaW5nOiAxMHB4OwogICAgICAgIGJvcmRlci1ib3R0b206IDAuMWVtICM5YWMgc29saWQ7CiAgICB9CiAgICBwcmUsIGNvZGUsIGtiZCwgc2FtcCB7CiAgICAgICAgY29sb3I6ICMwMDA7CiAgICAgICAgZm9udC1mYW1pbHk6IE1vbmFjbywgJ2NvdXJpZXIgbmV3JywgbW9ub3NwYWNlOwogICAgICAgIGZvbnQtc2l6ZTogOTAlOyAKICAgIH0KICAgIHByZSBjb2RlLnRjbGlubiB7CiAgICAgICAgY29sb3I6ICNmZjIyMjI7CiAgICB9CiAgICBwcmUgY29kZS50Y2xvdXQgewogICAgICAgIGNvbG9yOiAjMzM2NmZmOwogICAgfQogICAgY29kZS5yIHsKICAgICAgICBjb2xvcjogIzc3MDAwMDsKICAgIH0KICAgIHByZS5waXBlb3V0IHsKICAgICAgICBiYWNrZ3JvdW5kOiAjZmZlZmVmOwogICAgfQogICAgcHJlIHsKICAgICAgICB3aGl0ZS1zcGFjZTogcHJlOwogICAgICAgIHdoaXRlLXNwYWNlOiBwcmUtd3JhcDsKICAgICAgICB3b3JkLXdyYXA6IGJyZWFrLXdvcmQ7CiAgICB9CiAgICBjb2RlIHNwYW4ua3cgeyBjb2xvcjogIzAwNzAyMDsgZm9udC13ZWlnaHQ6IG5vcm1hbDsgfQogICAgcHJlLnNvdXJjZUNvZGUgeyAgYmFja2dyb3VuZDogI2ZmZjZmNjsgIH0gCiAgICBibG9ja3F1b3RlIHsKICAgICAgICBtYXJnaW46IDA7CiAgICAgICAgcGFkZGluZy1sZWZ0OiAzZW07IAogICAgfQogICAgaHIgewogICAgICAgIGRpc3BsYXk6IGJsb2NrOwogICAgICAgIGhlaWdodDogMnB4OwogICAgICAgIGJvcmRlcjogMDsKICAgICAgICBib3JkZXItdG9wOiAxcHggc29saWQgI2FhYTsKICAgICAgICBib3JkZXItYm90dG9tOiAxcHggc29saWQgI2VlZTsKICAgICAgICBtYXJnaW46IDFlbSAwOwogICAgICAgIHBhZGRpbmc6IDA7CiAgICB9CiAgICB0YWJsZSB7ICAgIAogICAgICAgIGJvcmRlci1jb2xsYXBzZTogY29sbGFwc2U7CiAgICAgICAgYm9yZGVyLWJvdHRvbTogMnB4IHNvbGlkOwogICAgfQogICAgdGFibGUgdGhlYWQgdHIgdGggeyAKICAgICAgICBiYWNrZ3JvdW5kLWNvbG9yOiAjZmRlOWQ5OwogICAgICAgIHRleHQtYWxpZ246IGxlZnQ7IAogICAgICAgIHBhZGRpbmc6IDEwcHg7CiAgICAgICAgYm9yZGVyLXRvcDogMnB4IHNvbGlkOwogICAgICAgIGJvcmRlci1ib3R0b206IDJweCBzb2xpZDsKICAgIH0KICAgIHRhYmxlIHRkIHsgCiAgICAgICAgYmFja2dyb3VuZC1jb2xvcjogI2ZmZjllOTsKICAgICAgICB0ZXh0LWFsaWduOiBsZWZ0OyAKICAgICAgICBwYWRkaW5nOiAxMHB4OwogICAgfQogICAgLmxlZnQgewogICAgICAgIGRpc3BsYXk6IGZsZXg7CiAgICAgICAganVzdGlmeS1jb250ZW50OiBmbGV4LXN0YXJ0OwogICAgfQoK");
-</style>
-
-    
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+    /* CSS for syntax highlighting */
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+<link href="data:text/css,%20%20%20%20html%20%7B%0A%20%20%20%20%20%20%20%20overflow-y%3A%20scroll%3B%0A%20%20%20%20%7D%0A%20%20%20%20body%20%7B%0A%20%20%20%20%20%20%20%20color%3A%20%23444%3B%0A%20%20%20%20%20%20%20%20font-family%3A%20Georgia%2C%20Palatino%2C%20%27Palatino%20Linotype%27%2C%20Times%2C%20%27Times%20New%20Roman%27%2C%20serif%3B%0A%20%20%20%20%20%20%20%20line-height%3A%201.2%3B%0A%20%20%20%20%20%20%20%20padding%3A%201em%3B%0A%20%20%20%20%20%20%20%20margin%3A%20auto%3B%0A%20%20%20%20%20%20%20%20max-width%3A%20%20900px%3B%0A%20%20%20%20%7D%0A%20%20%20%20a%20%7B%0A%20%20%20%20%20%20%20%20color%3A%20%230645ad%3B%0A%20%20%20%20%20%20%20%20text-decoration%3A%20none%3B%0A%20%20%20%20%7D%0A%20%20%20%20a%3Avisited%20%7B%0A%20%20%20%20%20%20%20%20color%3A%20%230b0080%3B%0A%20%20%20%20%7D%0A%20%20%20%20a%3Ahover%20%7B%0A%20%20%20%20%20%20%20%20color%3A%20%2306e%3B%0A%20%20%20%20%7D%0A%20%20%20%20a%3Aactive%20%7B%0A%20%20%20%20%20%20%20%20color%3A%20%23faa700%3B%0A%20%20%20%20%7D%0A%20%20%20%20a%3Afocus%20%7B%0A%20%20%20%20%20%20%20%20outline%3A%20thin%20dotted%3B%0A%20%20%20%20%7D%0A%20%20%20%20p%20%7B%0A%20%20%20%20%20%20%20%20margin%3A%200.5em%200%3B%0A%20%20%20%20%7D%0A%20%20%20%20p.date%20%7B%0A%20%20%20%20%20%20%20%20text-align%3A%20center%3B%0A%20%20%20%20%7D%0A%20%20%20%20img%20%7B%0A%20%20%20%20%20%20%20%20max-width%3A%20100%25%3B%0A%20%20%20%20%7D%0A%20%20%20%20%0A%20%20%20%20h1%2C%20h2%2C%20h3%2C%20h4%2C%20h5%2C%20h6%20%7B%0A%20%20%20%20%20%20%20%20color%3A%20%23111%3B%0A%20%20%20%20%20%20%20%20line-height%3A%20115%25%3B%0A%20%20%20%20%20%20%20%20margin-top%3A%201em%3B%0A%20%20%20%20%20%20%20%20font-weight%3A%20normal%3B%0A%20%20%20%20%7D%0A%20%20%20%20h1%20%7B%0A%20%20%20%20%20%20%20%20text-align%3A%20center%3B%0A%20%20%20%20%20%20%20%20font-size%3A%20120%25%3B%0A%20%20%20%20%7D%0A%20%20%20%20h2.author%2C%20h2.date%20%7B%0A%20%20%20%20%20%20%20%20text-align%3Acenter%3B%0A%20%20%20%20%20%20%20%20font-size%3A%20100%25%0A%20%20%20%20%7D%0A%20%20%20%20p.author%2C%20p.date%20%7B%0A%20%20%20%20%20%20%20%20font-size%3A%20110%25%3B%0A%20%20%20%20%7D%0A%20%20%20%20%0A/%2A%20%20%20%20h2%20%7B%0A%20%20%20%20%20%20%20%20text-transform%3A%20uppercase%3B%0A%20%20%20%20%7D%0A%20%20%20%20%2A/%0A%20%20%20%20pre%2C%20blockquote%20pre%20%7B%0A%20%20%20%20%20%20%20%20border-top%3A%200.1em%20%239ac%20solid%3B%0A%20%20%20%20%20%20%20%20background%3A%20%23e9f6ff%3B%0A%20%20%20%20%20%20%20%20padding%3A%2010px%3B%0A%20%20%20%20%20%20%20%20border-bottom%3A%200.1em%20%239ac%20solid%3B%0A%20%20%20%20%7D%0A%20%20%20%20%0A%20%20%20%20blockquote%20%7B%0A%20%20%20%20%20%20%20%20margin%3A%200%3B%0A%20%20%20%20%20%20%20%20padding-left%3A%203em%3B%20%0A%20%20%20%20%7D%0A%20%20%20%20%0A%20%20%20%20hr%20%7B%0A%20%20%20%20%20%20%20%20display%3A%20block%3B%0A%20%20%20%20%20%20%20%20height%3A%202px%3B%0A%20%20%20%20%20%20%20%20border%3A%200%3B%0A%20%20%20%20%20%20%20%20border-top%3A%201px%20solid%20%23aaa%3B%0A%20%20%20%20%20%20%20%20border-bottom%3A%201px%20solid%20%23eee%3B%0A%20%20%20%20%20%20%20%20margin%3A%201em%200%3B%0A%20%20%20%20%20%20%20%20padding%3A%200%3B%0A%20%20%20%20%7D%0A%20%20%20%20%0A%20%20%20%20pre%2C%20code%2C%20kbd%2C%20samp%20%7B%0A%20%20%20%20%20%20%20%20color%3A%20%23000%3B%0A%20%20%20%20%20%20%20%20font-family%3A%20Monaco%2C%20%27courier%20new%27%2C%20monospace%3B%0A%20%20%20%20%20%20%20%20font-size%3A%2090%25%3B%20%0A%20%20%20%20%7D%0A%20%20%20%20code.r%20%7B%0A%20%20%20%20%20%20%20%20color%3A%20%23770000%3B%0A%20%20%20%20%7D%0A%20%20%20%20pre%3Ahas%28code.tclout%29%20%7B%0A%20%20%20%20%20%20%20%20background%3A%20%23ffeeee%3B%0A%20%20%20%20%7D%0A%20%20%20%20pre%20%7B%0A%20%20%20%20%20%20%20%20white-space%3A%20pre%3B%0A%20%20%20%20%20%20%20%20white-space%3A%20pre-wrap%3B%0A%20%20%20%20%20%20%20%20word-wrap%3A%20break-word%3B%0A%20%20%20%20%7D%0A%20%20%20%20/%2A%20fix%2C%20do%20not%20like%20bold%20for%20every%20keyword%20%2A/%0A%20%20%20%20code%20span.kw%20%7B%20color%3A%20%23007020%3B%20font-weight%3A%20normal%3B%20%7D%20/%2A%20Keyword%20%2A/%0A%20%20%20%20%20pre.sourceCode%20%7B%0A%20%20%20%20%20%20%20%20background%3A%20%23fff6f6%3B%0A%20%20%20%20%7D%20%0A%20%20%20%20figure%2C%20p.author%20%7B%0A%20%20%20%20%20%20%20%20text-align%3A%20center%3B%0A%20%20%20%20%7D%0A%20%20%20%20table%20%7B%20%20%20%20%0A%20%20%20%20%20%20%20%20border-collapse%3A%20collapse%3B%0A%20%20%20%20%20%20%20%20border-bottom%3A%202px%20solid%3B%0A%20%20%20%20%20%20%20%20border-spacing%3A%205px%3B%0A%20%20%20%20%20%20%20%20min-width%3A%20400px%3B%0A%20%20%20%20%7D%0A%20%20%20%20table%20thead%20tr%20th%20%7B%20%0A%20%20%20%20%20%20%20%20background-color%3A%20%23fde9d9%3B%0A%20%20%20%20%20%20%20%20text-align%3A%20left%3B%20%0A%20%20%20%20%20%20%20%20padding%3A%2010px%3B%0A%20%20%20%20%20%20%20%20border-top%3A%202px%20solid%3B%0A%20%20%20%20%20%20%20%20border-bottom%3A%202px%20solid%3B%0A%20%20%20%20%7D%0A%20%20%20%20table%20td%20%7B%20%0A%20%20%20%20%20%20%20%20background-color%3A%20%23fff9e9%3B%0A%0A%20%20%20%20%20%20%20%20text-align%3A%20left%3B%20%0A%20%20%20%20%20%20%20%20padding%3A%2010px%3B%0A%20%20%20%20%7D%0A" rel="stylesheet"/><!--URL:mini.css-->
+<!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
 </head>
 <body>
-    
-
-
-
-<h1 class="title">pantcl filter documentation - 0.10.0</h1>
-<h2 class="author">Detlef Groth, Schwielowsee, Germany</h2>
-<h2 class="date">2024-11-30</h2>
-
-<hr />
-
-<p><center></p>
-
-<p>Filters: 
-<a href="lib/tclfilters/filter-abc.html">filter-abc</a> -
-<a href="lib/tclfilters/filter-cmd.html">filter-cmd</a> -
-<a href="lib/tclfilters/filter-dot.html">filter-dot</a> -
-<a href="lib/tclfilters/filter-eqn.html">filter-eqn</a> -
-<a href="lib/tclfilters/filter-mmd.html">filter-mmd</a> -
-<a href="lib/tclfilters/filter-mtex.html">filter-mtex</a> -
-<a href="lib/tclfilters/filter-pic.html">filter-pic</a> -
-<a href="lib/tclfilters/filter-pik.html">filter-pik</a> -
-<a href="lib/tclfilters/filter-pipe.html">filter-pipe</a> -
-<a href="lib/tclfilters/filter-puml.html">filter-puml</a> -
-<a href="lib/tclfilters/filter-rplot.html">filter-rplot</a> - 
-<a href="lib/tclfilters/filter-sqlite.html">filter-sqlite</a> -
-<a href="lib/tclfilters/filter-tcrd.html">filter-tcrd</a> -
-<a href="lib/tclfilters/filter-tcl.html">filter-tcl</a> -
-<a href="lib/tclfilters/filter-tdot.html">filter-tdot</a> -
-<a href="lib/tclfilters/filter-tsvg.html">filter-tsvg</a> <br /></p>
-
-<p>Documentation: 
-<a href="pantcl.html">Pantcl documentation</a> - 
-<a href="pantcl-tutorial.html">Pantcl Tutorial</a> -
-<a href="README.html">Pantcl Readme</a> -
-<a href="lib/fview/filter-view.html">Pantcl GUI filter viewer</a> 
-</center></p>
-
-<hr />
-
-<h2>NAME</h2>
-
-<p><em>pantcl.tcl</em> - filter application for the pandoc command line 
-application to convert Markdown files into other formats. The filter allows you to embed Tcl code into your Markdown
-documentation and offers a plugin architecture to add other command line filters easily using Tcl
-and the <code>exec</code> command. As examples are given in the filter folder of the project:</p>
-
+<header id="title-block-header">
+<h1 class="title">pantcl filter documentation - 0.10.2</h1>
+<p class="author">Detlef Groth, Schwielowsee, Germany</p>
+<p class="date">2024-12-24</p>
+</header>
+<hr/>
+<center>
+<p>Filters: <a href="lib/tclfilters/filter-abc.html">filter-abc</a> - <a href="lib/tclfilters/filter-cmd.html">filter-cmd</a> - <a href="lib/tclfilters/filter-dot.html">filter-dot</a> - <a href="lib/tclfilters/filter-eqn.html">filter-eqn</a> - <a href="lib/tclfilters/filter-mmd.html">filter-mmd</a> - <a href="lib/tclfilters/filter-mtex.html">filter-mtex</a> - <a href="lib/tclfilters/filter-pic.html">filter-pic</a> - <a href="lib/tclfilters/filter-pik.html">filter-pik</a> - <a href="lib/tclfilters/filter-pipe.html">filter-pipe</a> - <a href="lib/tclfilters/filter-puml.html">filter-puml</a> - <a href="lib/tclfilters/filter-rplot.html">filter-rplot</a> - <a href="lib/tclfilters/filter-sqlite.html">filter-sqlite</a> - <a href="lib/tclfilters/filter-tcrd.html">filter-tcrd</a> - <a href="lib/tclfilters/filter-tcl.html">filter-tcl</a> - <a href="lib/tclfilters/filter-tdot.html">filter-tdot</a> - <a href="lib/tclfilters/filter-tsvg.html">filter-tsvg</a> <br/></p>
+Documentation: <a href="pantcl.html">Pantcl documentation</a> - <a href="pantcl-tutorial.html">Pantcl Tutorial</a> - <a href="README.html">Pantcl Readme</a> - <a href="lib/fview/filter-view.html">Pantcl GUI filter viewer</a>
+</center>
+<hr/>
+<h2 id="name">NAME</h2>
+<p><em>pantcl.tcl</em> - filter application for the pandoc command line
+application to convert Markdown files into other formats. The filter
+allows you to embed Tcl code into your Markdown documentation and offers
+a plugin architecture to add other command line filters easily using Tcl
+and the <code>exec</code> command. As examples are given in the filter
+folder of the project:</p>
 <ul>
 <li>Tcl filter {.tcl}: <code>filter-tcl.tcl</code> <a href="filter/filter-tcl.html">filter/filter-tcl.html</a></li>
 <li>ABC music filter {.abc}: <code>filter-abc.tcl</code> <a href="filter/filter-abc.html">filter/filter-abc.html</a></li>
-<li>command line application filter {.cmd}: <code>filter-cmd.tcl</code> <a href="filter/filter-cmd.html">filter/filter-abc.html</a></li>
+<li>command line application filter {.cmd}: <code>filter-cmd.tcl</code>
+<a href="filter/filter-cmd.html">filter/filter-abc.html</a></li>
 <li>Graphviz dot filter {.dot}: <code>filter-dot.tcl</code> <a href="filter/filter-dot.html">filter/filter-dot.html</a></li>
-<li>EQN filter plugin for equations written in the EQN language {.eqn}: <code>filter-eqn</code> <a href="filter/filter-eqn.html">filter/filter-eqn.html</a></li>
-<li>Julia filter plugin for Julia clode {.julia}: <code>filter-julia</code> <a href="filter/filter-julia.html">filter/filter-julia.html</a></li>
-<li>Math TeX filter for single line equations {.mtex}: <code>filter-mtex.tcl</code> <a href="filter/filter-mtex.html">filter/filter-mtex.html</a></li>
+<li>EQN filter plugin for equations written in the EQN language {.eqn}:
+<code>filter-eqn</code> <a href="filter/filter-eqn.html">filter/filter-eqn.html</a></li>
+<li>Julia filter plugin for Julia clode {.julia}:
+<code>filter-julia</code> <a href="filter/filter-julia.html">filter/filter-julia.html</a></li>
+<li>Math TeX filter for single line equations {.mtex}:
+<code>filter-mtex.tcl</code> <a href="filter/filter-mtex.html">filter/filter-mtex.html</a></li>
 <li>Mermaid filter for diagrams {.mmd}: <code>filter-mmd.tcl</code> <a href="filter/filter-mmd.html">filter/filter-mmd.html</a></li>
-<li>Pikchr filter plugin for diagram creation {.pikchr}: <code>filter-pik.tcl</code> <a href="filter/filter-pik.html">filter/filter-pik.html</a></li>
-<li>PIC filter plugin for diagram creation (older version) {.pic}: <code>filter-pic.tcl</code> <a href="filter/filter-pic.html">filter/filter-pic.html</a></li>
-<li>pipe filter for R, Python and Octave {.pipe}: <code>filter-pipe.tcl</code> <a href="filter/filter-pipe.html">filter/filter-pipe.html</a></li>
-<li>PlantUMLfilter plugin for diagram creation {.puml}: <code>filter-puml.tcl</code> <a href="filter/filter-puml.html">filter/filter-puml.html</a></li>
-<li>R plot filter plugin for displaying plots in the R statistical language {.rplot}: <code>filter-rplot.tcl</code> <a href="filter/filter-rplot.html">filter/filter-rplot.html</a></li>
-<li>sqlite3 filter plugin to evaluate SQL code {.sqlite}: <code>filter-sqlite.tcl</code> <a href="filter/filter-sqlite.html">filter/filter-sqlite.html</a></li>
-<li>tcrd filter for music songs with chords {.tcrd}: <code>filter-tcrd.tcl</code> <a href="filter/filter-tcrd.html">filter/filter-tcrd.html</a></li>
+<li>Pikchr filter plugin for diagram creation {.pikchr}:
+<code>filter-pik.tcl</code> <a href="filter/filter-pik.html">filter/filter-pik.html</a></li>
+<li>PIC filter plugin for diagram creation (older version) {.pic}:
+<code>filter-pic.tcl</code> <a href="filter/filter-pic.html">filter/filter-pic.html</a></li>
+<li>pipe filter for R, Python and Octave {.pipe}:
+<code>filter-pipe.tcl</code> <a href="filter/filter-pipe.html">filter/filter-pipe.html</a></li>
+<li>PlantUMLfilter plugin for diagram creation {.puml}:
+<code>filter-puml.tcl</code> <a href="filter/filter-puml.html">filter/filter-puml.html</a></li>
+<li>R plot filter plugin for displaying plots in the R statistical
+language {.rplot}: <code>filter-rplot.tcl</code> <a href="filter/filter-rplot.html">filter/filter-rplot.html</a></li>
+<li>sqlite3 filter plugin to evaluate SQL code {.sqlite}:
+<code>filter-sqlite.tcl</code> <a href="filter/filter-sqlite.html">filter/filter-sqlite.html</a></li>
+<li>tcrd filter for music songs with chords {.tcrd}:
+<code>filter-tcrd.tcl</code> <a href="filter/filter-tcrd.html">filter/filter-tcrd.html</a></li>
 <li>tdot package filter {.tsvg}: <code>filter-tdot.tcl</code> <a href="filter/filter-tdot.html">filter/filter-tdot.html</a></li>
-<li>tsvg package filter {.tsvg}: <code>filter-tsvg.tcl</code> <a href="filter/filter-tsvg.html">filter/filter-tsvg.html</a>
-</li></ul>
-
-<h2>SYNOPSIS </h2>
-
-<p>We assume that you renamed the standalone file <code>pantcl.tapp</code> to <code>pantcl</code> and
-that this file is in your path.</p>
-
-<pre class='code'><code># standalone application
+<li>tsvg package filter {.tsvg}: <code>filter-tsvg.tcl</code> <a href="filter/filter-tsvg.html">filter/filter-tsvg.html</a></li>
+</ul>
+<h2 id="synopsis">SYNOPSIS</h2>
+<p>We assume that you renamed the standalone file
+<code>pantcl.tapp</code> to <code>pantcl</code> and that this file is in
+your path.</p>
+<pre><code># standalone application
 pantcl infile outfile ?options? --no-pandoc
 # same with default eval=true for all code chunks
 FILTEREVAL=1 pantcl infile outfile ?options? --no-pandoc
@@ -96,245 +154,228 @@ FILTEREVAL=1 pantcl infile outfile ?options? --no-pandoc
 pandoc infile --filter pantcl ?options?
 # using graphics user interface
 pantcl --gui [filename]</code></pre>
-
-<p>Where options for the filter and the standalone mode
-are the usual pandoc options. For HTML conversion you should use for instance:</p>
-
-<pre class='code'><code>pantcl infile.md outfile.html --css style.css -s --toc</code></pre>
-
-<p>Please note, that you can rename as well the file <code>pantcl.tapp</code> into other names like 
-<code>pantcl.bin</code>, however the basename <code>pantcl</code> must stay the same.</p>
-
-<h2>Code embedding</h2>
-
-<p>Embed code either inline or in form of code chunks like here (triple ticks):</p>
-
-<pre class='code'><code>    ```{.tcl}
+<p>Where options for the filter and the standalone mode are the usual
+pandoc options. For HTML conversion you should use for instance:</p>
+<pre><code>pantcl infile.md outfile.html --css style.css -s --toc</code></pre>
+<p>Please note, that you can rename as well the file
+<code>pantcl.tapp</code> into other names like <code>pantcl.bin</code>,
+however the basename <code>pantcl</code> must stay the same.</p>
+<h2 id="code-embedding">Code embedding</h2>
+<p>Embed code either inline or in form of code chunks like here (triple
+ticks):</p>
+<pre><code>    ```{.tcl}
     set x 4
     incr x
     set x
     ```
   
     Hello this is Tcl `tcl package provide Tcl`!</code></pre>
-
-<h2>Filter Overview </h2>
-
+<h2 id="filter-overview">Filter Overview</h2>
 <p>The markers for the other filters are:</p>
-
-<p><code>{.abc},</code>{.dot}<code>,</code>{.eqn}<code>,</code>{.julia}<code>,</code>{.mmd}<code>,</code>{.mtex}<code>,</code>{.pic}<code>,</code>{.pikchr}, <code>{.puml}</code>, <code>{.rplot}</code>,<code>{.sqlite}</code> and <code>{.tsvg}</code>.</p>
-
-<p>For details on how to use them have a look at the manual page links on top.</p>
-
-<p>You can combine all filters in one document  just by using the appropiate markers.</p>
-
+<p><code class="sourceCode dot"><span class="ot">{</span><span class="co">.</span><span class="va">abc</span><span class="ot">}</span>,</code><code class="eqn">,</code><code class="sourceCode julia">,</code><code class="sourceCode markdown">,</code><code class="mtex">,</code><code class="pic">,</code><code class="pikchr">,</code>, <code>{.puml}</code>,
+<code>{.rplot}</code>,<code>{.sqlite}</code> and
+<code>{.tsvg}</code>.</p>
+<p>For details on how to use them have a look at the manual page links
+on top.</p>
+<p>You can combine all filters in one document just by using the
+appropiate markers.</p>
 <p>Here an overview about the required tools to use a filter:</p>
-
-<p><center></p>
-
-<table class="table">
+<center>
+<table>
+<colgroup>
+<col style="width: 22%"/>
+<col style="width: 18%"/>
+<col style="width: 14%"/>
+<col style="width: 14%"/>
+<col style="width: 14%"/>
+<col style="width: 14%"/>
+</colgroup>
 <thead>
-  <tr>
-    <th>filter</th>
-    <th>tool</th>
-    <th>svg</th>
-    <th>png</th>
-    <th>pdf</th>
-    <th>comment</th>
-  </tr>
+<tr class="header">
+<th>filter</th>
+<th>tool</th>
+<th>svg</th>
+<th>png</th>
+<th>pdf</th>
+<th>comment</th>
+</tr>
 </thead>
 <tbody>
-  <tr>
-    <td>.tcl</td>
-    <td>tclsh</td>
-    <td>tsvg</td>
-    <td>cairosvg</td>
-    <td>cairosvg</td>
-    <td>programming</td>
-  </tr>
-  <tr>
-    <td>.abc</td>
-    <td>abcm2ps</td>
-    <td>abcm2ps</td>
-    <td>cairosvg</td>
-    <td>cairosvg</td>
-    <td>music</td>
-  </tr>
-  <tr>
-    <td>.dot</td>
-    <td>dot</td>
-    <td>native</td>
-    <td>native</td>
-    <td>native</td>
-    <td>diagrams</td>
-  </tr>
-  <tr>
-    <td>.emf</td>
-    <td>jasspa microemacs</td>
-    <td>no</td>
-    <td>no</td>
-    <td>no</td>
-    <td>editor</td>
-  </tr>
-  <tr>
-    <td>.eqn</td>
-    <td>eqn2graph</td>
-    <td>no</td>
-    <td>convert</td>
-    <td>no</td>
-    <td>math</td>
-  </tr>
-  <tr>
-    <td>.julia</td>
-    <td>julia</td>
-    <td>native</td>
-    <td>native</td>
-    <td>native</td>
-    <td>statistics</td>
-  </tr>
-  <tr>
-    <td>.mmd</td>
-    <td>mermaid-cli (mmdc)</td>
-    <td>native</td>
-    <td>native</td>
-    <td>native</td>
-    <td>diagrams</td>
-  </tr>
-  <tr>
-    <td>.mtex</td>
-    <td>latex</td>
-    <td>dvisgm</td>
-    <td>dvipng</td>
-    <td>dvipdfm</td>
-    <td>math, diagrams, games</td>
-  </tr>
-  <tr>
-    <td>.pic</td>
-    <td>pic2graph</td>
-    <td>no</td>
-    <td>convert</td>
-    <td>no</td>
-    <td>diagrams</td>
-  </tr>
-  <tr>
-    <td>.pik</td>
-    <td>fossil</td>
-    <td>native</td>
-    <td>cairosvg</td>
-    <td>cairosvg</td>
-    <td>diagrams</td>
-  </tr>
-  <tr>
-    <td>.pipe</td>
-    <td>R / python / octave</td>
-    <td>native</td>
-    <td>native</td>
-    <td>native</td>
-    <td>Statistics, Programming</td>
-  </tr>
-  <tr>
-    <td>.puml</td>
-    <td>plantuml</td>
-    <td>native</td>
-    <td>native</td>
-    <td>native</td>
-    <td>diagrams</td>
-  </tr>
-  <tr>
-    <td>.rplot</td>
-    <td>R</td>
-    <td>native</td>
-    <td>native</td>
-    <td>native</td>
-    <td>statistics, graphics</td>
-  </tr>
-  <tr>
-    <td>.tcrd</td>
-    <td>tclsh</td>
-    <td>no</td>
-    <td>no</td>
-    <td>no</td>
-    <td>music, songs with chords</td>
-  </tr>
-  <tr>
-    <td>.tdot</td>
-    <td>tclsh/dot</td>
-    <td>native</td>
-    <td>native</td>
-    <td>native</td>
-    <td>diagrams</td>
-  </tr>
-  <tr>
-    <td>.tsvg</td>
-    <td>tclsh</td>
-    <td>native</td>
-    <td>cairosvg</td>
-    <td>cairosvg</td>
-    <td>graphics</td>
-  </tr>
+<tr class="odd">
+<td>.tcl</td>
+<td>tclsh</td>
+<td>tsvg</td>
+<td>cairosvg</td>
+<td>cairosvg</td>
+<td>programming</td>
+</tr>
+<tr class="even">
+<td>.abc</td>
+<td>abcm2ps</td>
+<td>abcm2ps</td>
+<td>cairosvg</td>
+<td>cairosvg</td>
+<td>music</td>
+</tr>
+<tr class="odd">
+<td>.dot</td>
+<td>dot</td>
+<td>native</td>
+<td>native</td>
+<td>native</td>
+<td>diagrams</td>
+</tr>
+<tr class="even">
+<td>.emf</td>
+<td>jasspa microemacs</td>
+<td>no</td>
+<td>no</td>
+<td>no</td>
+<td>editor</td>
+</tr>
+<tr class="odd">
+<td>.eqn</td>
+<td>eqn2graph</td>
+<td>no</td>
+<td>convert</td>
+<td>no</td>
+<td>math</td>
+</tr>
+<tr class="even">
+<td>.julia</td>
+<td>julia</td>
+<td>native</td>
+<td>native</td>
+<td>native</td>
+<td>statistics</td>
+</tr>
+<tr class="odd">
+<td>.mmd</td>
+<td>mermaid-cli (mmdc)</td>
+<td>native</td>
+<td>native</td>
+<td>native</td>
+<td>diagrams</td>
+</tr>
+<tr class="even">
+<td>.mtex</td>
+<td>latex</td>
+<td>dvisgm</td>
+<td>dvipng</td>
+<td>dvipdfm</td>
+<td>math, diagrams, games</td>
+</tr>
+<tr class="odd">
+<td>.pic</td>
+<td>pic2graph</td>
+<td>no</td>
+<td>convert</td>
+<td>no</td>
+<td>diagrams</td>
+</tr>
+<tr class="even">
+<td>.pik</td>
+<td>fossil</td>
+<td>native</td>
+<td>cairosvg</td>
+<td>cairosvg</td>
+<td>diagrams</td>
+</tr>
+<tr class="odd">
+<td>.pipe</td>
+<td>R / python / octave</td>
+<td>native</td>
+<td>native</td>
+<td>native</td>
+<td>Statistics, Programming</td>
+</tr>
+<tr class="even">
+<td>.puml</td>
+<td>plantuml</td>
+<td>native</td>
+<td>native</td>
+<td>native</td>
+<td>diagrams</td>
+</tr>
+<tr class="odd">
+<td>.rplot</td>
+<td>R</td>
+<td>native</td>
+<td>native</td>
+<td>native</td>
+<td>statistics, graphics</td>
+</tr>
+<tr class="even">
+<td>.tcrd</td>
+<td>tclsh</td>
+<td>no</td>
+<td>no</td>
+<td>no</td>
+<td>music, songs with chords</td>
+</tr>
+<tr class="odd">
+<td>.tdot</td>
+<td>tclsh/dot</td>
+<td>native</td>
+<td>native</td>
+<td>native</td>
+<td>diagrams</td>
+</tr>
+<tr class="even">
+<td>.tsvg</td>
+<td>tclsh</td>
+<td>native</td>
+<td>cairosvg</td>
+<td>cairosvg</td>
+<td>graphics</td>
+</tr>
 </tbody>
 </table>
-
-
-<p></center></p>
-
-<p>The Markdown document within this file could be extracted and converted as follows:</p>
-
-<pre class='code'><code> pantcl pantcl.tcl pantcl.html \
+</center>
+<p>The Markdown document within this file could be extracted and
+converted as follows:</p>
+<pre><code> pantcl pantcl.tcl pantcl.html \
    --css mini.css -s</code></pre>
-
-<h2>Example Tcl Filter</h2>
-
-<h4>Tcl-filter</h4>
-
-<pre class='code'><code>    ```{.tcl}
+<h2 id="example-tcl-filter">Example Tcl Filter</h2>
+<h4 id="tcl-filter">Tcl-filter</h4>
+<pre><code>    ```{.tcl}
     set x 1
     puts $x
     ```</code></pre>
-
 <p>And here the output:</p>
-
-<pre class='code'><code class='tclinn'>set x 1
+<pre class="tclinn"><code>set x 1
 puts $x</code></pre>
-
-<pre class='code'><code class='tclout'>1</code></pre>
-
+<pre class="tclout"><code>1</code></pre>
 <p>Does indented code blocks works as well?</p>
-
 <blockquote>
-<pre class='code'><code class='tclinn'>  set x 2
-  puts $x</code></pre>
-
-<pre class='code'><code class='tclout'>2</code></pre>
-
+<pre class="tclinn"><code>set x 2
+puts $x</code></pre>
+</blockquote>
+<blockquote>
+<pre class="tclout"><code>2</code></pre>
+</blockquote>
+<blockquote>
 <p>Yes, since version 0.7.0!!</p>
 </blockquote>
-
 <p>There is as well the possibility to inline Tcl code like here:</p>
-
-<pre class='code'><code>This document was processed using Tcl `tcl set tcl_patchLevel`!</code></pre>
-
+<pre><code>This document was processed using Tcl `tcl set tcl_patchLevel`!</code></pre>
 <p>will produce:</p>
-
 <p>This document was processed using Tcl 8.6.13!</p>
-
 <p>This works as well in nested structures like lists or quotes.</p>
-
 <blockquote>
 <p>This document was processed using Tcl 8.6.13!</p>
-
-<ul>
-<li>This document was processed using Tcl 8.6.13!</li></ul>
-
-
 </blockquote>
-
-<h2>Filter - Plugins</h2>
-
-<p>The pantcl.tcl application allows to create custom filters for other 
-command line application quite easily. The Tcl files has to be named <code>filter-NAME.tcl</code>
-where NAME hast to match the code chunk marker. Below an example:</p>
-
-<pre class='code'><code>   ` ``{.dot label=dotgraph}
+<blockquote>
+<ul>
+<li>This document was processed using Tcl 8.6.13!</li>
+</ul>
+</blockquote>
+<h2 id="filter---plugins">Filter - Plugins</h2>
+<p>The pantcl.tcl application allows to create custom filters for other
+command line application quite easily. The Tcl files has to be named
+<code>filter-NAME.tcl</code> where NAME hast to match the code chunk
+marker. Below an example:</p>
+<pre><code>   ` ``{.dot label=dotgraph}
    digraph G {
      main -&gt; parse -&gt; execute;
      main -&gt; init;
@@ -346,15 +387,15 @@ where NAME hast to match the code chunk marker. Below an example:</p>
      execute -&gt; compare;
    }
 
-   &lt;img src=&quot;dotgraph.svg&quot;&gt;&lt;/img&gt;
+   ![](dotgraph.svg)
    ` ``</code></pre>
-
-<p>The main script <code>pantcl.tcl</code> evaluates if in the same folder as the script is,
-if there any other files named <code>filter/filter-NAME.tcl</code> and sources them. In case of the dot
-filter the file is named <code>filter-dot.tcl</code> and its filter function <code>filter-dot</code> is 
-executed. Below is the simplified code: of this file <code>filter-dot.tcl</code>:</p>
-
-<pre class='code'><code class='tclinn'># a simple pandoc filter using Tcl
+<p>The main script <code>pantcl.tcl</code> evaluates if in the same
+folder as the script is, if there any other files named
+<code>filter/filter-NAME.tcl</code> and sources them. In case of the dot
+filter the file is named <code>filter-dot.tcl</code> and its filter
+function <code>filter-dot</code> is executed. Below is the simplified
+code: of this file <code>filter-dot.tcl</code>:</p>
+<pre class="tclinn"><code># a simple pandoc filter using Tcl
 # the script pantcl.tcl 
 # must be in the same filter directoy of the pantcl.tcl file
 proc filter-dot {cont dict} {
@@ -365,8 +406,8 @@ proc filter-dot {cont dict} {
              include true imagepath images]
     # fuse code chunk options with defaults
     set dict [dict merge $def $dict]
-    set ret &quot;&quot;
-    if {[dict get $dict label] eq &quot;null&quot;} {
+    set ret ""
+    if {[dict get $dict label] eq "null"} {
         set fname dot-$n
     } else {
         set fname [dict get $dict label]
@@ -377,13 +418,13 @@ proc filter-dot {cont dict} {
     close $out
     # TODO: error catching
     set res [exec [dict get $dict app] -Tsvg $fname.dot -o $fname.svg]
-    if {[dict get $dict results] eq &quot;show&quot;} {
+    if {[dict get $dict results] eq "show"} {
         # should be usually empty
         set res $res
     } else {
-        set res &quot;&quot;
+        set res ""
     }
-    set img &quot;&quot;
+    set img ""
     if {[dict get $dict fig]} {
         if {[dict get $dict include]} {
             set img $fname.svg
@@ -391,17 +432,14 @@ proc filter-dot {cont dict} {
     }
     return [list $res $img]
 }</code></pre>
-
-<p>Using the label and the option <code>include=false</code> we could create an image link manually using Markdown syntax. The 
-The image filename should be then images/label.svg for instance.</p>
-
-<h2>Dot Example</h2>
-
+<p>Using the label and the option <code>include=false</code> we could
+create an image link manually using Markdown syntax. The The image
+filename should be then images/label.svg for instance.</p>
+<h2 id="dot-example">Dot Example</h2>
 <p>Here a longer dot-example where the code is include in</p>
-
-<pre class='code'><code class='dotinn'>digraph G {
+<pre class="dotinn"><code>digraph G {
   margin=0.1;
-  node[fontname=&quot;Linux Libertine&quot;;fontsize=18];
+  node[fontname="Linux Libertine";fontsize=18];
   node[shape=box,style=filled;fillcolor=skyblue,width=1.2,height=0.9];    
   { rank=same; Rst[group=g0,fillcolor=salmon] ; 
     Docx [group=g1,fillcolor=salmon]
@@ -423,7 +461,7 @@ The image filename should be then images/label.svg for instance.</p>
   pandoc2 -&gt; Pdf ;
   Docx -&gt; Html -&gt; Pdf -&gt; tsvg[style=invis];
   pandoc2[label=pandoc];
-  filter[label=&quot;pantcl\nfilter&quot;];
+  filter[label="pantcl\nfilter"];
   filter-&gt;filters;
   filters -&gt; dot ;
   filters -&gt; eqn ;
@@ -433,224 +471,223 @@ The image filename should be then images/label.svg for instance.</p>
   filters -&gt; rplot;
   filters -&gt; tsvg; 
 }</code></pre>
-
-<img src="data:image/svg+xml;base64, PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+CjwhRE9DVFlQRSBzdmcgUFVCTElDICItLy9XM0MvL0RURCBTVkcgMS4xLy9FTiIKICJodHRwOi8vd3d3LnczLm9yZy9HcmFwaGljcy9TVkcvMS4xL0RURC9zdmcxMS5kdGQiPgo8IS0tIEdlbmVyYXRlZCBieSBncmFwaHZpeiB2ZXJzaW9uIDkuMC4wICgyMDIzMDkxMS4xODI3KQogLS0+CjwhLS0gVGl0bGU6IEcgUGFnZXM6IDEgLS0+Cjxzdmcgd2lkdGg9IjczM3B0IiBoZWlnaHQ9IjM5MHB0Igogdmlld0JveD0iNy4yMCA3LjIwIDcyNS42MCAzODIuNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiPgo8ZyBpZD0iZ3JhcGgwIiBjbGFzcz0iZ3JhcGgiIHRyYW5zZm9ybT0ic2NhbGUoMSAxKSByb3RhdGUoMCkgdHJhbnNsYXRlKDExLjIgMzc4LjQpIj4KPHRpdGxlPkc8L3RpdGxlPgo8cG9seWdvbiBmaWxsPSJ3aGl0ZSIgc3Ryb2tlPSJub25lIiBwb2ludHM9Ii00LDQgLTQsLTM3MS4yIDcxNC40LC0zNzEuMiA3MTQuNCw0IC00LDQiLz4KPCEtLSBSc3QgLS0+CjxnIGlkPSJub2RlMSIgY2xhc3M9Im5vZGUiPgo8dGl0bGU+UnN0PC90aXRsZT4KPHBvbHlnb24gZmlsbD0ic2FsbW9uIiBzdHJva2U9ImJsYWNrIiBwb2ludHM9Ijg2LjQsLTM2Ny4yIDAsLTM2Ny4yIDAsLTMwMi40IDg2LjQsLTMwMi40IDg2LjQsLTM2Ny4yIi8+Cjx0ZXh0IHRleHQtYW5jaG9yPSJtaWRkbGUiIHg9IjQzLjIiIHk9Ii0zMzAuNDUiIGZvbnQtZmFtaWx5PSJMaW51eCBMaWJlcnRpbmUiIGZvbnQtc2l6ZT0iMTguMDAiPlJzdDwvdGV4dD4KPC9nPgo8IS0tIE1kIC0tPgo8ZyBpZD0ibm9kZTMiIGNsYXNzPSJub2RlIj4KPHRpdGxlPk1kPC90aXRsZT4KPHBvbHlnb24gZmlsbD0ic2FsbW9uIiBzdHJva2U9ImJsYWNrIiBwb2ludHM9Ijg2LjQsLTI2Ni40IDAsLTI2Ni40IDAsLTIwMS42IDg2LjQsLTIwMS42IDg2LjQsLTI2Ni40Ii8+Cjx0ZXh0IHRleHQtYW5jaG9yPSJtaWRkbGUiIHg9IjQzLjIiIHk9Ii0yMjkuNjUiIGZvbnQtZmFtaWx5PSJMaW51eCBMaWJlcnRpbmUiIGZvbnQtc2l6ZT0iMTguMDAiPk1kPC90ZXh0Pgo8L2c+CjwhLS0gUnN0JiM0NTsmZ3Q7TWQgLS0+CjwhLS0gcGFuZG9jIC0tPgo8ZyBpZD0ibm9kZTQiIGNsYXNzPSJub2RlIj4KPHRpdGxlPnBhbmRvYzwvdGl0bGU+Cjxwb2x5Z29uIGZpbGw9InNreWJsdWUiIHN0cm9rZT0iYmxhY2siIHBvaW50cz0iMTkwLjQsLTI2Ni40IDEwNCwtMjY2LjQgMTA0LC0yMDEuNiAxOTAuNCwtMjAxLjYgMTkwLjQsLTI2Ni40Ii8+Cjx0ZXh0IHRleHQtYW5jaG9yPSJtaWRkbGUiIHg9IjE0Ny4yIiB5PSItMjI5LjY1IiBmb250LWZhbWlseT0iTGludXggTGliZXJ0aW5lIiBmb250LXNpemU9IjE4LjAwIj5wYW5kb2M8L3RleHQ+CjwvZz4KPCEtLSBSc3QmIzQ1OyZndDtwYW5kb2MgLS0+CjxnIGlkPSJlZGdlMSIgY2xhc3M9ImVkZ2UiPgo8dGl0bGU+UnN0JiM0NTsmZ3Q7cGFuZG9jPC90aXRsZT4KPHBhdGggZmlsbD0ibm9uZSIgc3Ryb2tlPSJibGFjayIgZD0iTTc2LjY4LC0zMDJDODUuODYsLTI5My4yNyA5NS45NCwtMjgzLjcgMTA1LjUyLC0yNzQuNiIvPgo8cG9seWdvbiBmaWxsPSJibGFjayIgc3Ryb2tlPSJibGFjayIgcG9pbnRzPSIxMDcuODUsLTI3Ny4yMSAxMTIuNjksLTI2Ny43OSAxMDMuMDMsLTI3Mi4xNCAxMDcuODUsLTI3Ny4yMSIvPgo8L2c+CjwhLS0gRG9jeCAtLT4KPGcgaWQ9Im5vZGUyIiBjbGFzcz0ibm9kZSI+Cjx0aXRsZT5Eb2N4PC90aXRsZT4KPHBvbHlnb24gZmlsbD0ic2FsbW9uIiBzdHJva2U9ImJsYWNrIiBwb2ludHM9IjcxMC40LC0zNjcuMiA2MjQsLTM2Ny4yIDYyNCwtMzAyLjQgNzEwLjQsLTMwMi40IDcxMC40LC0zNjcuMiIvPgo8dGV4dCB0ZXh0LWFuY2hvcj0ibWlkZGxlIiB4PSI2NjcuMiIgeT0iLTMzMC40NSIgZm9udC1mYW1pbHk9IkxpbnV4IExpYmVydGluZSIgZm9udC1zaXplPSIxOC4wMCI+RG9jeDwvdGV4dD4KPC9nPgo8IS0tIEh0bWwgLS0+CjxnIGlkPSJub2RlOSIgY2xhc3M9Im5vZGUiPgo8dGl0bGU+SHRtbDwvdGl0bGU+Cjxwb2x5Z29uIGZpbGw9InNhbG1vbiIgc3Ryb2tlPSJibGFjayIgcG9pbnRzPSI3MTAuNCwtMjY2LjQgNjI0LC0yNjYuNCA2MjQsLTIwMS42IDcxMC40LC0yMDEuNiA3MTAuNCwtMjY2LjQiLz4KPHRleHQgdGV4dC1hbmNob3I9Im1pZGRsZSIgeD0iNjY3LjIiIHk9Ii0yMjkuNjUiIGZvbnQtZmFtaWx5PSJMaW51eCBMaWJlcnRpbmUiIGZvbnQtc2l6ZT0iMTguMDAiPkh0bWw8L3RleHQ+CjwvZz4KPCEtLSBEb2N4JiM0NTsmZ3Q7SHRtbCAtLT4KPCEtLSBNZCYjNDU7Jmd0O3BhbmRvYyAtLT4KPGcgaWQ9ImVkZ2U3IiBjbGFzcz0iZWRnZSI+Cjx0aXRsZT5NZCYjNDU7Jmd0O3BhbmRvYzwvdGl0bGU+CjxwYXRoIGZpbGw9Im5vbmUiIHN0cm9rZT0iYmxhY2siIGQ9Ik04Ni42NywtMjM0Qzg4LjUzLC0yMzQgOTAuMzksLTIzNCA5Mi4yNSwtMjM0Ii8+Cjxwb2x5Z29uIGZpbGw9ImJsYWNrIiBzdHJva2U9ImJsYWNrIiBwb2ludHM9IjkyLjE4LC0yMzcuNSAxMDIuMTgsLTIzNCA5Mi4xOCwtMjMwLjUgOTIuMTgsLTIzNy41Ii8+CjwvZz4KPCEtLSBUZXggLS0+CjxnIGlkPSJub2RlMTAiIGNsYXNzPSJub2RlIj4KPHRpdGxlPlRleDwvdGl0bGU+Cjxwb2x5Z29uIGZpbGw9InNhbG1vbiIgc3Ryb2tlPSJibGFjayIgcG9pbnRzPSI4Ni40LC0xNjUuNiAwLC0xNjUuNiAwLC0xMDAuOCA4Ni40LC0xMDAuOCA4Ni40LC0xNjUuNiIvPgo8dGV4dCB0ZXh0LWFuY2hvcj0ibWlkZGxlIiB4PSI0My4yIiB5PSItMTI4Ljg1IiBmb250LWZhbWlseT0iTGludXggTGliZXJ0aW5lIiBmb250LXNpemU9IjE4LjAwIj5UZXg8L3RleHQ+CjwvZz4KPCEtLSBNZCYjNDU7Jmd0O1RleCAtLT4KPCEtLSBBU1QxIC0tPgo8ZyBpZD0ibm9kZTUiIGNsYXNzPSJub2RlIj4KPHRpdGxlPkFTVDE8L3RpdGxlPgo8cG9seWdvbiBmaWxsPSJza3libHVlIiBzdHJva2U9ImJsYWNrIiBwb2ludHM9IjI5NC40LC0yNjYuNCAyMDgsLTI2Ni40IDIwOCwtMjAxLjYgMjk0LjQsLTIwMS42IDI5NC40LC0yNjYuNCIvPgo8dGV4dCB0ZXh0LWFuY2hvcj0ibWlkZGxlIiB4PSIyNTEuMiIgeT0iLTIyOS42NSIgZm9udC1mYW1pbHk9IkxpbnV4IExpYmVydGluZSIgZm9udC1zaXplPSIxOC4wMCI+QVNUMTwvdGV4dD4KPC9nPgo8IS0tIHBhbmRvYyYjNDU7Jmd0O0FTVDEgLS0+CjxnIGlkPSJlZGdlMiIgY2xhc3M9ImVkZ2UiPgo8dGl0bGU+cGFuZG9jJiM0NTsmZ3Q7QVNUMTwvdGl0bGU+CjxwYXRoIGZpbGw9Im5vbmUiIHN0cm9rZT0iYmxhY2siIGQ9Ik0xOTAuNjcsLTIzNEMxOTIuNTMsLTIzNCAxOTQuMzksLTIzNCAxOTYuMjUsLTIzNCIvPgo8cG9seWdvbiBmaWxsPSJibGFjayIgc3Ryb2tlPSJibGFjayIgcG9pbnRzPSIxOTYuMTgsLTIzNy41IDIwNi4xOCwtMjM0IDE5Ni4xOCwtMjMwLjUgMTk2LjE4LC0yMzcuNSIvPgo8L2c+CjwhLS0gZmlsdGVyIC0tPgo8ZyBpZD0ibm9kZTYiIGNsYXNzPSJub2RlIj4KPHRpdGxlPmZpbHRlcjwvdGl0bGU+Cjxwb2x5Z29uIGZpbGw9ImNvcm5zaWxrIiBzdHJva2U9ImJsYWNrIiBwb2ludHM9IjM5OC40LC0yNjYuNCAzMTIsLTI2Ni40IDMxMiwtMjAxLjYgMzk4LjQsLTIwMS42IDM5OC40LC0yNjYuNCIvPgo8dGV4dCB0ZXh0LWFuY2hvcj0ibWlkZGxlIiB4PSIzNTUuMiIgeT0iLTI0Mi40IiBmb250LWZhbWlseT0iTGludXggTGliZXJ0aW5lIiBmb250LXNpemU9IjE4LjAwIj5wYW50Y2w8L3RleHQ+Cjx0ZXh0IHRleHQtYW5jaG9yPSJtaWRkbGUiIHg9IjM1NS4yIiB5PSItMjE2LjkiIGZvbnQtZmFtaWx5PSJMaW51eCBMaWJlcnRpbmUiIGZvbnQtc2l6ZT0iMTguMDAiPmZpbHRlcjwvdGV4dD4KPC9nPgo8IS0tIEFTVDEmIzQ1OyZndDtmaWx0ZXIgLS0+CjxnIGlkPSJlZGdlMyIgY2xhc3M9ImVkZ2UiPgo8dGl0bGU+QVNUMSYjNDU7Jmd0O2ZpbHRlcjwvdGl0bGU+CjxwYXRoIGZpbGw9Im5vbmUiIHN0cm9rZT0iYmxhY2siIGQ9Ik0yOTQuNjcsLTIzNEMyOTYuNTMsLTIzNCAyOTguMzksLTIzNCAzMDAuMjUsLTIzNCIvPgo8cG9seWdvbiBmaWxsPSJibGFjayIgc3Ryb2tlPSJibGFjayIgcG9pbnRzPSIzMDAuMTgsLTIzNy41IDMxMC4xOCwtMjM0IDMwMC4xOCwtMjMwLjUgMzAwLjE4LC0yMzcuNSIvPgo8L2c+CjwhLS0gQVNUMiAtLT4KPGcgaWQ9Im5vZGU3IiBjbGFzcz0ibm9kZSI+Cjx0aXRsZT5BU1QyPC90aXRsZT4KPHBvbHlnb24gZmlsbD0ic2t5Ymx1ZSIgc3Ryb2tlPSJibGFjayIgcG9pbnRzPSI1MDIuNCwtMjY2LjQgNDE2LC0yNjYuNCA0MTYsLTIwMS42IDUwMi40LC0yMDEuNiA1MDIuNCwtMjY2LjQiLz4KPHRleHQgdGV4dC1hbmNob3I9Im1pZGRsZSIgeD0iNDU5LjIiIHk9Ii0yMjkuNjUiIGZvbnQtZmFtaWx5PSJMaW51eCBMaWJlcnRpbmUiIGZvbnQtc2l6ZT0iMTguMDAiPkFTVDI8L3RleHQ+CjwvZz4KPCEtLSBmaWx0ZXImIzQ1OyZndDtBU1QyIC0tPgo8ZyBpZD0iZWRnZTQiIGNsYXNzPSJlZGdlIj4KPHRpdGxlPmZpbHRlciYjNDU7Jmd0O0FTVDI8L3RpdGxlPgo8cGF0aCBmaWxsPSJub25lIiBzdHJva2U9ImJsYWNrIiBkPSJNMzk4LjY3LC0yMzRDNDAwLjUzLC0yMzQgNDAyLjM5LC0yMzQgNDA0LjI1LC0yMzQiLz4KPHBvbHlnb24gZmlsbD0iYmxhY2siIHN0cm9rZT0iYmxhY2siIHBvaW50cz0iNDA0LjE4LC0yMzcuNSA0MTQuMTgsLTIzNCA0MDQuMTgsLTIzMC41IDQwNC4xOCwtMjM3LjUiLz4KPC9nPgo8IS0tIGZpbHRlcnMgLS0+CjxnIGlkPSJub2RlMTIiIGNsYXNzPSJub2RlIj4KPHRpdGxlPmZpbHRlcnM8L3RpdGxlPgo8cG9seWdvbiBmaWxsPSJjb3Juc2lsayIgc3Ryb2tlPSJibGFjayIgcG9pbnRzPSIzOTguNCwtMTY1LjYgMzEyLC0xNjUuNiAzMTIsLTEwMC44IDM5OC40LC0xMDAuOCAzOTguNCwtMTY1LjYiLz4KPHRleHQgdGV4dC1hbmNob3I9Im1pZGRsZSIgeD0iMzU1LjIiIHk9Ii0xMjguODUiIGZvbnQtZmFtaWx5PSJMaW51eCBMaWJlcnRpbmUiIGZvbnQtc2l6ZT0iMTguMDAiPmZpbHRlcnM8L3RleHQ+CjwvZz4KPCEtLSBmaWx0ZXImIzQ1OyZndDtmaWx0ZXJzIC0tPgo8ZyBpZD0iZWRnZTE3IiBjbGFzcz0iZWRnZSI+Cjx0aXRsZT5maWx0ZXImIzQ1OyZndDtmaWx0ZXJzPC90aXRsZT4KPHBhdGggZmlsbD0ibm9uZSIgc3Ryb2tlPSJibGFjayIgZD0iTTM1NS4yLC0yMDEuMkMzNTUuMiwtMTkzLjYyIDM1NS4yLC0xODUuNCAzNTUuMiwtMTc3LjQiLz4KPHBvbHlnb24gZmlsbD0iYmxhY2siIHN0cm9rZT0iYmxhY2siIHBvaW50cz0iMzU4LjcsLTE3Ny40NiAzNTUuMiwtMTY3LjQ2IDM1MS43LC0xNzcuNDYgMzU4LjcsLTE3Ny40NiIvPgo8L2c+CjwhLS0gcGFuZG9jMiAtLT4KPGcgaWQ9Im5vZGU4IiBjbGFzcz0ibm9kZSI+Cjx0aXRsZT5wYW5kb2MyPC90aXRsZT4KPHBvbHlnb24gZmlsbD0ic2t5Ymx1ZSIgc3Ryb2tlPSJibGFjayIgcG9pbnRzPSI2MDYuNCwtMjY2LjQgNTIwLC0yNjYuNCA1MjAsLTIwMS42IDYwNi40LC0yMDEuNiA2MDYuNCwtMjY2LjQiLz4KPHRleHQgdGV4dC1hbmNob3I9Im1pZGRsZSIgeD0iNTYzLjIiIHk9Ii0yMjkuNjUiIGZvbnQtZmFtaWx5PSJMaW51eCBMaWJlcnRpbmUiIGZvbnQtc2l6ZT0iMTguMDAiPnBhbmRvYzwvdGV4dD4KPC9nPgo8IS0tIEFTVDImIzQ1OyZndDtwYW5kb2MyIC0tPgo8ZyBpZD0iZWRnZTUiIGNsYXNzPSJlZGdlIj4KPHRpdGxlPkFTVDImIzQ1OyZndDtwYW5kb2MyPC90aXRsZT4KPHBhdGggZmlsbD0ibm9uZSIgc3Ryb2tlPSJibGFjayIgZD0iTTUwMi42NywtMjM0QzUwNC41MywtMjM0IDUwNi4zOSwtMjM0IDUwOC4yNSwtMjM0Ii8+Cjxwb2x5Z29uIGZpbGw9ImJsYWNrIiBzdHJva2U9ImJsYWNrIiBwb2ludHM9IjUwOC4xOCwtMjM3LjUgNTE4LjE4LC0yMzQgNTA4LjE4LC0yMzAuNSA1MDguMTgsLTIzNy41Ii8+CjwvZz4KPCEtLSBwYW5kb2MyJiM0NTsmZ3Q7RG9jeCAtLT4KPGcgaWQ9ImVkZ2UxMiIgY2xhc3M9ImVkZ2UiPgo8dGl0bGU+cGFuZG9jMiYjNDU7Jmd0O0RvY3g8L3RpdGxlPgo8cGF0aCBmaWxsPSJub25lIiBzdHJva2U9ImJsYWNrIiBkPSJNNTk2LjYyLC0yNjYuNzVDNjA1LjgsLTI3NS40NyA2MTUuODcsLTI4NS4wNCA2MjUuNDYsLTI5NC4xNCIvPgo8cG9seWdvbiBmaWxsPSJibGFjayIgc3Ryb2tlPSJibGFjayIgcG9pbnRzPSI2MjIuOTYsLTI5Ni42IDYzMi42MiwtMzAwLjk1IDYyNy43OCwtMjkxLjUzIDYyMi45NiwtMjk2LjYiLz4KPC9nPgo8IS0tIHBhbmRvYzImIzQ1OyZndDtIdG1sIC0tPgo8ZyBpZD0iZWRnZTYiIGNsYXNzPSJlZGdlIj4KPHRpdGxlPnBhbmRvYzImIzQ1OyZndDtIdG1sPC90aXRsZT4KPHBhdGggZmlsbD0ibm9uZSIgc3Ryb2tlPSJibGFjayIgZD0iTTYwNi42NywtMjM0QzYwOC41MywtMjM0IDYxMC4zOSwtMjM0IDYxMi4yNSwtMjM0Ii8+Cjxwb2x5Z29uIGZpbGw9ImJsYWNrIiBzdHJva2U9ImJsYWNrIiBwb2ludHM9IjYxMi4xOCwtMjM3LjUgNjIyLjE4LC0yMzQgNjEyLjE4LC0yMzAuNSA2MTIuMTgsLTIzNy41Ii8+CjwvZz4KPCEtLSBQZGYgLS0+CjxnIGlkPSJub2RlMTEiIGNsYXNzPSJub2RlIj4KPHRpdGxlPlBkZjwvdGl0bGU+Cjxwb2x5Z29uIGZpbGw9InNhbG1vbiIgc3Ryb2tlPSJibGFjayIgcG9pbnRzPSI3MTAuNCwtMTY1LjYgNjI0LC0xNjUuNiA2MjQsLTEwMC44IDcxMC40LC0xMDAuOCA3MTAuNCwtMTY1LjYiLz4KPHRleHQgdGV4dC1hbmNob3I9Im1pZGRsZSIgeD0iNjY3LjIiIHk9Ii0xMjguODUiIGZvbnQtZmFtaWx5PSJMaW51eCBMaWJlcnRpbmUiIGZvbnQtc2l6ZT0iMTguMDAiPlBkZjwvdGV4dD4KPC9nPgo8IS0tIHBhbmRvYzImIzQ1OyZndDtQZGYgLS0+CjxnIGlkPSJlZGdlMTMiIGNsYXNzPSJlZGdlIj4KPHRpdGxlPnBhbmRvYzImIzQ1OyZndDtQZGY8L3RpdGxlPgo8cGF0aCBmaWxsPSJub25lIiBzdHJva2U9ImJsYWNrIiBkPSJNNTk2LjY4LC0yMDEuMkM2MDUuODYsLTE5Mi40NyA2MTUuOTQsLTE4Mi45IDYyNS41MiwtMTczLjgiLz4KPHBvbHlnb24gZmlsbD0iYmxhY2siIHN0cm9rZT0iYmxhY2siIHBvaW50cz0iNjI3Ljg1LC0xNzYuNDEgNjMyLjY5LC0xNjYuOTkgNjIzLjAzLC0xNzEuMzQgNjI3Ljg1LC0xNzYuNDEiLz4KPC9nPgo8IS0tIEh0bWwmIzQ1OyZndDtQZGYgLS0+CjwhLS0gVGV4JiM0NTsmZ3Q7cGFuZG9jIC0tPgo8ZyBpZD0iZWRnZTgiIGNsYXNzPSJlZGdlIj4KPHRpdGxlPlRleCYjNDU7Jmd0O3BhbmRvYzwvdGl0bGU+CjxwYXRoIGZpbGw9Im5vbmUiIHN0cm9rZT0iYmxhY2siIGQ9Ik03Ni42MiwtMTY1Ljk1Qzg1LjgsLTE3NC42NyA5NS44NywtMTg0LjI0IDEwNS40NiwtMTkzLjM0Ii8+Cjxwb2x5Z29uIGZpbGw9ImJsYWNrIiBzdHJva2U9ImJsYWNrIiBwb2ludHM9IjEwMi45NiwtMTk1LjggMTEyLjYyLC0yMDAuMTUgMTA3Ljc4LC0xOTAuNzMgMTAyLjk2LC0xOTUuOCIvPgo8L2c+CjwhLS0gZG90IC0tPgo8ZyBpZD0ibm9kZTEzIiBjbGFzcz0ibm9kZSI+Cjx0aXRsZT5kb3Q8L3RpdGxlPgo8cG9seWdvbiBmaWxsPSJjb3Juc2lsayIgc3Ryb2tlPSJibGFjayIgcG9pbnRzPSI4Ni40LC02NC44IDAsLTY0LjggMCwwIDg2LjQsMCA4Ni40LC02NC44Ii8+Cjx0ZXh0IHRleHQtYW5jaG9yPSJtaWRkbGUiIHg9IjQzLjIiIHk9Ii0yOC4wNSIgZm9udC1mYW1pbHk9IkxpbnV4IExpYmVydGluZSIgZm9udC1zaXplPSIxOC4wMCI+ZG90PC90ZXh0Pgo8L2c+CjwhLS0gVGV4JiM0NTsmZ3Q7ZG90IC0tPgo8IS0tIHRzdmcgLS0+CjxnIGlkPSJub2RlMTkiIGNsYXNzPSJub2RlIj4KPHRpdGxlPnRzdmc8L3RpdGxlPgo8cG9seWdvbiBmaWxsPSJjb3Juc2lsayIgc3Ryb2tlPSJibGFjayIgcG9pbnRzPSI3MTAuNCwtNjQuOCA2MjQsLTY0LjggNjI0LDAgNzEwLjQsMCA3MTAuNCwtNjQuOCIvPgo8dGV4dCB0ZXh0LWFuY2hvcj0ibWlkZGxlIiB4PSI2NjcuMiIgeT0iLTI4LjA1IiBmb250LWZhbWlseT0iTGludXggTGliZXJ0aW5lIiBmb250LXNpemU9IjE4LjAwIj50c3ZnPC90ZXh0Pgo8L2c+CjwhLS0gUGRmJiM0NTsmZ3Q7dHN2ZyAtLT4KPCEtLSBmaWx0ZXJzJiM0NTsmZ3Q7ZG90IC0tPgo8ZyBpZD0iZWRnZTE4IiBjbGFzcz0iZWRnZSI+Cjx0aXRsZT5maWx0ZXJzJiM0NTsmZ3Q7ZG90PC90aXRsZT4KPHBhdGggZmlsbD0ibm9uZSIgc3Ryb2tlPSJibGFjayIgZD0iTTMxMS42MiwtMTI0LjlDMjYxLjIxLC0xMTUuNiAxNzUuOTksLTk3LjIzIDk3LjI2LC02NS4yNyIvPgo8cG9seWdvbiBmaWxsPSJibGFjayIgc3Ryb2tlPSJibGFjayIgcG9pbnRzPSI5OC42OCwtNjIuMDcgODguMSwtNjEuNDYgOTUuOTksLTY4LjUzIDk4LjY4LC02Mi4wNyIvPgo8L2c+CjwhLS0gZXFuIC0tPgo8ZyBpZD0ibm9kZTE0IiBjbGFzcz0ibm9kZSI+Cjx0aXRsZT5lcW48L3RpdGxlPgo8cG9seWdvbiBmaWxsPSJjb3Juc2lsayIgc3Ryb2tlPSJibGFjayIgcG9pbnRzPSI2MDYuNCwtNjQuOCA1MjAsLTY0LjggNTIwLDAgNjA2LjQsMCA2MDYuNCwtNjQuOCIvPgo8dGV4dCB0ZXh0LWFuY2hvcj0ibWlkZGxlIiB4PSI1NjMuMiIgeT0iLTI4LjA1IiBmb250LWZhbWlseT0iTGludXggTGliZXJ0aW5lIiBmb250LXNpemU9IjE4LjAwIj5lcW48L3RleHQ+CjwvZz4KPCEtLSBmaWx0ZXJzJiM0NTsmZ3Q7ZXFuIC0tPgo8ZyBpZD0iZWRnZTE5IiBjbGFzcz0iZWRnZSI+Cjx0aXRsZT5maWx0ZXJzJiM0NTsmZ3Q7ZXFuPC90aXRsZT4KPHBhdGggZmlsbD0ibm9uZSIgc3Ryb2tlPSJibGFjayIgZD0iTTM5OC42MywtMTE1LjI4QzQyNy45OSwtMTAzLjQ0IDQ2Ny42NiwtODYuNjQgNTA5LjYyLC02NS40MSIvPgo8cG9seWdvbiBmaWxsPSJibGFjayIgc3Ryb2tlPSJibGFjayIgcG9pbnRzPSI1MTEuMSwtNjguNTkgNTE4LjQsLTYwLjkxIDUwNy45MSwtNjIuMzYgNTExLjEsLTY4LjU5Ii8+CjwvZz4KPCEtLSBtdGV4IC0tPgo8ZyBpZD0ibm9kZTE1IiBjbGFzcz0ibm9kZSI+Cjx0aXRsZT5tdGV4PC90aXRsZT4KPHBvbHlnb24gZmlsbD0iY29ybnNpbGsiIHN0cm9rZT0iYmxhY2siIHBvaW50cz0iMTkwLjQsLTY0LjggMTA0LC02NC44IDEwNCwwIDE5MC40LDAgMTkwLjQsLTY0LjgiLz4KPHRleHQgdGV4dC1hbmNob3I9Im1pZGRsZSIgeD0iMTQ3LjIiIHk9Ii0yOC4wNSIgZm9udC1mYW1pbHk9IkxpbnV4IExpYmVydGluZSIgZm9udC1zaXplPSIxOC4wMCI+bXRleDwvdGV4dD4KPC9nPgo8IS0tIGZpbHRlcnMmIzQ1OyZndDttdGV4IC0tPgo8ZyBpZD0iZWRnZTIwIiBjbGFzcz0iZWRnZSI+Cjx0aXRsZT5maWx0ZXJzJiM0NTsmZ3Q7bXRleDwvdGl0bGU+CjxwYXRoIGZpbGw9Im5vbmUiIHN0cm9rZT0iYmxhY2siIGQ9Ik0zMTEuNzcsLTExNS4yOEMyODIuNDEsLTEwMy40NCAyNDIuNzQsLTg2LjY0IDIwMC43OCwtNjUuNDEiLz4KPHBvbHlnb24gZmlsbD0iYmxhY2siIHN0cm9rZT0iYmxhY2siIHBvaW50cz0iMjAyLjQ5LC02Mi4zNiAxOTIsLTYwLjkxIDE5OS4zLC02OC41OSAyMDIuNDksLTYyLjM2Ii8+CjwvZz4KPCEtLSBwaWMgLS0+CjxnIGlkPSJub2RlMTYiIGNsYXNzPSJub2RlIj4KPHRpdGxlPnBpYzwvdGl0bGU+Cjxwb2x5Z29uIGZpbGw9ImNvcm5zaWxrIiBzdHJva2U9ImJsYWNrIiBwb2ludHM9IjI5NC40LC02NC44IDIwOCwtNjQuOCAyMDgsMCAyOTQuNCwwIDI5NC40LC02NC44Ii8+Cjx0ZXh0IHRleHQtYW5jaG9yPSJtaWRkbGUiIHg9IjI1MS4yIiB5PSItMjguMDUiIGZvbnQtZmFtaWx5PSJMaW51eCBMaWJlcnRpbmUiIGZvbnQtc2l6ZT0iMTguMDAiPnBpYzwvdGV4dD4KPC9nPgo8IS0tIGZpbHRlcnMmIzQ1OyZndDtwaWMgLS0+CjxnIGlkPSJlZGdlMjEiIGNsYXNzPSJlZGdlIj4KPHRpdGxlPmZpbHRlcnMmIzQ1OyZndDtwaWM8L3RpdGxlPgo8cGF0aCBmaWxsPSJub25lIiBzdHJva2U9ImJsYWNrIiBkPSJNMzIxLjcyLC0xMDAuNEMzMTIuNTQsLTkxLjY3IDMwMi40NiwtODIuMSAyOTIuODgsLTczIi8+Cjxwb2x5Z29uIGZpbGw9ImJsYWNrIiBzdHJva2U9ImJsYWNrIiBwb2ludHM9IjI5NS4zNywtNzAuNTQgMjg1LjcxLC02Ni4xOSAyOTAuNTUsLTc1LjYxIDI5NS4zNywtNzAuNTQiLz4KPC9nPgo8IS0tIHBpayAtLT4KPGcgaWQ9Im5vZGUxNyIgY2xhc3M9Im5vZGUiPgo8dGl0bGU+cGlrPC90aXRsZT4KPHBvbHlnb24gZmlsbD0iY29ybnNpbGsiIHN0cm9rZT0iYmxhY2siIHBvaW50cz0iMzk4LjQsLTY0LjggMzEyLC02NC44IDMxMiwwIDM5OC40LDAgMzk4LjQsLTY0LjgiLz4KPHRleHQgdGV4dC1hbmNob3I9Im1pZGRsZSIgeD0iMzU1LjIiIHk9Ii0yOC4wNSIgZm9udC1mYW1pbHk9IkxpbnV4IExpYmVydGluZSIgZm9udC1zaXplPSIxOC4wMCI+cGlrPC90ZXh0Pgo8L2c+CjwhLS0gZmlsdGVycyYjNDU7Jmd0O3BpayAtLT4KPGcgaWQ9ImVkZ2UyMiIgY2xhc3M9ImVkZ2UiPgo8dGl0bGU+ZmlsdGVycyYjNDU7Jmd0O3BpazwvdGl0bGU+CjxwYXRoIGZpbGw9Im5vbmUiIHN0cm9rZT0iYmxhY2siIGQ9Ik0zNTUuMiwtMTAwLjRDMzU1LjIsLTkyLjgyIDM1NS4yLC04NC42IDM1NS4yLC03Ni42Ii8+Cjxwb2x5Z29uIGZpbGw9ImJsYWNrIiBzdHJva2U9ImJsYWNrIiBwb2ludHM9IjM1OC43LC03Ni42NiAzNTUuMiwtNjYuNjYgMzUxLjcsLTc2LjY2IDM1OC43LC03Ni42NiIvPgo8L2c+CjwhLS0gcnBsb3QgLS0+CjxnIGlkPSJub2RlMTgiIGNsYXNzPSJub2RlIj4KPHRpdGxlPnJwbG90PC90aXRsZT4KPHBvbHlnb24gZmlsbD0iY29ybnNpbGsiIHN0cm9rZT0iYmxhY2siIHBvaW50cz0iNTAyLjQsLTY0LjggNDE2LC02NC44IDQxNiwwIDUwMi40LDAgNTAyLjQsLTY0LjgiLz4KPHRleHQgdGV4dC1hbmNob3I9Im1pZGRsZSIgeD0iNDU5LjIiIHk9Ii0yOC4wNSIgZm9udC1mYW1pbHk9IkxpbnV4IExpYmVydGluZSIgZm9udC1zaXplPSIxOC4wMCI+cnBsb3Q8L3RleHQ+CjwvZz4KPCEtLSBmaWx0ZXJzJiM0NTsmZ3Q7cnBsb3QgLS0+CjxnIGlkPSJlZGdlMjMiIGNsYXNzPSJlZGdlIj4KPHRpdGxlPmZpbHRlcnMmIzQ1OyZndDtycGxvdDwvdGl0bGU+CjxwYXRoIGZpbGw9Im5vbmUiIHN0cm9rZT0iYmxhY2siIGQ9Ik0zODguNjgsLTEwMC40QzM5Ny44NiwtOTEuNjcgNDA3Ljk0LC04Mi4xIDQxNy41MiwtNzMiLz4KPHBvbHlnb24gZmlsbD0iYmxhY2siIHN0cm9rZT0iYmxhY2siIHBvaW50cz0iNDE5Ljg1LC03NS42MSA0MjQuNjksLTY2LjE5IDQxNS4wMywtNzAuNTQgNDE5Ljg1LC03NS42MSIvPgo8L2c+CjwhLS0gZmlsdGVycyYjNDU7Jmd0O3RzdmcgLS0+CjxnIGlkPSJlZGdlMjQiIGNsYXNzPSJlZGdlIj4KPHRpdGxlPmZpbHRlcnMmIzQ1OyZndDt0c3ZnPC90aXRsZT4KPHBhdGggZmlsbD0ibm9uZSIgc3Ryb2tlPSJibGFjayIgZD0iTTM5OC43OCwtMTI0LjlDNDQ5LjE5LC0xMTUuNiA1MzQuNDEsLTk3LjIzIDYxMy4xNCwtNjUuMjciLz4KPHBvbHlnb24gZmlsbD0iYmxhY2siIHN0cm9rZT0iYmxhY2siIHBvaW50cz0iNjE0LjQxLC02OC41MyA2MjIuMywtNjEuNDYgNjExLjcyLC02Mi4wNyA2MTQuNDEsLTY4LjUzIi8+CjwvZz4KPC9nPgo8L3N2Zz4K"></img></p>
-
-<h2>Creating Markdown Code</h2>
-
-<p>Since version 0.5.0 it is as well possible to create Markup code within code blocks and to return it. 
-To achieve this you to set use code chunk option results like this: <code>results=&quot;asis&quot;</code> -
-which should be usually used together with <code>echo=false</code>. Here an example:</p>
-
-<pre class='code'><code>     ```{.tcl echo=false results=&quot;asis&quot;}
-     return &quot;**this is bold** and _this is italic_ text!&quot;
+<h2 id="creating-markdown-code">Creating Markdown Code</h2>
+<p>Since version 0.5.0 it is as well possible to create Markup code
+within code blocks and to return it. To achieve this you to set use code
+chunk option results like this: <code>results="asis"</code> - which
+should be usually used together with <code>echo=false</code>. Here an
+example:</p>
+<pre><code>     ```{.tcl echo=false results="asis"}
+     return "**this is bold** and _this is italic_ text!"
      ```    </code></pre>
-
 <p>which gives this output:</p>
-
 <p><strong>this is bold</strong> and <em>this is italic</em> text!</p>
-
-<p>This can be as well used to include other Markup files. Here an example:</p>
-
-<pre class='code'><code>    ```{.tcl results=&quot;asis&quot;}
+<p>This can be as well used to include other Markup files. Here an
+example:</p>
+<pre><code>    ```{.tcl results="asis"}
     include tests/inc.md
     ```</code></pre>
-
 <p>And here is the result:</p>
-
-<pre class='code'><code class='tclinn'>include tests/inc.md</code></pre><p>I am test.md and here some text is written in <strong>bold</strong>.</p>
-
-<p>Please note, that currently no filters are applied on the included files. 
-You should process them before using the pandoc filters and choose output format Markdown to include them later
-in your master document.</p>
-
-<p>To just show some file content as it is, remove the results=&quot;asis&quot;, 
-this can be as well useful to display some source code, let's here simply show here the content of <em>tests/inc.md</em> without interpreting it as Markdown in a source code block:</p>
-
-<pre class='code'><code>    ```{.tcl results=&quot;show&quot;}
+<pre class="tclinn"><code>include tests/inc.md</code></pre>
+<p>I am test.md and here some text is written in
+<strong>bold</strong>.</p>
+<p>Please note, that currently no filters are applied on the included
+files. You should process them before using the pandoc filters and
+choose output format Markdown to include them later in your master
+document.</p>
+<p>To just show some file content as it is, remove the results=“asis”,
+this can be as well useful to display some source code, let’s here
+simply show here the content of <em>tests/inc.md</em> without
+interpreting it as Markdown in a source code block:</p>
+<pre><code>    ```{.tcl results="show"}
     include tests/inc.md
     ```</code></pre>
-
 <p>And here is the result:</p>
-
-<pre class='code'><code class='tclinn'>include tests/inc.md</code></pre>
-
-<pre class='code'><code class='tclout'>I am test.md and here some text is written in **bold**.</code></pre>
-
-<h2>Documentation</h2>
-
-<p>To use this pipeline and to create pantcl.html out of the code documentation 
-in pantcl.tcl your command in the terminal is still just:</p>
-
-<pre class='code'><code>FILTEREVAL=1 pantcl pantcl.tcl pantcl.html --css mini.css --no-pandoc</code></pre>
-
+<pre class="tclinn"><code>include tests/inc.md</code></pre>
+<pre class="tclout"><code>I am test.md and here some text is written in **bold**.</code></pre>
+<h2 id="documentation">Documentation</h2>
+<p>To use this pipeline and to create pantcl.html out of the code
+documentation in pantcl.tcl your command in the terminal is still
+just:</p>
+<pre><code>FILTEREVAL=1 pantcl pantcl.tcl pantcl.html --css mini.css --no-pandoc</code></pre>
 <p>The result should be the file which you are looking currently.</p>
-
-<h2>ChangeLog</h2>
-
+<h2 id="changelog">ChangeLog</h2>
 <ul>
 <li>2021-08-22 Version 0.1</li>
 <li>2021-08-28 Version 0.2
 <ul>
 <li>adding custom filters structure (dot, tsvg examples)</li>
-<li>adding attributes label, width, height, results</li></ul>
-
-</li>
+<li>adding attributes label, width, height, results</li>
+</ul></li>
 <li>2021-08-31 Version 0.3
 <ul>
 <li>moved filters into filter folder</li>
 <li>plugin example mtex</li>
-<li>default image path <em>images</em></li></ul>
-
-</li>
+<li>default image path <em>images</em></li>
+</ul></li>
 <li>2021-11-03 Version 0.3.1
 <ul>
-<li>fix for parray and &quot;puts stdout&quot;</li></ul>
-
-</li>
+<li>fix for parray and “puts stdout”</li>
+</ul></li>
 <li>2021-11-15 Version 0.3.2
 <ul>
-<li>--help argument support</li>
-<li>--version argument support</li>
-<li>filters for Pikchr, PIC and EQN</li></ul>
-
-</li>
+<li>–help argument support</li>
+<li>–version argument support</li>
+<li>filters for Pikchr, PIC and EQN</li>
+</ul></li>
 <li>2021-11-30 Version 0.3.3
 <ul>
-<li>filter for R plots: <code>.rplot</code></li></ul>
-
-</li>
+<li>filter for R plots: <code>.rplot</code></li>
+</ul></li>
 <li>2021-12-04 Version 0.4.0
 <ul>
-<li>pandoc-tcl-filter can be as well directly used for conversion 
-  being then a frontend which calls pandoc internally with 
-  itself as a filter ...</li></ul>
-
-</li>
+<li>pandoc-tcl-filter can be as well directly used for conversion being
+then a frontend which calls pandoc internally with itself as a filter
+…</li>
+</ul></li>
 <li>2021-12-12 Version 0.5.0
 <ul>
-<li>support for Markdown code creation in the Tcl filter with results=&quot;asis&quot;</li>
+<li>support for Markdown code creation in the Tcl filter with
+results=“asis”</li>
 <li>adding list2mdtab proc to the Tcl filter</li>
-<li>adding include proc to the Tcl filter with results='asis' other Markdown files can be included.</li>
-<li>support for <code>pandoc-tcl-filter.tcl infile --tangle .tcl</code>  to extract code chunks to the terminal</li>
+<li>adding include proc to the Tcl filter with results=‘asis’ other
+Markdown files can be included.</li>
+<li>support for <code>pandoc-tcl-filter.tcl infile --tangle .tcl</code>
+to extract code chunks to the terminal</li>
 <li>support for Mermaid diagrams</li>
-<li>support for PlantUML diagrams </li>
+<li>support for PlantUML diagrams</li>
 <li>support for ABC music notation</li>
 <li>bug fix for Tcl filters for <code>eval=false</code></li>
-<li>documentation improvements for the filters and for the pandoc-tcl-filter</li></ul>
-
-</li>
+<li>documentation improvements for the filters and for the
+pandoc-tcl-filter</li>
+</ul></li>
 <li>2022-01-09 - version 0.6.0
 <ul>
-<li>adding filter-cmd.tcl for shell scripts for all type of programming languages and tools</li>
-<li>filter-mtex.tcl with more examples for different LaTeX packages like tikz, pgfplot, skak, sudoku, etc.</li>
+<li>adding filter-cmd.tcl for shell scripts for all type of programming
+languages and tools</li>
+<li>filter-mtex.tcl with more examples for different LaTeX packages like
+tikz, pgfplot, skak, sudoku, etc.</li>
 <li>adding filter-tdot.tcl for tdot Tcl package</li>
-<li>adding filter-tcrd.tcl for writing music chords above song lyrics</li></ul>
-
-</li>
+<li>adding filter-tcrd.tcl for writing music chords above song
+lyrics</li>
+</ul></li>
 <li>2022-02-05 - version 0.7.0
 <ul>
-<li>graphical user interface to the graphical filters (abc, dot, eqn, mmd, mtex, pic, pikchr, puml, rplot, tdot, tsvg) using the command line option <em>--gui</em></li>
-<li>can now as well work without pandoc standalone for conversion of Markdown with code chunks into 
-  Markdown with evaluated code chunks and HTML code using the
-  Markdown library of tcllib</li>
-<li>that way it deprecates the use of tmdoc::tmdoc and mkdoc::mkdoc as it contains now the same functionality</li>
-<li>support for inline code evaluations for Tcl, Python (pipe filter) and R (pipe filter) statements as well in nested paragraphs, lists and headers</li>
+<li>graphical user interface to the graphical filters (abc, dot, eqn,
+mmd, mtex, pic, pikchr, puml, rplot, tdot, tsvg) using the command line
+option <em>–gui</em></li>
+<li>can now as well work without pandoc standalone for conversion of
+Markdown with code chunks into Markdown with evaluated code chunks and
+HTML code using the Markdown library of tcllib</li>
+<li>that way it deprecates the use of tmdoc::tmdoc and mkdoc::mkdoc as
+it contains now the same functionality</li>
+<li>support for inline code evaluations for Tcl, Python (pipe filter)
+and R (pipe filter) statements as well in nested paragraphs, lists and
+headers</li>
 <li>support for indented code blocks with evaluation</li>
 <li>new - filter-pipe:
 <ul>
-<li>initial support for R code block features and inline evaluation and error catching</li>
-<li>initial support for Python with code block features and inline evaluation and error catching</li>
-<li>initial support for Octave with code block features and error checking</li></ul>
-
-</li>
-<li>more examples filter-mtex, filter-puml, filter-pikchr </li>
-<li>fix for filter-tcl making variables chunk and res namespace variables, avoiding variable collisions</li></ul>
-
-</li>
+<li>initial support for R code block features and inline evaluation and
+error catching</li>
+<li>initial support for Python with code block features and inline
+evaluation and error catching</li>
+<li>initial support for Octave with code block features and error
+checking</li>
+</ul></li>
+<li>more examples filter-mtex, filter-puml, filter-pikchr</li>
+<li>fix for filter-tcl making variables chunk and res namespace
+variables, avoiding variable collisions</li>
+</ul></li>
 <li>2023-01-10 - version 0.9.0
 <ul>
-<li>renamed to pantcl.tcl and creating it's own repository</li></ul>
-
-</li>
-<li>2023-03-05 - fixing a problem with the @symbol in text</li>
+<li>renamed to pantcl.tcl and creating it’s own repository</li>
+</ul></li>
+<li>2023-03-05 - fixing a problem with the <span class="citation" data-cites="symbol">@symbol</span> in text</li>
 <li>2023-03-11 - version 0.9.11
 <ul>
 <li>eval is now per default <code>false</code> for all filters</li>
-<li>support for Rst and LaTeX as input if pantcl is used as a filter</li></ul>
-
-</li>
+<li>support for Rst and LaTeX as input if pantcl is used as a
+filter</li>
+</ul></li>
 <li>2023-04-06 - version 0.9.12
 <ul>
 <li>adding filter-emf.tcl for MicroEmacs macro language</li>
 <li>adding external Tcl filter support via YAML declaration</li>
 <li>adding example user/filter-geasy.tcl as example for the latter</li>
-<li>standalone mode now with Unicode support </li>
+<li>standalone mode now with Unicode support</li>
 <li>fix for standalone mode</li>
-<li>standalone check and working now as well for pipes and inline single backticks, tested with R</li>
-<li>filter for Julia code, however Julia is slow at startup and even slower at plotting</li>
-<li>support for pandoc single percent title, author, date at the beginning of documents</li>
-<li>extending support for tangle for non Tcl code chunks</li></ul>
-
-</li>
+<li>standalone check and working now as well for pipes and inline single
+backticks, tested with R</li>
+<li>filter for Julia code, however Julia is slow at startup and even
+slower at plotting</li>
+<li>support for pandoc single percent title, author, date at the
+beginning of documents</li>
+<li>extending support for tangle for non Tcl code chunks</li>
+</ul></li>
 <li>2023-09-07 - version 0.9.13
 <ul>
-<li>support for --inline option to allow inlining of images and css files</li>
-<li>bug fix for image/img-tag</li></ul>
-
-</li>
+<li>support for –inline option to allow inlining of images and css
+files</li>
+<li>bug fix for image/img-tag</li>
+</ul></li>
 <li>2024-11-29 - version 0.10.0
 <ul>
-<li>updating to newer mkdoc with support for mathjax equations and highlightjs library</li>
+<li>updating to newer mkdoc with support for mathjax equations and
+highlightjs library</li>
 <li>support for refresh option</li>
 <li>bugfix for working as filter pandoc version 3</li>
 <li>support for single backticks for line-filter for R and Python</li>
 <li>documentation updates and fixes</li>
-<li>inline local images and css files for --no-pandoc option as well
-</li></ul>
-
-</li></ul>
-
-<h2>SEE ALSO</h2>
-
+<li>inline local images and css files for –no-pandoc option as well</li>
+</ul></li>
+<li>2024-12-19 - version 0.10.1
 <ul>
-<li><a href="Readme.html">Readme.html</a> - more information and small tutorial</li>
-<li><a href="examples/example-eqn.html">Examples</a> - more examples for the filters </li>
-<li><a href="https://wiki.tcl-lang.org/page/pandoc%2Dtcl%2Dfilter">Tclers Wiki page</a> - place for discussion</li>
-<li><a href="https://pandoc.org/filters.html">Pandoc filter documentation</a> - more background and information on how to implement filters in Haskell and Lua</li>
-<li><a href="https://github.com/pandoc/lua-filters">Lua filters on GitHub</a></li>
-<li><a href="https://github.com/LaurentRDC/pandoc-plot">Plotting filters on Github</a></li>
-<li><a href="https://github.com/topics/pandoc-filter">Github Pandoc filter list</a>
-</li></ul>
-
-<h2>AUTHOR</h2>
-
-<p>Detlef Groth, Caputh-Schwielowsee, Germany, detlef(<em>at</em>)dgroth(<em>dot</em>).de</p>
-
-<h2>LICENSE</h2>
-
-<p>Copyright (c) 2021-2024 Detlef Groth, Caputh-Schwielowsee, Germany</p>
-
-<p>Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the &quot;Software&quot;), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:</p>
-
-<p>The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.</p>
-
-<p>THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.</p>
-
-
-
+<li>timeout for fetching images from the net</li>
+</ul></li>
+<li>2024-12-24 - version 0.10.2
+<ul>
+<li>fixing ampersand issues in source code</li>
+</ul></li>
+</ul>
+<h2 id="see-also">SEE ALSO</h2>
+<ul>
+<li><a href="Readme.html">Readme.html</a> - more information and small
+tutorial</li>
+<li><a href="examples/example-eqn.html">Examples</a> - more examples for
+the filters</li>
+<li><a href="https://wiki.tcl-lang.org/page/pandoc%2Dtcl%2Dfilter">Tclers Wiki
+page</a> - place for discussion</li>
+<li><a href="https://pandoc.org/filters.html">Pandoc filter
+documentation</a> - more background and information on how to implement
+filters in Haskell and Lua</li>
+<li><a href="https://github.com/pandoc/lua-filters">Lua filters on
+GitHub</a></li>
+<li><a href="https://github.com/LaurentRDC/pandoc-plot">Plotting filters
+on Github</a></li>
+<li><a href="https://github.com/topics/pandoc-filter">Github Pandoc
+filter list</a></li>
+</ul>
+<h2 id="author">AUTHOR</h2>
+<p>Detlef Groth, Caputh-Schwielowsee, Germany,
+detlef(<em>at</em>)dgroth(<em>dot</em>).de</p>
+<h2 id="license">LICENSE</h2>
+<p>Copyright (c) 2021-2024 Detlef Groth, Caputh-Schwielowsee,
+Germany</p>
+<p>Permission is hereby granted, free of charge, to any person obtaining
+a copy of this software and associated documentation files (the
+“Software”), to deal in the Software without restriction, including
+without limitation the rights to use, copy, modify, merge, publish,
+distribute, sublicense, and/or sell copies of the Software, and to
+permit persons to whom the Software is furnished to do so, subject to
+the following conditions:</p>
+<p>The above copyright notice and this permission notice shall be
+included in all copies or substantial portions of the Software.</p>
+<p>THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.</p>
 </body>
-</html>
-
+</html><!--Generated by HTMLArk 2024-12-24 11:32:14.692750. Original URL pantcl.html-->

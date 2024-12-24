@@ -2,7 +2,7 @@
 ##############################################################################
 #  Author        : Dr. Detlef Groth
 #  Created       : Fri Nov 15 10:20:22 2019
-#  Last Modified : <241220.1412>
+#  Last Modified : <241224.1056>
 #
 #  Description	 : Command line utility and package to extract Markdown documentation 
 #                  from programming code if embedded as after comment sequence #' 
@@ -34,9 +34,9 @@
 #
 ##############################################################################
 #' ---
-#' title: mkdoc::mkdoc 0.10.0
+#' title: mkdoc::mkdoc 0.10.2
 #' author: Detlef Groth, Schwielowsee, Germany
-#' date: 2024-11-28
+#' date: 2024-12-24
 #' css: mkdoc.css
 #' ---
 #' 
@@ -71,7 +71,7 @@
 #' ```
 #' package require mkdoc::mkdoc
 #' mkdoc::mkdoc inputfile outputfile ?--css file1.css,file2.css? \
-#'    ?--header header.html? ?--footer footer.html? ?--base64 true?\
+#'    ?--header header.html? ?--footer footer.html? ?--base64 true? \
 #'    ?--javascript highlightjs|file1.js,file2.js? ?--mathjax true? ?--refresh 10?
 #' ```
 #'
@@ -148,8 +148,8 @@ package require Tcl 8.6
 package require yaml
 package require Markdown
 
-package provide mkdoc 0.10.1
-package provide mkdoc::mkdoc 0.10.1
+package provide mkdoc 0.10.2
+package provide mkdoc::mkdoc 0.10.2
 namespace eval mkdoc {
     variable deindent [list \n\t \n "\n    " \n]
     
@@ -392,7 +392,7 @@ proc mkdoc::mkdoc {filename outfile args} {
                 set html [mkdoc::inline-assets $filename $html]
             }
             ## issue in Markdown package?
-            set html [string map {&amp;lt; &lt;  &amp;gt; &gt; &amp;quot; &quot;} $html]  
+            set html [string map {&amp;amp; &amp; &amp;lt; &lt;  &amp;gt; &gt; &amp;quot; &quot;} $html]  
             ## fixing curly brace issues in backtick code chunk
             set html [regsub -all "code class='\{" $html {code class='}] 
             set html [regsub -all "code class='(\[^'\]+)\}'" $html {code class='\1'}]             
@@ -756,6 +756,10 @@ proc mkdoc::mkdoc {filename outfile args} {
 #'      - fixing issues with greater, lower and quote signs in code fragments
 #'      - removing inlining external javascript files into HTML output
 #'      - adding --base64 option to inline local images and css files
+#' - 2024-11-28 Release 0.10.1
+#'      - minor documentation fix
+#' - 2024-12-24 Release 0.10.2
+#'      - amp-amp fix for source code blocks
 #'
 #' ## <a name='todo'>TODO</a>
 #'
@@ -767,9 +771,9 @@ proc mkdoc::mkdoc {filename outfile args} {
 #'
 #' ## <a name='license'>LICENSE AND COPYRIGHT</a>
 #'
-#' Markdown extractor and converter mkdoc::mkdoc, version 0.10.0
+#' Markdown extractor and converter mkdoc::mkdoc, version 0.10.2
 #'
-#' Copyright (c) 2019-24  Detlef Groth, E-mail: <detlef(at)dgroth(dot)de>
+#' Copyright (c) 2019-24  Detlef Groth, E-mail: <dgroth(at)uni(minus)potsdam(dot)de>
 #' 
 #' BSD License type:
 
