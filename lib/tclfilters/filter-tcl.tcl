@@ -366,7 +366,12 @@ mdi eval {
             puts.orig [lindex $args 0] {*}[lrange $args 1 end]
         } else {
             if {[lindex $args 0] eq "-nonewline"} {
-                append ::filter::res "[lindex $args 1]"
+                ## writing into a file
+                if {[regexp {^file} [lindex $args 1]]} {
+                    puts.orig -nonewline {*}[lrange $args 1 end]
+                } else {
+                    append ::filter::res "[lindex $args 1]"
+                }
             } else {
                 append ::filter::res "[lindex $args 0]\n"
             }

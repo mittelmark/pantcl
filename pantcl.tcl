@@ -8,8 +8,9 @@
 # Version: 0.10.0 - 2024-11-29
 # Version: 0.10.1 - 2024-12-19
 # Version: 0.10.2 - 2024-12-24
+# Version: 0.10.3 - 2025-02-22
 
-package provide pantcl 0.10.2
+package provide pantcl 0.10.3
 namespace eval ::pantcl { }
 if {[llength $argv] > 0 && ([lsearch -exact $argv -v] >= 0 || [lsearch -exact $argv --version] >= 0)} {
     puts "[package present pantcl]"
@@ -742,7 +743,7 @@ if {[info exists argv] && [llength $argv] > 1 && [file exists [lindex $argv 0]]}
 }
 
 #' ---
-#' title: pantcl filter documentation - 0.10.2
+#' title: pantcl filter documentation - 0.10.3
 #' author: Detlef Groth, Schwielowsee, Germany
 #' date: 2024-12-24
 #' tcl:
@@ -1165,6 +1166,8 @@ if {[info exists argv] && [llength $argv] > 1 && [file exists [lindex $argv 0]]}
 #'     * timeout for fetching images from the net
 #' * 2024-12-24 - version 0.10.2
 #'     * fixing ampersand issues in source code
+#' * 2025-02-22 - version 0.10.3
+#'     * fixing tcl filter issue with -nonewline into a file channel
 #' 
 #' ## SEE ALSO
 #' 
