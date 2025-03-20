@@ -9,8 +9,9 @@
 # Version: 0.10.1 - 2024-12-19
 # Version: 0.10.2 - 2024-12-24
 # Version: 0.10.3 - 2025-02-22
+# Version: 0.10.4 - 2025-03-20
 
-package provide pantcl 0.10.3
+package provide pantcl 0.10.4
 namespace eval ::pantcl { }
 if {[llength $argv] > 0 && ([lsearch -exact $argv -v] >= 0 || [lsearch -exact $argv --version] >= 0)} {
     puts "[package present pantcl]"
@@ -743,9 +744,9 @@ if {[info exists argv] && [llength $argv] > 1 && [file exists [lindex $argv 0]]}
 }
 
 #' ---
-#' title: pantcl filter documentation - 0.10.3
+#' title: pantcl filter documentation - 0.10.4
 #' author: Detlef Groth, Schwielowsee, Germany
-#' date: 2024-12-24
+#' date: 2025-03-20
 #' tcl:
 #'    echo: "true"
 #'    results: show
@@ -1168,6 +1169,9 @@ if {[info exists argv] && [llength $argv] > 1 && [file exists [lindex $argv 0]]}
 #'     * fixing ampersand issues in source code
 #' * 2025-02-22 - version 0.10.3
 #'     * fixing tcl filter issue with -nonewline into a file channel
+#' * 2025-03-20 - version 0.10.4
+#'     * adding R pipe commands nfig, rfig, rtab and ntab for automatic
+#'       numbering of tables and figures
 #' 
 #' ## SEE ALSO
 #' 

@@ -191,8 +191,8 @@
 #' knitr::kable(head(mtcars[, 1:4]))
 #' ```
 #' 
-#' The filter itself provides a litte R function, without the need
-#' to install an additional library,`df2md`, to convert data frames
+#' The filter itself provides a few little R functions, without the need
+#' to install an additional library. To display tables, the function `df2md` converts data frames
 #' or matrices into Markdown tables. Here an example for its usage:
 #' 
 #' ```{.pipe pipe="R" results="asis"}
@@ -203,20 +203,53 @@
 #' You can as well hide the rownames or give a caption like this.
 #' 
 #' ```{.pipe pipe="R" results="asis"}
-#' df2md(head(mtcars[, 1:4],n=4),rownames=FALSE,caption="**Table 1:** mtcars data")
+#' n = ntab('tabmt')
+#' df2md(head(mtcars[, 1:4],n=4),rownames=FALSE,caption=sprintf("**Table %i:** mtcars data",n))
 #' ```
 #' 
 #' For matrices or data frames without row names or column names just the line
 #' and columnnumbers will be displayed:
 #' 
 #' ```{.pipe pipe="R" results="asis"}
+#' n = ntab('tabrn')
 #' M=matrix(round(rnorm(100,mean=10),2),ncol=5)
-#' df2md(head(M,n=6),caption="**Table 2:** Matrix example")
+#' df2md(head(M,n=6),caption=sprintf("**Table %i:** Matrix example",n))
 #' ```
 #' 
+#' To allow automatic numbering and referencing figures and tables, the following 4 functions are provided:
+#'
+#' - `nfig(label)` - to set a figure number, usually within the figure legend
+#' - `rfig(label)` - to reference a figure using its label, usually used within paragraphs
+#'   close to the figure
+#' - `ntab(label)` - same as `nfig` but for tables
+#' - `rtab(label)` - same as `rfig` but for tables. Here an example:
+#'
+#' ```
+#' '``
+#' A --> B --> C
+#' '``
+#' __Figure `r nfig('sample')`:__ a sample flow chart figure.
+#'
+#' This is some text which relates to figure `r rfig('sample')`. 
+#' An non-existing like `r rfig('dummy')` is shown with NN.
+#'
+#' For examples for tables see tables `r rtab("tabmt")` and `r rtab("tabrn")`.
+#' ```
+#'
+#' And here the output:
+#' ```
+#' A --> B --> C
+#' ```
+#' __Figure `r nfig('sample')`:__ a sample flow chart figure.
+#'
+#' This is some text which relates to figure `r rfig('sample')`.
+#' An non-existing like `r rfig('dummy')` is shown with NN.
+#'
+#' For examples for tables see tables `r rtab("tabmt")` and `r rtab("tabrn")`.
+#'
 #' There is as well the possibility to display inline R code. So for instance we can use the nrow function to 
 #' get the number of cars in the dataset. Using code like this:
-#' 
+#'
 #' ```
 #'     The mtchars dataset has `r nrow(mtcars)` cars!
 #' ```
@@ -394,6 +427,55 @@ proc ::fpipe::filter-pipe-R-df2md {} {
             }
             cat(fin)
         }
+        nfig <- function (label) { 
+            if (!exists('.figs')) {
+                .figs <<- list() 
+            } 
+            if (label %in% names(.figs)) { 
+                stop(sprintf("Error: '%s' is not an unique label!",label))
+            } else {
+                x = length(names(.figs)) + 1
+                .figs[label] <<- x
+                return(x)
+            }
+        }   
+        
+        rfig <- function (label) {
+            if (!exists('.figs')) {
+                .figs <<- list() 
+            } 
+            if (label %in% names(.figs)) { 
+                return(.figs[[label]])
+            } else {
+                return("NN")
+            }
+        
+        }
+        ntab <- function (label) { 
+            if (!exists('.tabs')) {
+                .tabs <<- list() 
+            } 
+            if (label %in% names(.tabs)) { 
+                stop(sprintf("Error: '%s' is not an unique label!",label))
+            } else {
+                x = length(names(.tabs)) + 1
+                .tabs[label] <<- x
+                return(x)
+            }
+        }   
+        
+        rtab <- function (label) {
+            if (!exists('.tabs')) {
+                .tabs <<- list() 
+            } 
+            if (label %in% names(.tabs)) { 
+                return(.tabs[[label]])
+            } else {
+                return("NN")
+            }
+        
+        }
+        
         lipsum <- function (type=1, paragraphs=1,lang="latin") {
            if (lang == "latin") {
                if (type == 1) {
