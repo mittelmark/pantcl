@@ -303,6 +303,8 @@
 #'   A -> B ;
 #' }
 #' ```
+#'
+#' ![](dot.png)
 #' 
 #' And now an example doing plots with Gnuplot:
 #'
@@ -338,8 +340,6 @@
 #'
 #' ![](images/test.png)
 
-#' ![](dot.png)
-#' 
 #' ### Simple shell scripts
 #' 
 #' First a mathematical calculation (`{.cmd file="calc.sh" eval=true}`):
@@ -419,7 +419,7 @@
 #' fi     
 #' # EOF
 #' ```
-#' 
+#'
 #' If we copy this file as lilyscript.sh into a folder belonging to our PATH variable we 
 #' can then embed lilypond code into a executable script easily.
 #' Here an example (chunk options are: 
@@ -617,7 +617,198 @@
 #' 
 #' I left it as an exercise to embed Perl, Ruby, Julia scripts using the standard Shebang mechanism. 
 #' 
+#' ## Command line as chunk option
 #' 
+#' You can as well write the data into the code chunk and the 
+#' command line to process this data as an chunk option, below is an example writing the Graphviz dot code within
+#' the code chunk:
+#'
+#' ```
+#' '``{.cmd cmd="dot -Tpng -o%o %i" fig=true}
+#' digraph g {
+#' A -> B
+#' }
+#' '``
+#' ```
+#' The placeholder _%i_ is for the inut file, the placeholder _%o_ for the output file. 
+#' If only the basename of the input file is required you can use _%b_.
+#'
+#' And here is the output:
+#'
+#' ```{.cmd cmd="dot -Tpng -o%o %i" fig=true}
+#' digraph g {
+#' A -> B
+#' }
+#' ```
+#'
+#' Let's use _%b_ to create an SVG file.
+#' 
+#' ```
+#' '``{.cmd cmd="dot -Tsvg -o%b.svg %i" fig=true ext="svg"}
+#' digraph g {
+#' A -> B
+#' }
+#' '``
+#' ```
+#'
+#' Output:
+#'
+#' ```{.cmd cmd="dot -Tsvg -o%b.svg %i" fig=true ext="svg"}
+#' digraph g {
+#' A -> B
+#' }
+#' ```
+#' 
+#' In case you would like to change the command line but not the code
+#' chunk data you can use the place holder "LASTFILE" in the code chunk, here an example:
+#' 
+#' ```
+#' '``{.cmd cmd="dot -Tsvg -Nshape=box -Grankdir="LR" -Nstyle=filled -Nfillcolor=salmon -o%b.svg %i" fig=true ext="svg"}
+#' LASTFILE
+#' '``
+#' ```
+#'
+#' Output:
+#'
+#' ```{.cmd cmd="dot -Tsvg  -Grankdir="LR" -Nshape=box -Nstyle=filled -Nfillcolor=salmon -o%b.svg %i" fig=true ext="svg"}
+#' LASTFILE
+#' ```
+#'
+#' Obviously in the example above it might be easier to place the node and graph properties directly into the dot code.
+#' But sometimes there might be reasons, especially if the code chunk text is very long to change a few command line options.
+#' An example for this would be for instance a Go game where you would like to hilight different phases of the game.
+#' Here an example of a 13x13 game where the LASTFILE place holder makes really sense. We use the command line tool [sgf-render](https://github.com/julianandrews/sgf-render) with the following code chunk options:
+#'
+#' ```
+#' '``{.cmd cmd="sgf-render %i --format png --outfile %o --width 500 --move-numbers=1-10 -n 10" echo=true fig=true}
+#' ... sgf coce
+#' '```
+#' ```
+#' Here the output (usually we would hide the sgf code by using _echo=false_.
+#'
+#' ```{.cmd cmd="sgf-render %i --format png --outfile %o --width 500 --move-numbers=1-10 -n 10" echo=true fig=true}
+#' (;FF[4]
+#' CA[UTF-8]
+#' GM[1]
+#' DT[2025-02-28]
+#' GN[Freundschaftsspiel]
+#' PB[Black Player]
+#' PW[White Player]
+#' BR[15k]
+#' WR[14k]
+#' TM[432000]OT[86400 fischer]
+#' RE[W+9.5]
+#' SZ[13]
+#' KM[6.5]
+#' RU[Japanese]
+#' ;B[jj]
+#' (;W[dd]
+#' (;B[jc]
+#' (;W[dj]
+#' (;B[je]
+#' (;W[hk]
+#' (;B[ik]
+#' (;W[hj]
+#' (;B[cc]
+#' (;W[cd]
+#' (;B[dc]
+#' (;W[ec]
+#' (;B[eb]
+#' (;W[fc]
+#' (;B[bd]
+#' (;W[fb]
+#' (;B[db]
+#' (;W[be]
+#' (;B[ac]
+#' (;W[cf]LB[cg:A][eg:B]SQ[dj][jj]CR[hj]
+#' (;B[ck]
+#' (;W[cj]
+#' (;B[dk]
+#' (;W[ek]
+#' (;B[el]
+#' (;W[fk]
+#' (;B[fl]
+#' (;W[kg]
+#' (;B[jh]
+#' (;W[jg]
+#' (;B[kh]
+#' (;W[hg]
+#' (;B[bj]
+#' (;W[bi]
+#' (;B[bk]
+#' (;W[le]
+#' (;B[ld]
+#' (;W[kd]
+#' (;B[lg]
+#' (;W[lf]
+#' (;B[lh]
+#' (;W[lc]
+#' (;B[kc]
+#' (;W[jd]
+#' (;B[lb]
+#' (;W[md]
+#' (;B[ic]
+#' (;W[id]
+#' (;B[hc]
+#' (;W[gd]
+#' (;B[hd]
+#' (;W[he]
+#' (;B[gc]
+#' (;W[fd]
+#' (;B[ij]
+#' (;W[hi]
+#' (;B[ih]
+#' (;W[hh]
+#' (;B[hl]
+#' (;W[ha]
+#' (;B[hb]
+#' (;W[ga]
+#' (;B[ia]
+#' (;W[gb]
+#' (;B[jb]
+#' (;W[mb]
+#' (;B[la]
+#' (;W[gl]
+#' (;B[ig]
+#' (;W[if]
+#' (;B[gm]
+#' (;W[gk]
+#' (;B[im]
+#' (;W[aj]
+#' (;B[ak]
+#' (;W[ai]
+#' (;B[mf]
+#' (;W[ae]
+#' (;B[bb]
+#' (;W[ad]
+#' (;B[bc]
+#' (;W[mc]
+#' (;B[ii]
+#' (;W[me]
+#' (;B[mg]
+#' (;W[ea]
+#' (;B[da]
+#' (;W[fa]
+#' (;B[dl]
+#' (;W[ma]
+#' (;B[]
+#' (;W[]
+#' ))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))
+#' ```
+#'
+#' To reuse the content above we can use:
+#' ```
+#' '``{.cmd cmd="sgf-render %i --format png --outfile %o --width 500 --move-numbers=11-20 -n 20" echo=true fig=true}
+#' LASTFILE
+#' '``
+#' ```
+#'
+#' Output:
+#'
+#' ```{.cmd cmd="sgf-render %i --format png --outfile %o --width 500 --move-numbers=11-20 -n 20" echo=true fig=true}
+#' LASTFILE
+#' ```
+#'
 #' ## See also:
 #' 
 #' * [Pantcl Readme](../../README.html)
@@ -629,24 +820,33 @@
 #' * [Pipe filter for Python, R, Octave](filter-pipe.html)
 #' 
 
-
+set lastcnt ""
 proc filter-cmd {cont dict} {
     global n
+    global lastcnt
+    if {[regexp {^LASTFILE} $cont]} {
+        set cont $lastcnt
+    } else {
+        set lastcnt $cont
+    }
     incr n
     set def [dict create results asis eval true label null file null \
-             include true app sh cachedir [pantcl::getCacheDir]]
+             ext png fig false include true app sh cachedir [pantcl::getCacheDir] cmd ""]  
     # TODO: dict app using
     ## fixing , issues in dict and TRUE==true etc
     if {$dict ne ""} {
-        set d [regsub -nocase -all FALSE $dict false]
-        set d [regsub -nocase -all TRUE  $d    true]
-        set d [regsub -nocase -all ,     $d    " "]
-        set d [regsub -nocase -all =     $d    " "]  ;#
-        set d [regsub -nocase -all {\\"} $d    ""]   ;#"
-        set dict [dict create {*}$d]
+        if {![dict exists $dict cmd]} {
+            set d [regsub -nocase -all FALSE $dict false]
+            set d [regsub -nocase -all TRUE  $d    true]
+            set d [regsub -nocase -all ,     $d    " "]
+            set d [regsub -nocase -all =     $d    " "]  ;#
+            set d [regsub -nocase -all {\\"} $d    ""]   ;#"
+            set dict [dict create {*}$d]
+        }
+        
     }
     dict for {key value} $dict {
-        if {[regexp {,.+=} $value]} {
+        if {[regexp {,.+=} $value] && $key ne "cmd"} {
             set val [regsub {,.+} $value ""]
             set rest [regsub {.+?,} $value ""]
         }
@@ -656,25 +856,42 @@ proc filter-cmd {cont dict} {
         return [list "" ""]
     }
     set res ""
-    if {[dict get $dict file] eq "null"} {
-        if {[dict get $dict eval]} {
-            foreach line [split $cont "\n"] {
-                if { [ catch {set resl [exec echo $line | sh] } ] } {
-                    append res "Error in line `$line`\n"
-                } else {
-                    append res "$resl\n"
-                }
-            }
+    if {[dict get $dict cmd] ne ""} {
+        if {[dict get $dict file] eq "null"} {
+            set file [file tempfile].txt 
+        } else {
+            set file [file join [dict get $dict cachedir] [dict get $dict file]]
         }
-    } else {
-        #puts stderr $cont
-        set out [open [file join [dict get $dict cachedir] [dict get $dict file]] w 0755]
+        set cmd [regsub -all %i [dict get $dict cmd] $file]
+        set cmd [regsub -all %o $cmd [file rootname $file].[dict get $dict ext]]
+        set cmd [regsub -all %b $cmd [file rootname $file]]
+        set out [open $file w 0755]
         puts $out $cont
         close $out
-        if {[dict get $dict eval]} {
-            if {[catch { set res [exec [file join [dict get $dict cachedir] [dict get $dict file]]] }] } {
-                set res $::errorInfo
-            } 
+        set res [exec {*}$cmd] 
+        return [list $res [file rootname $file].[dict get $dict ext]]
+        
+    } else {
+        if {[dict get $dict file] eq "null"} {
+            if {[dict get $dict eval]} {
+                foreach line [split $cont "\n"] {
+                    if { [ catch {set resl [exec echo $line | sh] } ] } {
+                        append res "Error in line `$line`\n"
+                    } else {
+                        append res "$resl\n"
+                    }
+                }
+            }
+        } else {
+            #puts stderr $cont
+            set out [open [file join [dict get $dict cachedir] [dict get $dict file]] w 0755]
+            puts $out $cont
+            close $out
+            if {[dict get $dict eval]} {
+                if {[catch { set res [exec [file join [dict get $dict cachedir] [dict get $dict file]]] }] } {
+                    set res $::errorInfo
+                } 
+            }
         }
     }
     if {!([dict get $dict results] in [list show asis])} {

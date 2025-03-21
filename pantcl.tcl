@@ -503,13 +503,21 @@ proc ::pantcl::lineFilter {argv} {
                 if {[dict exists $yamldict $filt]} {
                     set dchunk [dict merge $dchunk [dict get $yamldict $filt]]
                 }
+                ## fix things like cmd="app --argument1=value --argument2=value"
+                while {[regexp -indices {"(.+?)"} $options m1 m2]} {
+                    set before [string range $options 0 [expr {[lindex $m1 0]-1}]] 
+                    set match [regsub -all { } [string range $options [lindex $m2 0] [lindex $m2 1]] "%20"]
+                    set match [regsub -all "=" $match "%3d"]
+                    set after [string range $options [expr {[lindex $m1 1]+1}] end] 
+                    set options ${before}${match}${after}
+                }
                 # enable as well options with comma instead of space:
                 # like results="show",wait=1
                 set options [regsub {,([^ ])} $options " \\1"]
                 foreach {op} [split $options " "] {
                     foreach {key val} [split $op "="] {
                         set val [regsub -all {"} $val ""] ;#"
-                        dict set dchunk $key $val         
+                        dict set dchunk $key [regsub -all "%3d" [regsub -all "%20" $val " "] "="]
                     }
                 }
                 set flag true
