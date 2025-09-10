@@ -1,10 +1,10 @@
 #!/usr/bin/env tclsh
 ##############################################################################
 #
-#  Author        : Dr. Detlef Groth
-#  Created By    : Dr. Detlef Groth
+#  Author        : Detlef Groth
+#  Created By    : Detlef Groth
 #  Created       : Tue Sep 7 17:58:32 2021
-#  Last Modified : <220303.0625>
+#  Last Modified : <250104.1058>
 #
 #  Description	 : Standalone deployment tool for Tcl apps using uncompressed tar archives.
 #
@@ -15,566 +15,548 @@
 #                  2021-11-09 - release 0.2.0 (single file application)
 #                  2021-11-26 - release 0.2.1 (tar package fix)
 #                  2022-02-16 - release 0.3.0 (lz4 compression support)
+#                  2024-03-14 - release 0.3.1 (docu updates, project moved)
+#                  2025-01-02 - release 0.4.0/1 Tcl 9 aware
+#                  2025-01-03 - release 0.5.0 Tcl 8.5, 8.6, 9.0 aware, switch 
+#                                             from tar to base64 wrappping
 #                  
 #	
 ##############################################################################
 #
-#  Copyright (c) 2021-2022 Dr. Detlef Groth.
+#  Copyright (c) 2021-2025 Detlef Groth, University of Potsdam, Germany
 # 
-#  License:      MIT
+#  License:      BSD 3-Clause License
 # 
 ##############################################################################
 
-# tar.tcl -- take form tar.tcl from tcllib
+if {![package vsatisfies [package provide Tcl] 8.5 9]} { return }
+
+## File tpack-b64.tcl
+#' ---
+#' title: tpack - Tcl application deployment
+#' section: 1
+#' header: User Manual
+#' footer: tpack 0.5.0
+#' author: Detlef Groth, University of Potsdam, Germany
+#' date: 2025-01-04
+#' ---
+#' 
+#' ## NAME 
+#' 
+#' _tpack_ - create single or two file Tcl applications based on libraries in tar/lz4 archives
+#' 
+#' ## SYNOPSIS
+#' 
+#' ```
+#' $ tpack --help               # display usage information
+#' $ tpack wrap app.tapp        # wraps app.tcl and app.vfs into app.tapp 
+#'                              # where app.vfs is attached as base64 archive
+#' $ tpack wrap app.tapp --lz4  # as above but use base64 and lz4 for compression
+#' $ tpack init app.tcl app.vfs # creates initial file app.tcl and folder app.vfs
+#' $ tpack init app             #            as above
+#' $ tpack init app.vfs         # create initial folder app.vfs
+#' $ tpack unwrap app.tapp      # extracts app.tcl and app.vfs out of app.tapp
+#' ```
+#' 
+#' ## DESCRIPTION
+#' 
+#' The _tpack_ application can be used to simplify deployment of Tcl applications to other computers and customers.
+#' The application can create single file Tcl applications. 
+#' These single file applications, called tapp-files contain at the top the base64 / lz4 extraction code,
+#' the main tcl script and an attached base64 archive where all files are encoded using base64 and file separation
+#' lines containing the libraries required by this application file. At startup the base64 encoded files are
+#' detached from the file and unpacked into a temporary folder from where the libraries are loaded. 
+#' The compression with lz4 needs an installed lz4 executable, the decompression of
+#' the build executable is embedded into the final application but requires a Tcl installation of at least 8.5.
+#' 
+#' The single file approach creates _app.tapp_ file out of _app.vfs_ and _app.tcl_.
+#'
+#' ```
+#' tpack wrap app.tapp
+#' ```
+#' 
+#' The file _main.tcl_ in the vfs-folder should contain at least the following line:
+#' 
+#' ```
+#' lappend auto_path [file join [file dirname [info script]] lib]
+#' ```
+#' 
+#' The _tpack_ application provides as well a loader for default starkit layouts, so a fake starkit package so that 
+#' as well existing starkits can be packed by _tpack_, here a _main.tcl_ file from the tknotepad application.
+#'
+#' ```
+#' package require starkit
+#' if {[starkit::startup] == "sourced"} return
+#' package require app-tknotepad
+#' ```
+#' 
+#' In this case the application file tknotepad.tcl which is in the same directoy as _tknotepad.vfs_ can be just an empty file. It can as well contain code to handel command line arguments.
+#' Here the file tknotepad.tcl:
+#' 
+#' ```
+#' proc usage {} {
+#'     puts "Usage: tknotepad filename"
+#' }
+#' if {[info exists argv0] && $argv0 eq [info script] && [regexp tknotepad $argv0]} {
+#'     if {[llength $argv] > -1 && [lsearch $argv --help] > -1} {
+#'         usage
+#'     } elseif {[llength $argv] > 0 && [file exists [lindex $argv 0]]} {
+#'         openoninit [lindex $argv 0]
+#'     }
+#' }
+#' ```
+#' 
+#' That way you should be able to use your vfs-folder for creating tpacked applications
+#' as well for creating starkits.
+#'
+#' ## INSTALLATION
+#' 
+#' Make this file [tpack-b64.tcl](https://raw.githubusercontent.com/mittelmark/tpack/refs/heads/main/tpack-b64.tcl)
+#' executable and copy it as _tpack_ into a directory belonging to your
+#' PATH environment. There are no other Tcl libraries required to install, just a working installation
+#' of Tcl/Tk of at least Tcl 8.5 is required.
+#' 
+#' ## EXAMPLE
+#' 
+#' Let's demonstrate a minimal application:
+#' 
+#' ```
+#' ## FILE mini.tcl
+#' #!/usr/bin/env tclsh
+#' package require test
+#' puts mini
+#' puts [test::hello]
+#' ## FILE mini.vfs/main.tcl
+#' lappend auto_path [file join [file dirname [info script]] lib]
+#' ## FILE mini.vfs/lib/test/pkgIndex.tcl
+#' package ifneeded test 0.1 [list source [file join $dir test.tcl]]
+#' ## FILE mini.vfs/lib/test/test.tcl
+#' package require Tcl
+#' package provide test 0.1
+#' namespace eval ::test { }
+#' proc ::test::hello { } { puts "Hello World!" }
+#' ## EOF's
+#' ```
+#' There is the possibility to create such a minimal application automatically for you if you start a new project
+#' by using the command line options:
+#' 
+#' ```
+#' $ tpack init appname
+#' # - appname.tcl and appname.vfs folder with main.tcl and
+#' #   lib/test Tcl files will be created automatically for you.
+#' ```
+#' 
+#' The string _appname_ has to be replaced with the name of your application. 
+#' If a the Tcl file or the VFS folder does already exists, _tpack_ for your safeness
+#' will refuse to overwrite them. 
+#' If the files were created, you can overwrite the Tcl file (_appname.tcl_)
+#' with your own application and move your libraries into the folder 
+#' _appname.vfs_.  If you are ready you call `tpack wrap appname.tcl appname.vfs` and 
+#' you end up with two new files, _appname.ttcl_ your application code file, containing 
+#' your code as well as some code to encode and decode base64 files.
+#' 
+#' Attention: if mini.tapp is executed directly in the directory where mini.vfs is 
+#' located not the mini.tapp file but the folder will be used for the libraries. That can simplify the development.
+#' 
+#' You can rename mini.tapp to what every you like so `mini.bin` or even `mini`.
+#' 
+#' ## CHANGELOG
+#' 
+#' - 2021-09-10 - release 0.1  - two file applications (ttcl and ttar) are working
+#' - 2021-11-10 - release 0.2.0 
+#'     - single file applications (ttap = ttcl+ttar in one file) are working as well
+#'     - fake starkit::startup to load existing starkit apps without modification
+#'     - build sample apps tknotepad, pandoc-tcl-filter, 
+#' - 2021-11-26 - release 0.2.1 
+#'     - bugfix: adding `package forget tar` after tar file loading to catch users `package require tar`
+#' - 2022-02-16 - release 0.3.0
+#'     - support for lz4 compression/decompression
+#' - 2024-03-14 - release 0.3.1
+#'     - docu updates
+#'     - project moved to its own repo https://github.com/mittelmark/tpack
+#' - 2025-01-01 - release 0.4.0
+#'     - making it Tcl 9 aware
+#' - 2025-01-02 - release 0.4.1
+#'     - making it Tcl 9 aware, anohter fix
+#' - 2025-01-03 - rewrite using base64 instead of tar and as well only supporting single file
+#'                approach, so tapp files
+#' ## TODO
+#' 
+#' - nsis installer for Windows, to deploy minimal Tcl/Tk with the application
+#'
+#' ## AUTHOR
+#' 
+#'   - Copyright (c) 2021-2025 Detlef Groth, University of Potsdam, Germany, dgroth(at)uni(minus)potsdam(dot)de (tpack code)
+#'   - Copyright (c) 2017 dbohdan pur Tcl lz4 decompression code
+#'   - Copyright (c) 2013 Andreas Kupries andreas_kupries(at)users.sourceforge(dot)net (tar code)
+#'   - Copyright (c) 2004 Aaron Faupell afaupell(at)users.sourceforge(sot)net (tar code)
+#' 
+#' ## LICENSE
+#'
+#' ```
+#' BSD 3-Clause License
+#'
+#' Copyright (c) 2021-2025 Detlef Groth, University of Potsdam, Germany
+#'
+#' Redistribution and use in source and binary forms, with or without
+#' modification, are permitted provided that the following conditions are met:
+#' 
+#' 1. Redistributions of source code must retain the above copyright notice, this
+#'    list of conditions and the following disclaimer.
+#' 
+#' 2. Redistributions in binary form must reproduce the above copyright notice,
+#'    this list of conditions and the following disclaimer in the documentation
+#'    and/or other materials provided with the distribution.
+#' 
+#' 3. Neither the name of the copyright holder nor the names of its
+#'    contributors may be used to endorse or promote products derived from
+#'    this software without specific prior written permission.
+#' 
+#' THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+#' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+#' IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+#' DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+#' FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+#' DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+#' SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+#' CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+#' OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+#' OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+#' ```
+#'
+package require Tcl
+package provide tpack 0.5.0
+
+## FILE: b64.tcl
+#!/usr/bin/env tclsh
+# Partial code from Tcllib for Tcl 8.5
+# https://core.tcl-lang.org/tcllib/file?name=modules/base64/base64.tcl&ci=tip
+# base64.tcl --
 #
-#       Creating, extracting, and listing posix tar archives
+# Encode/Decode base64 for a string
+# Stephen Uhler / Brent Welch (c) 1997 Sun Microsystems
+# The decoder was done for exmh by Chris Garrigues
 #
-# Copyright (c) 2004    Aaron Faupell <afaupell@users.sourceforge.net>
-# Copyright (c) 2013    Andreas Kupries <andreas_kupries@users.sourceforge.net>
-#                       (GNU tar @LongLink support).
-#
+# Copyright (c) 1998-2000 by Ajuba Solutions.
 # See the file "license.terms" for information on usage and redistribution
 # of this file, and for a DISCLAIMER OF ALL WARRANTIES.
-# 
-# RCS: @(#) $Id: tar.tcl,v 1.17 2012/09/11 17:22:24 andreas_kupries Exp $
 
-package require Tcl 8.4
-package provide tar 0.11
+# Version 1.0   implemented Base64_Encode, Base64_Decode
+# Version 2.0   uses the base64 namespace
+# Version 2.1   fixes various decode bugs and adds options to encode
+# Version 2.2   is much faster, Tcl8.0 compatible
+# Version 2.2.1 bugfixes
+# Version 2.2.2 bugfixes
+# Version 2.3   bugfixes and extended to support Trf
+# Version 2.4.x bugfixes
 
-namespace eval ::tar {}
-
-proc ::tar::parseOpts {acc opts} {
-    array set flags $acc
-    foreach {x y} $acc {upvar $x $x}
+package require Tcl 8.5-
+namespace eval base64 {
+    variable base64 {}
+    variable base64_en {}
     
-    set len [llength $opts]
-    set i 0
-    while {$i < $len} {
-        set name [string trimleft [lindex $opts $i] -]
-        if {![info exists flags($name)]} {
-	    return -errorcode {TAR INVALID OPTION} \
-		-code error "unknown option \"$name\""
-	}
-        if {$flags($name) == 1} {
-            set $name [lindex $opts [expr {$i + 1}]]
-            incr i $flags($name)
-        } elseif {$flags($name) > 1} {
-            set $name [lrange $opts [expr {$i + 1}] [expr {$i + $flags($name)}]]
-            incr i $flags($name)
-        } else {
-            set $name 1
-        }
+    # We create the auxiliary array base64_tmp, it will be unset later.
+    variable base64_tmp
+    variable i
+    
+    variable i 0
+    variable char
+    foreach char {A B C D E F G H I J K L M N O P Q R S T U V W X Y Z \
+              a b c d e f g h i j k l m n o p q r s t u v w x y z \
+              0 1 2 3 4 5 6 7 8 9 + /} {
+        set base64_tmp($char) $i
+        lappend base64_en $char
         incr i
     }
+    
+    #
+    # Create base64 as list: to code for instance C<->3, specify
+    # that [lindex $base64 67] be 3 (C is 67 in ascii); non-coded
+    # ascii chars get a {}. we later use the fact that lindex on a
+    # non-existing index returns {}, and that [expr {} < 0] is true
+    #
+    
+    # the last ascii char is 'z'
+    variable char
+    variable len
+    variable val
+    
+    scan z %c len
+    for {set i 0} {$i <= $len} {incr i} {
+        set char [format %c $i]
+        set val {}
+        if {[info exists base64_tmp($char)]} {
+            set val $base64_tmp($char)
+        } else {
+            set val {}
+        }
+        lappend base64 $val
+    }
+    
+    # code the character "=" as -1; used to signal end of message
+    scan = %c i
+    set base64 [lreplace $base64 $i $i -1]
+    
+    # remove unneeded variables
+    unset base64_tmp i char len val
+    
+    namespace export encode decode
 }
 
-proc ::tar::pad {size} {
-    set pad [expr {512 - ($size % 512)}]
-    if {$pad == 512} {return 0}
-    return $pad
-}
+# ::base64::encode --
+#
+#	Base64 encode a given string.
+#
+# Arguments:
+#	args	?-maxlen maxlen? ?-wrapchar wrapchar? string
+#
+#		If maxlen is 0, the output is not wrapped.
+#
+# Results:
+#	A Base64 encoded version of $string, wrapped at $maxlen characters
+#	by $wrapchar.
 
-proc ::tar::seekorskip {ch off wh} {
-    if {[tell $ch] < 0} {
-	if {$wh!="current"} {
-	    return -code error -errorcode [list TAR INVALID WHENCE $wh] \
-		"WHENCE=$wh not supported on non-seekable channel $ch"
-	}
-	skip $ch $off
-	return
+proc ::base64::encode {args} {
+    set base64_en $::base64::base64_en
+    
+    # Set the default wrapchar and maximum line length to match
+    # the settings for MIME encoding (RFC 3548, RFC 2045). These
+    # are the settings used by Trf as well. Various RFCs allow for
+    # different wrapping characters and wraplengths, so these may
+    # be overridden by command line options.
+    set wrapchar "\n"
+    set maxlen 76
+    
+    if { [llength $args] == 0 } {
+        error "wrong # args: should be \"[lindex [info level 0] 0]\
+        ?-maxlen maxlen? ?-wrapchar wrapchar? string\""
     }
-    seek $ch $off $wh
-    return
-}
-
-proc ::tar::skip {ch skipover} {
-    while {$skipover > 0} {
-	set requested $skipover
-
-	# Limit individual skips to 64K, as a compromise between speed
-	# of skipping (Number of read requests), and memory usage
-	# (Note how skipped block is read into memory!). While the
-	# read data is immediately discarded it still generates memory
-	# allocation traffic, gets copied, etc. Trying to skip the
-	# block in one go without the limit may cause us to run out of
-	# (virtual) memory, or just induce swapping, for nothing.
-
-	if {$requested > 65536} {
-	    set requested 65536
-	}
-
-	set skipped [string length [read $ch $requested]]
-
-	# Stop in short read into the end of the file.
-	if {!$skipped && [eof $ch]} break
-
-	# Keep track of how much is (not) skipped yet.
-	incr skipover -$skipped
+    
+    set optionStrings [list "-maxlen" "-wrapchar"]
+    for {set i 0} {$i < [llength $args] - 1} {incr i} {
+        set arg [lindex $args $i]
+        set index [lsearch -glob $optionStrings "${arg}*"]
+        if { $index == -1 } {
+            error "unknown option \"$arg\": must be -maxlen or -wrapchar"
+        }
+        incr i
+        if { $i >= [llength $args] - 1 } {
+            error "value for \"$arg\" missing"
+        }
+        set val [lindex $args $i]
+        
+        # The name of the variable to assign the value to is extracted
+        # from the list of known options, all of which have an
+        # associated variable of the same name as the option without
+        # a leading "-". The [string range] command is used to strip
+        # of the leading "-" from the name of the option.
+        #
+        # FRINK: nocheck
+        set [string range [lindex $optionStrings $index] 1 end] $val
     }
-    return
-}
-
-proc ::tar::readHeader {data} {
-    binary scan $data a100a8a8a8a12a12a8a1a100a6a2a32a32a8a8a155 \
-                      name mode uid gid size mtime cksum type \
-                      linkname magic version uname gname devmajor devminor prefix
-
-    foreach x {name type linkname} {
-        set $x [string trim [set $x] "\x00"]
+    
+    # [string is] requires Tcl8.2; this works with 8.0 too
+    if {[catch {expr {$maxlen % 2}}]} {
+        return -code error "expected integer but got \"$maxlen\""
+    } elseif {$maxlen < 0} {
+        return -code error "expected positive integer but got \"$maxlen\""
     }
-    foreach x {uid gid size mtime cksum} {
-        set $x [format %d 0[string trim [set $x] " \x00"]]
-    }
-    set mode [string trim $mode " \x00"]
-
-    if {$magic == "ustar "} {
-        # gnu tar
-        # not fully supported
-        foreach x {uname gname prefix} {
-            set $x [string trim [set $x] "\x00"]
-        }
-        foreach x {devmajor devminor} {
-            set $x [format %d 0[string trim [set $x] " \x00"]]
-        }
-    } elseif {$magic == "ustar\x00"} {
-        # posix tar
-        foreach x {uname gname prefix} {
-            set $x [string trim [set $x] "\x00"]
-        }
-        foreach x {devmajor devminor} {
-            set $x [format %d 0[string trim [set $x] " \x00"]]
-        }
-    } else {
-        # old style tar
-        foreach x {uname gname devmajor devminor prefix} { set $x {} }
-        if {$type == ""} {
-            if {[string match */ $name]} {
-                set type 5
+    
+    set string [lindex $args end]
+    
+    set result {}
+    set state 0
+    set length 0
+    
+    
+    # Process the input bytes 3-by-3
+    
+    binary scan $string c* X
+    
+    foreach {x y z} $X {
+        ADD [lindex $base64_en [expr {($x >>2) & 0x3F}]]
+        if {$y != {}} {
+            ADD [lindex $base64_en [expr {(($x << 4) & 0x30) | (($y >> 4) & 0xF)}]]
+            if {$z != {}} {
+                ADD [lindex $base64_en [expr {(($y << 2) & 0x3C) | (($z >> 6) & 0x3)}]]
+                ADD [lindex $base64_en [expr {($z & 0x3F)}]]
             } else {
-                set type 0
+                set state 2
+                break
             }
+        } else {
+            set state 1
+            break
         }
     }
-
-    return [list name $name mode $mode uid $uid gid $gid size $size mtime $mtime \
-                 cksum $cksum type $type linkname $linkname magic $magic \
-                 version $version uname $uname gname $gname devmajor $devmajor \
-                 devminor $devminor prefix $prefix]
+    if {$state == 1} {
+        ADD [lindex $base64_en [expr {(($x << 4) & 0x30)}]]
+        ADD =
+        ADD =
+    } elseif {$state == 2} {
+        ADD [lindex $base64_en [expr {(($y << 2) & 0x3C)}]]
+        ADD =
+    }
+    return $result
 }
 
-proc ::tar::contents {file args} {
-    set chan 0
-    parseOpts {chan 0} $args
-    if {$chan} {
-	set fh $file
-    } else {
-	set fh [::open $file]
-	fconfigure $fh -encoding binary -translation lf -eofchar {}
+proc ::base64::ADD {x} {
+    # The line length check is always done before appending so
+    # that we don't get an extra newline if the output is a
+    # multiple of $maxlen chars long.
+    
+    upvar 1 maxlen maxlen length length result result wrapchar wrapchar
+    if {$maxlen && $length >= $maxlen} {
+        append result $wrapchar
+        set length 0
     }
-    set ret {}
-    while {![eof $fh]} {
-        array set header [readHeader [read $fh 512]]
-	HandleLongLink $fh header
-        if {$header(name) == ""} break
-	if {$header(prefix) != ""} {append header(prefix) /}
-        lappend ret $header(prefix)$header(name)
-        seekorskip $fh [expr {$header(size) + [pad $header(size)]}] current
-    }
-    if {!$chan} {
-	close $fh
-    }
-    return $ret
+    append result $x
+    incr length
+    return
 }
 
-proc ::tar::stat {tar {file {}} args} {
-    set chan 0
-    parseOpts {chan 0} $args
-    if {$chan} {
-	set fh $tar
-    } else {
-	set fh [::open $tar]
-	fconfigure $fh -encoding binary -translation lf -eofchar {}
-    }
-    set ret {}
-    while {![eof $fh]} {
-        array set header [readHeader [read $fh 512]]
-	HandleLongLink $fh header
-        if {$header(name) == ""} break
-	if {$header(prefix) != ""} {append header(prefix) /}
-        seekorskip $fh [expr {$header(size) + [pad $header(size)]}] current
-        if {$file != "" && "$header(prefix)$header(name)" != $file} {continue}
-        set header(type) [string map {0 file 5 directory 3 characterSpecial 4 blockSpecial 6 fifo 2 link} $header(type)]
-        set header(mode) [string range $header(mode) 2 end]
-        lappend ret $header(prefix)$header(name) [list mode $header(mode) uid $header(uid) gid $header(gid) \
-                    size $header(size) mtime $header(mtime) type $header(type) linkname $header(linkname) \
-                    uname $header(uname) gname $header(gname) devmajor $header(devmajor) devminor $header(devminor)]
-    }
-    if {!$chan} {
-	close $fh
-    }
-    return $ret
-}
+# ::base64::decode --
+#
+#	Base64 decode a given string.
+#
+# Arguments:
+#	string	The string to decode.  Characters not in the base64
+#		alphabet are ignored (e.g., newlines)
+#
+# Results:
+#	The decoded value.
 
-proc ::tar::get {tar file args} {
-    set chan 0
-    parseOpts {chan 0} $args
-    if {$chan} {
-	set fh $tar
-    } else {
-	set fh [::open $tar]
-	fconfigure $fh -encoding binary -translation lf -eofchar {}
-    }
-    while {![eof $fh]} {
-	set data [read $fh 512]
-        array set header [readHeader $data]
-	HandleLongLink $fh header
-        if {$header(name) eq ""} break
-	if {$header(prefix) ne ""} {append header(prefix) /}
-        set name [string trimleft $header(prefix)$header(name) /]
-        if {$name eq $file} {
-            set file [read $fh $header(size)]
-            if {!$chan} {
-		close $fh
-	    }
-            return $file
-        }
-        seekorskip $fh [expr {$header(size) + [pad $header(size)]}] current
-    }
-    if {!$chan} {
-	close $fh
-    }
-    return -code error -errorcode {TAR MISSING FILE} \
-	"Tar \"$tar\": File \"$file\" not found"
-}
-
-proc ::tar::untar {tar args} {
-    set nooverwrite 0
-    set data 0
-    set nomtime 0
-    set noperms 0
-    set chan 0
-    parseOpts {dir 1 file 1 glob 1 nooverwrite 0 nomtime 0 noperms 0 chan 0} $args
-    if {![info exists dir]} {set dir [pwd]}
-    set pattern *
-    if {[info exists file]} {
-        set pattern [string map {* \\* ? \\? \\ \\\\ \[ \\\[ \] \\\]} $file]
-    } elseif {[info exists glob]} {
-        set pattern $glob
-    }
-
-    set ret {}
-    if {$chan} {
-	set fh $tar
-    } else {
-	set fh [::open $tar]
-	fconfigure $fh -encoding binary -translation lf -eofchar {}
-    }
-    while {![eof $fh]} {
-        array set header [readHeader [read $fh 512]]
-	HandleLongLink $fh header
-        if {$header(name) == ""} break
-	if {$header(prefix) != ""} {append header(prefix) /}
-        set name [string trimleft $header(prefix)$header(name) /]
-        if {![string match $pattern $name] || ($nooverwrite && [file exists $name])} {
-            seekorskip $fh [expr {$header(size) + [pad $header(size)]}] current
+proc ::base64::decode {string} {
+    if {[string length $string] == 0} {return ""}
+    
+    set base64 $::base64::base64
+    set output "" ; # Fix for [Bug 821126]
+    set nums {}
+    
+    binary scan $string c* X
+    lappend X 61 ;# force a terminator
+    foreach x $X {
+        set bits [lindex $base64 $x]
+        if {$bits >= 0} {
+            if {[llength [lappend nums $bits]] == 4} {
+                foreach {v w z y} $nums break
+                set a [expr {($v << 2) | ($w >> 4)}]
+                set b [expr {(($w & 0xF) << 4) | ($z >> 2)}]
+                set c [expr {(($z & 0x3) << 6) | $y}]
+                append output [binary format ccc $a $b $c]
+                set nums {}
+            }
+        } elseif {$bits == -1} {
+            # = indicates end of data.  Output whatever chars are
+            # left, if any.
+            if {![llength $nums]} break
+            # The encoding algorithm dictates that we can only
+            # have 1 or 2 padding characters.  If x=={}, we must
+            # (*) have 12 bits of input (enough for 1 8-bit
+            # output).  If x!={}, we have 18 bits of input (enough
+            # for 2 8-bit outputs).
+            #
+            # (*) If we don't then the input is broken (bug 2976290).
+            
+            foreach {v w z} $nums break
+            
+            # Bug 2976290
+            if {$w == {}} {
+                return -code error "Not enough data to process padding"
+            }
+            
+            set a [expr {($v << 2) | (($w & 0x30) >> 4)}]
+            if {$z == {}} {
+                append output [binary format c $a ]
+            } else {
+                set b [expr {(($w & 0xF) << 4) | (($z & 0x3C) >> 2)}]
+                append output [binary format cc $a $b]
+            }
+            break
+        } else {
+            # RFC 2045 says that line breaks and other characters not part
+            # of the Base64 alphabet must be ignored, and that the decoder
+            # can optionally emit a warning or reject the message.  We opt
+            # not to do so, but to just ignore the character.
             continue
         }
-
-        set name [file join $dir $name]
-        if {![file isdirectory [file dirname $name]]} {
-            file mkdir [file dirname $name]
-            lappend ret [file dirname $name] {}
-        }
-        if {[string match {[0346]} $header(type)]} {
-            if {[catch {::open $name w+} new]} {
-                # sometimes if we dont have write permission we can still delete
-                catch {file delete -force $name}
-                set new [::open $name w+]
-            }
-            fconfigure $new -encoding binary -translation lf -eofchar {}
-            fcopy $fh $new -size $header(size)
-            close $new
-            lappend ret $name $header(size)
-        } elseif {$header(type) == 5} {
-            file mkdir $name
-            lappend ret $name {}
-        } elseif {[string match {[12]} $header(type)] && $::tcl_platform(platform) == "unix"} {
-            catch {file delete $name}
-            if {![catch {file link [string map {1 -hard 2 -symbolic} $header(type)] $name $header(linkname)}]} {
-                lappend ret $name {}
-            }
-        }
-        seekorskip $fh [pad $header(size)] current
-        if {![file exists $name]} continue
-
-        if {$::tcl_platform(platform) == "unix"} {
-            if {!$noperms} {
-                catch {file attributes $name -permissions 0[string range $header(mode) 2 end]}
-            }
-            catch {file attributes $name -owner $header(uid) -group $header(gid)}
-            catch {file attributes $name -owner $header(uname) -group $header(gname)}
-        }
-        if {!$nomtime} {
-            file mtime $name $header(mtime)
-        }
     }
-    if {!$chan} {
-	close $fh
-    }
-    return $ret
+    return $output
 }
-
-## 
- # ::tar::statFile
- # 
- # Returns stat info about a filesystem object, in the form of an info 
- # dictionary like that returned by ::tar::readHeader.
- # 
- # The mode, uid, gid, mtime, and type entries are always present. 
- # The size and linkname entries are present if relevant for this type 
- # of object. The uname and gname entries are present if the OS supports 
- # them. No devmajor or devminor entry is present.
- ##
-
-proc ::tar::statFile {name followlinks} {
-    if {$followlinks} {
-        file stat $name stat
-    } else {
-        file lstat $name stat
-    }
-    
-    set ret {}
-    
-    if {$::tcl_platform(platform) == "unix"} {
-        lappend ret mode 1[file attributes $name -permissions]
-        lappend ret uname [file attributes $name -owner]
-        lappend ret gname [file attributes $name -group]
-        if {$stat(type) == "link"} {
-            lappend ret linkname [file link $name]
+proc rglob {dir {files {}}} {
+    foreach file [glob -type f -nocomplain -directory $dir *] {
+        if {![regexp {~$} $file]} {
+            lappend files $file
         }
-    } else {
-        lappend ret mode [lindex {100644 100755} [expr {$stat(type) == "directory"}]]
     }
-    
-    lappend ret  uid $stat(uid)  gid $stat(gid)  mtime $stat(mtime) \
-      type $stat(type)
-    
-    if {$stat(type) == "file"} {lappend ret size $stat(size)}
-    
-    return $ret
-}
-
-## 
- # ::tar::formatHeader
- # 
- # Opposite operation to ::tar::readHeader; takes a file name and info 
- # dictionary as arguments, returns a corresponding (POSIX-tar) header.
- # 
- # The following dictionary entries must be present:
- #   mode
- #   type
- # 
- # The following dictionary entries are used if present, otherwise 
- # the indicated default is used:
- #   uid       0
- #   gid       0
- #   size      0
- #   mtime     [clock seconds]
- #   linkname  {}
- #   uname     {}
- #   gname     {}
- #   
- # All other dictionary entries, including devmajor and devminor, are 
- # presently ignored.
- ##
-
-proc ::tar::formatHeader {name info} {
-    array set A {
-        linkname ""
-        uname ""
-        gname ""
-        size 0
-        gid  0
-        uid  0
-    }
-    set A(mtime) [clock seconds]
-    array set A $info
-    array set A {devmajor "" devminor ""}
-
-    set type [string map {file 0 directory 5 characterSpecial 3 \
-      blockSpecial 4 fifo 6 link 2 socket A} $A(type)]
-    
-    set osize  [format %o $A(size)]
-    set ogid   [format %o $A(gid)]
-    set ouid   [format %o $A(uid)]
-    set omtime [format %o $A(mtime)]
-    
-    set name [string trimleft $name /]
-    if {[string length $name] > 255} {
-        return -code error -errorcode {TAR BAD PATH LENGTH} \
-	    "path name over 255 chars"
-    } elseif {[string length $name] > 100} {
-	set common [string range $name end-99 154]
-	if {[set splitpoint [string first / $common]] == -1} {
-	    return -code error -errorcode {TAR BAD PATH UNSPLITTABLE} \
-		"path name cannot be split into prefix and name"
-	}
-	set prefix [string range $name 0 end-100][string range $common 0 $splitpoint-1]
-	set name   [string range $common $splitpoint+1 end][string range $name 155 end]
-    } else {
-        set prefix ""
-    }
-
-    set header [binary format a100A8A8A8A12A12A8a1a100A6a2a32a32a8a8a155a12 \
-                              $name $A(mode)\x00 $ouid\x00 $ogid\x00\
-                              $osize\x00 $omtime\x00 {} $type \
-                              $A(linkname) ustar\x00 00 $A(uname) $A(gname)\
-                              $A(devmajor) $A(devminor) $prefix {}]
-
-    binary scan $header c* tmp
-    set cksum 0
-    foreach x $tmp {incr cksum $x}
-
-    return [string replace $header 148 155 [binary format A8 [format %o $cksum]\x00]]
-}
-
-
-proc ::tar::recurseDirs {files followlinks} {
-    foreach x $files {
-        if {[file isdirectory $x] && ([file type $x] != "link" || $followlinks)} {
-            if {[set more [glob -dir $x -nocomplain *]] != ""} {
-                eval lappend files [recurseDirs $more $followlinks]
-            } else {
-                lappend files $x
-            }
-        }
+    foreach cdir [glob -type d -nocomplain -directory $dir *] {
+        set files [rglob $cdir $files]
+        
     }
     return $files
 }
 
-proc ::tar::writefile {in out followlinks name} {
-     puts -nonewline $out [formatHeader $name [statFile $in $followlinks]]
-     set size 0
-     if {[file type $in] == "file" || ($followlinks && [file type $in] == "link")} {
-         set in [::open $in]
-         fconfigure $in -encoding binary -translation lf -eofchar {}
-         set size [fcopy $in $out]
-         close $in
-     }
-     puts -nonewline $out [string repeat \x00 [pad $size]]
-}
-
-proc ::tar::create {tar files args} {
-    set dereference 0
-    set chan 0
-    parseOpts {dereference 0 chan 0} $args
-
-    if {$chan} {
-	set fh $tar
-    } else {
-	set fh [::open $tar w+]
-	fconfigure $fh -encoding binary -translation lf -eofchar {}
-    }
-    foreach x [recurseDirs $files $dereference] {
-        writefile $x $fh $dereference $x
-    }
-    puts -nonewline $fh [string repeat \x00 1024]
-
-    if {!$chan} {
-	close $fh
-    }
-    return $tar
-}
-
-proc ::tar::add {tar files args} {
-    set dereference 0
-    set prefix ""
-    set quick 0
-    parseOpts {dereference 0 prefix 1 quick 0} $args
-    
-    set fh [::open $tar r+]
-    fconfigure $fh -encoding binary -translation lf -eofchar {}
-    
-    if {$quick} then {
-        seek $fh -1024 end
-    } else {
-        set data [read $fh 512]
-        while {[regexp {[^\0]} $data]} {
-            array set header [readHeader $data]
-            seek $fh [expr {$header(size) + [pad $header(size)]}] current
-            set data [read $fh 512]
-        }
-        seek $fh -512 current
-    }
-
-    foreach x [recurseDirs $files $dereference] {
-        writefile $x $fh $dereference $prefix$x
-    }
-    puts -nonewline $fh [string repeat \x00 1024]
-
-    close $fh
-    return $tar
-}
-
-proc ::tar::remove {tar files} {
-    set n 0
-    while {[file exists $tar$n.tmp]} {incr n}
-    set tfh [::open $tar$n.tmp w]
-    set fh [::open $tar r]
-
-    fconfigure $fh  -encoding binary -translation lf -eofchar {}
-    fconfigure $tfh -encoding binary -translation lf -eofchar {}
-
-    while {![eof $fh]} {
-        array set header [readHeader [read $fh 512]]
-        if {$header(name) == ""} {
-            puts -nonewline $tfh [string repeat \x00 1024]
-            break
-        }
-	if {$header(prefix) != ""} {append header(prefix) /}
-        set name $header(prefix)$header(name)
-        set len [expr {$header(size) + [pad $header(size)]}]
-        if {[lsearch $files $name] > -1} {
-            seek $fh $len current
+proc encode_directory {dir output_file} {
+    set out [open $output_file w]
+    set files [rglob $dir]
+    foreach file $files {
+        #set relative_path [string map [list $dir/ ""] $file]
+        puts $out "# file: $file"
+        
+        set in [open $file rb]
+        set content [read $in]
+        close $in
+        if {[package vsatisfies [package require Tcl] 8.6 9]} {
+            puts $out [binary encode base64 -maxlen 76 -wrapchar "\n" $content]
         } else {
-            seek $fh -512 current
-            fcopy $fh $tfh -size [expr {$len + 512}]
+            puts $out [::base64::encode $content]
+        }
+        puts $out ""
+    }
+    close $out
+}
+proc decode_file {input_file output_dir} {
+    set in [open $input_file r]
+    set current_file ""
+    set content ""
+    
+    while {[gets $in line] != -1} {
+        if {[string match "# file:*" $line]} {
+            if {$current_file ne ""} {
+                file mkdir [file dirname $output_dir/$current_file]
+                set out [open $output_dir/$current_file wb]
+                if {[package vsatisfies [package require Tcl] 8.6 9]} {
+                    puts -nonewline $out [binary decode base64 $content]
+                } else {
+                    puts -nonewline $out [::base64::decode $content]
+                }
+                close $out
+            }
+            set current_file [string trim [string range $line 7 end]]
+            set content ""
+        } elseif {$line ne ""} {
+            append content $line
         }
     }
-
-    close $fh
-    close $tfh
-
-    file rename -force $tar$n.tmp $tar
+    
+    if {$current_file ne ""} {
+        file mkdir [file dirname $output_dir/$current_file]
+        set out [open $output_dir/$current_file wb]
+        if {[package vsatisfies [package require Tcl] 8.6 9]} {
+            puts -nonewline $out [binary decode base64 $content]
+        } else {
+            puts -nonewline $out [::base64::decode $content]
+        }
+        close $out
+    }
+    
+    close $in
 }
 
-proc ::tar::HandleLongLink {fh hv} {
-    upvar 1 $hv header thelongname thelongname
+## EOF: b64.tcl
 
-    # @LongName Part I.
-    if {$header(type) == "L"} {
-	# Size == Length of name. Read it, and pad to full 512
-	# size.  After that is a regular header for the actual
-	# file, where we have to insert the name. This is handled
-	# by the next iteration and the part II below.
-	set thelongname [string trimright [read $fh $header(size)] \000]
-	seekorskip $fh [pad $header(size)] current
-	return -code continue
-    }
-    # Not supported yet: type 'K' for LongLink (long symbolic links).
 
-    # @LongName, part II, get data from previous entry, if defined.
-    if {[info exists thelongname]} {
-	set header(name) $thelongname
-	# Prevent leakage to further entries.
-	unset thelongname
-    }
-
-    return
-}
-## EOF tar.tcl
-
-# lz4unpack.tcl -- take lz4unpack from wiki
+## FILE: lz4unpack.tcl -- take lz4unpack from wiki
 namespace eval ::lz4 {
     variable version 0.2.4
     # The following variable will be true in Jim Tcl and false in Tcl 8.x.
@@ -837,200 +819,19 @@ proc ::lz4::unzip {infile outfile {verify false}} {
     close $out
 }
 
-## EOF lz4unpack.tcl
-
-## File tpack.tcl
-#' ---
-#' title: tpack 0.3.0 - Tcl application deployment
-#' author: Detlef Groth, Caputh-Schwielowsee, Germany
-#' date: 2022-02-17
-#' ---
-#' 
-#' ## NAME 
-#' 
-#' _tpack_ - create single or two file Tcl applications based on libraries in tar/lz4 archives
-#' 
-#' ## SYNOPSIS
-#' 
-#' ```
-#' $ tpack --help               # display usage information
-#' $ tpack wrap app.tapp        # wraps app.tcl and app.vfs into app.tapp 
-#'                              # where app.vfs is attached as tar archive
-#' $ tpack wrap app.tapp --lz4  # as above but use tar and lz4 for compression
-#' $ tpack wrap app.tcl app.vfs # wraps app.tcl into app.ttcl and app.vfs into app.ttar
-#' $ tpack wrap app             #            as above
-#' $ tpack init app.tcl app.vfs # creates initial file app.tcl and folder app.vfs
-#' $ tpack init app             #            as above
-#' $ tpack init app.vfs         # create initial folder app.vfs
-#' $ tpack unwrap app.tapp      # extracts app.tcl and app.ttar/lz4 out of app.tapp
-#' ```
-#' 
-#' ## DESCRIPTION
-#' 
-#' The _tpack_ application can be used to simplify deployment of Tcl applications to other computers and customers.
-#' The application can create single and two file applications. 
-#' Single file applications, called tapp-files contain at the top the tar extraction code, the main tcl script and an attached tar archive
-#' containing the libraries required by this application file. At startup the tar file is detached from the file and 
-#' unpacked into a temporary folder from where the libraries are loaded. The compression with lz4 needs an installed lz4 executable, the decompression of
-#' the build executable is embedded into the final application but requires a Tcl installation of at least 8.5.
-#' 
-#' The single file approach create as _app.tapp_ file out of _app.vfs_ and _app.tcl_.
-#' 
-#' The two file approach creates a ttcl-file for the application and a ttar-file for the library files. 
-#' The unpacking of the library code in the tar archives is done only if the tapp file is newer then the files in the temporary directorywhere the files are extracted.
-#' If we assume that we have the application code in a file _app.tcl_ and the Tcl libraries in a folder _app.vfs/lib_ together with a file _app.vfs/main.tcl_. The call
-#' `$ tpack.tcl app.tcl app.vfs` will create two files:
-#' 
-#' > - _app.ttcl_ - text file containing the application code from _app.tcl_ and some code from the tar library to extract tar files
-#'   - _app.ttar_ - the library files from _app.vfs_
-#' 
-#' The file _main.tcl_ in the vfs-folder should contain at least the following line:
-#' 
-#' ```
-#' lappend auto_path [file join [file dirname [info script]] lib]
-#' ```
-#' 
-#' The _tpack_ application provides as well a loader for default starkit layouts, so a fake starkit package so that 
-#' as well existing starkits can be packed by _tpack_, here a _main.tcl_ file from the tknotepad application.
-#'
-#' ```
-#' package require starkit
-#' if {[starkit::startup] == "sourced"} return
-#' package require app-tknotepad
-#' ```
-#' 
-#' In this case the application file tknotepad.tcl which is in the same directoy as _tknotepad.vfs_ can be just an empty file. It can as well contain code to handel command line arguments.
-#' Here the file tknotepad.tcl:
-#' 
-#' ```
-#' proc usage {} {
-#'     puts "Usage: tknotepad filename"
-#' }
-#' if {[info exists argv0] && $argv0 eq [info script] && [regexp tknotepad $argv0]} {
-#'     if {[llength $argv] > -1 && [lsearch $argv --help] > -1} {
-#'         usage
-#'     } elseif {[llength $argv] > 0 && [file exists [lindex $argv 0]]} {
-#'         openoninit [lindex $argv 0]
-#'     }
-#' }
-#' ```
-#' 
-#' 
-#' That way you should be able to use your vfs-folder for creating tpacked applications
-#' as well for creating starkits.
-#'
-#' ## INSTALLATION
-#' 
-#' Make this file _tpack.tcl_ executable and copy it as _tpack_ into a directory belonging to your
-#' PATH environment. There are no other Tcl libraries required to install, just a working installation
-#' of Tcl/Tk is required.
-#' 
-#' ## EXAMPLE
-#' 
-#' Let's demonstrate a minimal application:
-#' 
-#' ```
-#' ## FILE mini.tcl
-#' #!/usr/bin/env tclsh
-#' package require test
-#' puts mini
-#' puts [test::hello]
-#' ## FILE mini.vfs/main.tcl
-#' lappend auto_path [file join [file dirname [info script]] lib]
-#' ## FILE mini.vfs/lib/test/pkgIndex.tcl
-#' package ifneeded test 0.1 [list source [file join $dir test.tcl]]
-#' ## FILE mini.vfs/lib/test/test.tcl
-#' package require Tcl
-#' package provide test 0.1
-#' namespace eval ::test { }
-#' proc ::test::hello { } { puts "Hello World!" }
-#' ## EOF's
-#' ```
-#' There is the possibility to create such a minimal application automatically for you if you start a new project
-#' by using the command line options:
-#' 
-#' ```
-#' $ tpack init appname
-#' # - appname.tcl and appname.vfs folder with main.tcl and
-#' #   lib/test Tcl files will be created automatically for you.
-#' ```
-#' 
-#' The string _appname_ has to be replaced with the name of your application. 
-#' If a the Tcl file or the VFS folder does already
-#' exists, _tpack_ for your safeness will refuse to overwrite them. 
-#' If the files were created, you can overwrite the Tcl file (_appname.tcl_)
-#' with your own application and move your libraries into the folder 
-#' _appname.vfs_.  If you are ready you call `tpack wrap appname.tcl appname.vfs` and 
-#' you end up with two new files, _appname.ttcl_ your application code file, containing 
-#' your code as well as some code from the tcllib tar package  to unwrap your library 
-#' file _appname.ttar_ at program runtime. The ttar file contains your library files
-#' taken from the _appname.vfs_ folder. You can move those two files around together 
-#' and execute _appname.ttcl_,  it will unpack the tar file into a temporary directory, 
-#' only if the tar file is newer than the directory and load the libraries from there.
-#' You can as well rename _appname.ttcl_ to _appname_ but your tar-file should always have the same 
-#' basename.
-#' 
-#' Attention: if mini.ttcl is executed directly in the directory where mini.vfs is 
-#' located not the tar file but the folder will be used for the libraries. That can simplify the development.
-#' 
-#' You can rename mini.ttcl to what every you like so `mini.bin` or even `mini`, 
-#' but the extension for the tar file must stay unchanged and must be in the same folder as the mini application file.
-#' 
-#' The tpack.tcl script, the minimal application and this Readme are as well packed together in a Zip archive which is available here: [tpack.zip](https://downgit.github.io/#/home?url=https://github.com/mittelmark/DGTcl/tree/master/apps/tpack)
-#' 
-#' ## CHANGELOG
-#' 
-#' - 2021-09-10 - release 0.1  - two file applications (ttcl and ttar) are working
-#' - 2021-11-10 - release 0.2.0 
-#'     - single file applications (ttap = ttcl+ttar in one file) are working as well
-#'     - fake starkit::startup to load existing starkit apps without modification
-#'     - build sample apps tknotepad, pandoc-tcl-filter, 
-#' - 2021-11-26 - release 0.2.1 
-#'     - bugfix: adding `package forget tar` after tar file loading to catch users `package require tar`
-#' - 2022-02-16 - release 0.3.0
-#'     - support for lz4 compression/decompression
-#'  
-#' ## TODO
-#' 
-#' - tpack wrap napp.tapp - single file applications whith attached tar archive (done 0.2.0)
-#' - tpack init napp - napp.tcl and napp.vfs will be created (done)
-#' - tpack init napp.tcl - napp.tcl exists and napp.vfs will be created (done)
-#' - tpack wrap napp.tcl - napp.ttcl and napp.ttar wull be created out of napp.tcl and napp.vfs (done)
-#' - tpack wrap napp.tcl napp2.vfs  - napp.ttcl napp.ttar will be created out of napp.tcl and napp2.vfs (done)
-#' - tpack unwrap napp.ttar - create napp.vfs  (just an untar, done) 
-#' - tpack unwrap napp.tapp - create napp.tcl and napp.ttar  (done)
-#' - using ttar.gz files with Tcl 8.6 and zlib and with Tcl 8.5/8.4 gunzip terminal app
-#' - using Tcl only lz4 compression, option for Tcl 8.5/8.6 (done)
-#' - nsis installer for Windows, to deploy minimal Tcl/Tk with the application
-#'
-#' ## AUTHOR
-#' 
-#'   - Copyright (c) 2021-2022 Detlef Groth, Caputh-Schwielowsee, Germany, detlef(at)dgroth(dot)de (tpack code)
-#'   - Copyright (c) 2017 dbohdan pur Tcl lz4 decompression code
-#'   - Copyright (c) 2013 Andreas Kupries andreas_kupries(at)users.sourceforge(dot)net (tar code)
-#'   - Copyright (c) 2004 Aaron Faupell afaupell(at)users.sourceforge(sot)net (tar code)
-#' 
-#' ## LICENSE
-#'
-#' MIT - License
-#'  
-package require Tcl
-package require tar
-package provide tpack 0.3.0
+## EOF: lz4unpack.tcl
 
 namespace eval tpack {
     proc usage { } {
-        puts "tar application packer [package present tpack]\n\n"
+        puts "Tcl application packer [package present tpack]\n\n"
         puts "Usage: tpack \[OPTIONS\] \[CMD\] \[BASENAME\] \[TCLFILE\] \[VFSFOLDER\]\n\n"
         puts "Commands:\n"
         puts "    init file            - creates file.tcl and file.vfs with initial files and code"
         puts "    init file.tcl        - creates file.vfs  directory with initial files"
-        puts "    wrap file            - creates file.ttcl and file.ttar out of file.tcl and file.vfs"        
+        puts "    wrap file            - creates file.ttcl and file.tb64 out of file.tcl and file.vfs"        
         puts "    wrap file.tapp       - creates standalone file.tapp out of file.tcl and folder.vfs"        
         puts "    wrap file.tapp --lz4 - creates standalone file.tapp out of file.tcl and folder.vfs\n[string repeat { } 26] using lz4 compression (requires Tcl8.5+ at runtime)"        
-        puts "    wrap file.tcl        - creates file.ttcl and file.ttar out of file.tcl and file.vfs"
-        puts "    wrap file.tcl folder.vfs - creates file.ttcl and file.ttar out of file.tcl and folder.vfs"
-        puts "    unwrap file.ttar     - just unpack the file.ttar into the file.vfs without overwriting\n[string repeat { } 26] existing files"
+        puts "    unwrap file.tapp     - just unpack the file.tapp into the file.vfs without overwriting\n[string repeat { } 26] existing files"
         puts "    --help        - display this help page"
         puts "    --version     - display version number"
         puts "==========================================="
@@ -1039,8 +840,9 @@ namespace eval tpack {
         puts "           tpack.tcl contains just a lappend:"
         puts "           lappend auto_path \[file join \[file dirname \[info script\]\] lib\]"
         puts "           lib folder contains the packages"
-        puts "Deployment: Just copy app.ttcl and app.ttar to the same folder."
-        puts "            Please note, that they must have the same basename without the file extension" 
+        puts "Deployment: Just copy app.tapp as excutable for your folder in your PATH."
+        puts "            Please note, that the final file have the same basename without the file extension" 
+        puts "            So 'app.tapp' can be renamed as 'app' or 'app.bin'!"
     }
 }
 
@@ -1076,9 +878,6 @@ if {[llength [info commands ::lz4::*]] > 0}  {
     set lzmode true
 }
 if {[file exists $rname.vfs]} {
-    catch {
-        package forget tar
-    }   
     source [file join $rname.vfs main.tcl]
 } else {
     set tail [file tail $rname]
@@ -1095,8 +894,8 @@ if {[file exists $rname.vfs]} {
         set script [string range $data 0 [expr {$ctrlz - 2}]]
         set archive [string range $data [incr ctrlz] end]
         set scriptfile [file join $tmpdir [file rootname $appname].ttcl]
-        set tarfile [file join $tmpdir [file tail [file rootname $appname]].ttar]
-        set lzfile [file join $tmpdir [file tail [file rootname $appname]].ttar.lz4]
+        set tarfile [file join $tmpdir [file tail [file rootname $appname]].tb64]
+        set lzfile [file join $tmpdir [file tail [file rootname $appname]].tb64.lz4]
         set untar false
         if {[file exists $tarfile]} {
             set ttime [file mtime $tarfile]
@@ -1118,14 +917,14 @@ if {[file exists $rname.vfs]} {
                 close $tmp
                 lz4::unzip $lzfile $tarfile
             } else {
-                set tmp [open $tarfile w 0600]
-                fconfigure $tmp -translation binary
+                set tmp [open $tarfile wb 0600]
+                #fconfigure $tmp -translation binary
                 puts -nonewline $tmp $archive
                 close $tmp
             }
         }
     } else {
-        set tarfile [file rootname [info script]].ttar
+        set tarfile [file rootname [info script]].tb64
         if {![file exists $tarfile]} {
             puts "Error: File $tarfile does not exists"
             exit 0
@@ -1140,18 +939,15 @@ if {[file exists $rname.vfs]} {
     }
     if {![file exists $appdir]} {
         file mkdir $appdir
-        tar::untar $tarfile -dir $appdir
+        decode_file $tarfile $appdir
     }
     set vfspath [lindex [glob [file join $appdir *]] 0]
-    catch {
-        package forget tar
-    }   
     if {[file exists [file join $vfspath tpack.tcl]]} {
         source [file join $vfspath tpack.tcl]
     } elseif {[file exists [file join $vfspath main.tcl]]} {
         source [file join $vfspath main.tcl]
     } else {
-        error "Neither tpack.tcl or main.tcl found in tar archive!"
+        error "Neither tpack.tcl or main.tcl found in b64 archive!"
     }
     
 }
@@ -1170,9 +966,9 @@ proc rglob {dir {files {}}} {
     }
     return $files
 }
-proc tardir {folder tarfile}  {
+proc b64dir {folder b64file}  {
     set files [rglob $folder] 
-    tar::create $tarfile $files -dereference
+    encode_directory $folder $b64file
 }
 proc untarfile {file} {
     #puts untar
@@ -1187,7 +983,7 @@ proc unwraptapp {tappfile} {
     # TODO check first line for main.tcl
     set appname $tappfile
     set rname [file rootname [file tail $appname]]
-    set ttarfile $rname.ttar
+    set ttarfile $rname.tb64
     set tclfile $rname.tcl
     set tmp [open $ttarfile w 0600]
     fconfigure $tmp -translation binary
@@ -1200,10 +996,8 @@ proc unwraptapp {tappfile} {
     close $tmp 
     set data [string range $data 0 [expr {$ctrlz - 2}]]
     set eoarchive [string first "## ARCHIVE LOADER END" $data]
-    puts $eoarchive
     set data [string range $data [incr eoarchive 22] end]
     set shebang [string first "#!/usr/bin/env tclsh" $data]
-    puts $shebang
     if {$shebang > 0} {
         set data [string range $data $shebang end]
     }
@@ -1212,7 +1006,25 @@ proc unwraptapp {tappfile} {
     puts -nonewline $out $data
     close $out
     puts stdout "Done: unwrapped $appname to $ttarfile and $tclfile"
+    if {[regexp {.tb64$} $ttarfile]} {
+        if {[is_lz4_file $ttarfile]} {
+            ::lz4::unzip $ttarfile temp.b64
+            file rename -force temp.b64 $ttarfile
+        }
+        decode_file $ttarfile .
+    }
 }
+proc is_lz4_file {filename} {
+    set f [open $filename r]
+    fconfigure $f -translation binary
+    set header [read $f 4]
+    close $f
+    
+    binary scan $header H* hex_header
+    puts "$hex_header"
+    return [string equal $hex_header "04224d18"]
+}
+
 proc wrapfile {tclfile ttclfile scriptfile {lz4 false}} {
     set infile $tclfile
     set ttcl $ttclfile
@@ -1226,32 +1038,24 @@ proc wrapfile {tclfile ttclfile scriptfile {lz4 false}} {
         exit
     } else {
         #file operations
-        set flag  true
-        set pflag false
+        set flag false
         while {[gets $infh line] >= 0} {
-            if {[regexp {^## EOF lz4unpack.tcl} $line]} {
+            if {[regexp {^## FILE: b64.tcl} $line]} {
+                set flag true
+            } elseif {[regexp {^## EOF: b64.tcl} $line]} {
+                if {!$lz4} {
+                    close $infh
+                    break
+                }
+            } elseif {[regexp {^## EOF: lz4unpack.tcl} $line]} { 
+                close $infh
                 break
-            } elseif {[regexp {^proc ::tar::skip} $line]} {
-                set flag false
-            } elseif {[regexp {proc ::tar::(readHeader|untar|HandleLongLink)} $line]} {
-                set pflag true
+            } elseif {$flag} {
                 puts $out $line
-            } elseif {$pflag && [regexp {^\}} $line]} { ;#\{
-                set pflag false
-                 puts $out $line
-            } elseif {$flag || $pflag} {
-                 puts $out $line
-            } elseif {[regexp {## EOF tar.tcl} $line]} {
-                 if {!$lz4} {
-                     break
-                 }
-                 set flag true
-            } 
+            }
         }
-        close $infh
     }
-    # the tttcl tar unpack routines
-    # stored
+    puts $out "## ARCHIVE LOADER START"    
     puts $out $::tpack::loader
     puts $out "## ARCHIVE LOADER END"
 
@@ -1333,7 +1137,7 @@ if {[info exists argv0] && $argv0 eq [info script]} {
             puts "Error: file $ttarfile does not exists!"
             exit 0
         }   
-        if {[lsearch [list .ttar .tar .tlib .tapp .bin] [file extension $ttarfile]] == -1} {
+        if {[lsearch [list .tb64 .tar .tlib .tapp .bin] [file extension $ttarfile]] == -1} {
             puts "Error: $ttarfile is not a tarfile!"
             exit 0
         }   
@@ -1345,7 +1149,7 @@ if {[info exists argv0] && $argv0 eq [info script]} {
             set tclfile $arg.tcl
             set ttclfile $arg.ttcl            
             set vfsfolder $arg.vfs
-            set ttarfile $arg.ttar
+            set ttarfile $arg.tb64
             
         } elseif {[file extension $arg] eq ".tcl"} { 
             set tclfile $arg
@@ -1355,8 +1159,8 @@ if {[info exists argv0] && $argv0 eq [info script]} {
             set tclfile [file rootname $arg].tcl
             set ttclfile  [file rootname $arg].ttcl
             set vfsfolder [file rootname $arg].vfs
-            set ttarfile [file rootname $arg].ttar
-            set lz4file [file rootname $arg].ttar.lz4
+            set ttarfile [file rootname $arg].tb64
+            set lz4file [file rootname $arg].tb64.lz4
             set tapp true
         } elseif {[file extension $arg] eq ".ttcl"} { 
             set ttclfile $arg
@@ -1364,7 +1168,7 @@ if {[info exists argv0] && $argv0 eq [info script]} {
         } elseif {[file extension $arg] eq ".vfs"} { 
             set vfsfolder $arg
             set ttarfile [file rootname $arg].ttar
-        } elseif {[file extension $arg] eq ".ttar"} { 
+        } elseif {[file extension $arg] eq ".tb64"} { 
             set vfsfolder [file rootname $arg].vfs
             set ttarfile $arg
         }
@@ -1374,7 +1178,7 @@ if {[info exists argv0] && $argv0 eq [info script]} {
             set t1 [clock seconds]
             puts -nonewline "wrapping $tclfile into $vfsfolder into $tappfile ..."
             wrapfile $tclfile $ttclfile $scriptfile $lz4
-            tardir $vfsfolder $ttarfile
+            b64dir $vfsfolder $ttarfile
             if {$lz4} {
                 exec -ignorestderr lz4 -f $ttarfile $lz4file
                 wraptapp $ttclfile $lz4file $tappfile
@@ -1394,10 +1198,9 @@ if {[info exists argv0] && $argv0 eq [info script]} {
         if {[file exists $vfsfolder] && [file isdirectory $vfsfolder]} {
             set t1 [clock seconds]
             puts -nonewline "wrapping $vfsfolder into $ttarfile ..."
-            tardir $vfsfolder $ttarfile
+            b64dir $vfsfolder $ttarfile
             set t2 [expr {[clock seconds]-$t1}]
             puts " in $t2 seconds done!"
-            
         } 
         if {![file exists $tclfile] && ![file exists $vfsfolder]} {
             tpack::usage
@@ -1405,7 +1208,6 @@ if {[info exists argv0] && $argv0 eq [info script]} {
     } elseif {$mode eq "unwrap"} {
         if {$tapp} {
             puts [file extension $ttarfile]
-            puts "end"
             unwraptapp $tappfile
             exit 0
         } else {
