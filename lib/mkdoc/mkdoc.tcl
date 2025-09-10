@@ -2,7 +2,7 @@
 ##############################################################################
 #  Author        : Dr. Detlef Groth
 #  Created       : Fri Nov 15 10:20:22 2019
-#  Last Modified : <241224.1056>
+#  Last Modified : <250910.1526>
 #
 #  Description	 : Command line utility and package to extract Markdown documentation 
 #                  from programming code if embedded as after comment sequence #' 
@@ -143,7 +143,7 @@
 #' mkdoc::mkdoc mkdoc.tcl mkdoc.html --mathjax true ## parse inline equations using mathjax library
 #' > ```
 
-package require Tcl 8.6
+package require Tcl 8.6-
 
 package require yaml
 package require Markdown
